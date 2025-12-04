@@ -7,7 +7,6 @@ get_header(); ?>
     get_template_part('components/home/hero');
     get_template_part('components/home/recommended');
     get_template_part('components/home/trending');
-    home_top_ad();
     get_template_part('components/home/term');
     get_template_part('components/home/categories');
     home_bottom_ad();
