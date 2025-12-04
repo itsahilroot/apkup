@@ -24,6 +24,8 @@ function at_admin_styles()
     if (isset($_GET['page']) && in_array($_GET['page'], array('at-panel'))) {
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_style('at-admin-panel', get_template_directory_uri() . '/assets/css/admin/panel.css', array(), APKT_THEME_VERSION, 'all');
+        wp_enqueue_style('at-google-fonts', 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap', array(), null);
+        wp_enqueue_style('at-admin-panel-custom', get_template_directory_uri() . '/assets/css/admin/panel-custom.css', array(), time(), 'all');
     }
 }
 add_action('admin_enqueue_scripts', 'at_admin_styles');
