@@ -1,0 +1,144 @@
+<?php
+$au_theme_color = get_theme_mod('au_theme_color', '#eb144c');
+$au_header_logo = get_theme_mod('au_header_logo', get_template_directory_uri() . '/assets/img/logo.png');
+$au_header_logo_dark = get_theme_mod('au_header_logo_dark', get_template_directory_uri() . '/assets/img/logo.png');
+$appyn_apikey = get_option('appyn_apikey', '');
+$au_games_menu_url = get_theme_mod('au_games_menu_url', '');
+$au_apps_menu_url = get_theme_mod('au_apps_menu_url', '');
+$au_head_code = get_theme_mod('au_head_code', '');
+?>
+<div class="at-field-section active" data-section="general">
+    <div class="at-form-header">
+        <h2>General</h2>
+    </div>
+    <table class="at-field-table">
+        <tbody>
+            <!--             <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Theme Color', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Set your favorite color to theme.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="text" name="au_theme_color" value="<?php echo esc_attr($au_theme_color); ?>"
+                            class="color-picker" />
+                    </div>
+                </td>
+            </tr> -->
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Logo (Light Mode)', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Header logo (light mode) for website. It\'s only appears on header/footer section.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-1">
+                        <div class="at-img-upload">
+                            <input type="text" name="au_header_logo" id="au_header_logo" class="at-text-ipt"
+                                value="<?php echo esc_html($au_header_logo); ?>" />
+                            <input type="button" class="at-upload-img-ipt" value="&#xf093;" data-title="Header/Footer Logo"
+                                data-target="#au_header_logo" />
+                        </div>
+                    </div>
+                    <p class="at-field-hint at-mb-2">
+                        <?php esc_html_e('Required image size: width: 214px and height: 64px.', 'apktemplates'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Logo (Dark Mode)', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Header logo (Dark Mode) for website. It\'s only appears on header/footer section.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-1">
+                        <div class="at-img-upload">
+                            <input type="text" name="au_header_logo_dark" id="au_header_logo_dark" class="at-text-ipt"
+                                value="<?php echo esc_html($au_header_logo_dark); ?>" />
+                            <input type="button" class="at-upload-img-ipt" value="&#xf093;" data-title="Header/Footer Logo"
+                                data-target="#au_header_logo_dark" />
+                        </div>
+                    </div>
+                    <p class="at-field-hint at-mb-2">
+                        <?php esc_html_e('Required image size: width: 214px and height: 64px.', 'apktemplates'); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Appyn API Key', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Add Appyn API key for APK Updates..', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="text" name="appyn_apikey" id="appyn_apikey" class="at-text-ipt"
+                            value="<?php echo esc_html($appyn_apikey); ?>" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Games Menu URL (Mobile)', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Add Games page url for bottom menu for mobile view.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="text" name="au_games_menu_url" id="au_games_menu_url" class="at-text-ipt"
+                            value="<?php echo esc_html($au_games_menu_url); ?>" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Apps Menu URL (Mobile)', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Add Games page url for bottom menu for mobile view.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="text" name="au_apps_menu_url" id="au_apps_menu_url" class="at-text-ipt"
+                            value="<?php echo esc_html($au_apps_menu_url); ?>" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Head Code', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Add the head code for your entire website. For instance, you can include Adsense, Google Analytics, Webmaster, Bing or any tracking codes you want. This code will appear above </head> tag.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-1">
+                        <textarea name="au_head_code" class="at-textarea" spellcheck="false"
+                            rows="7"><?php echo esc_textarea(trim(stripslashes($au_head_code))); ?></textarea>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
