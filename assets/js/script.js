@@ -2,13 +2,31 @@ document.addEventListener("DOMContentLoaded", function () {
     // Flickity Carousel
     var carouselElems = document.querySelectorAll('.carousel');
     carouselElems.forEach(function (item) {
-        new Flickity(item, {
+        var options = {
             cellAlign: 'left',
             prevNextButtons: false,
-            groupCells: true,
             wrapAround: true,
             pageDots: false
-        });
+        };
+
+        if (item.classList.contains('hero-carousel')) {
+            // Infinity scroll options for hero
+            options.freeScroll = true;
+            options.wrapAround = true;
+            options.groupCells = false;
+            options.pageDots = false;
+            options.imagesLoaded = true;
+            options.prevNextButtons = false;
+            // Physics for smooth continuous feel
+            options.friction = 0.2;
+            options.selectedAttraction = 0.01;
+            options.dragThreshold = 10;
+        } else {
+            // Default options for others
+            options.groupCells = true;
+        }
+
+        new Flickity(item, options);
     });
 
     // LightGallery
@@ -226,6 +244,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 dlLinks.classList.remove('hidden');
                 setTimeout(() => dlLinks.classList.add('opacity-100'), 10);
             }
+        }
+    });
+
+    // Lazy Load Fade-in Effect
+    var lazyImages = document.querySelectorAll('.lazyload');
+    lazyImages.forEach(function (img) {
+        if (img.complete) {
+            img.classList.add('loaded');
+        } else {
+            img.addEventListener('load', function () {
+                img.classList.add('loaded');
+            });
         }
     });
 });

@@ -21,11 +21,13 @@ $recently_updated_query = new WP_Query($args);
         </div>
     </header>
     <?php if ($recently_updated_query->have_posts()) : ?>
-        <div class="relative carousel overflow-y-hidden p-2 scrollbar-hide focus:outline-none">
+        <div class="relative carousel hero-carousel [&:not(.flickity-enabled)]:flex [&:not(.flickity-enabled)]:gap-4 overflow-x-auto overflow-y-hidden p-2 scrollbar-hide focus:outline-none">
             <?php
+            $i = 0;
             while ($recently_updated_query->have_posts()) :
                 $recently_updated_query->the_post();
-                get_template_part('components/card/hero');
+                get_template_part('components/card/hero', null, ['is_first' => $i === 0]);
+                $i++;
             endwhile;
             wp_reset_postdata();
             ?>

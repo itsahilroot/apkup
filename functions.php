@@ -72,7 +72,7 @@ function apkup_enqueue_scripts()
 {
     $theme_dir = get_template_directory_uri();
 
-    wp_enqueue_style('apkup-tailwind', $theme_dir . '/assets/css/tailwind.min.css', [], APKT_THEME_VERSION, 'all');
+    wp_enqueue_style('apkup-tailwind', $theme_dir . '/assets/css/input.css', [], APKT_THEME_VERSION, 'all');
     wp_enqueue_style('apkup-style', $theme_dir . '/assets/css/style.min.css', ['apkup-tailwind'], APKT_THEME_VERSION, 'all');
     wp_enqueue_style('apkup-fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], APKT_THEME_VERSION, 'all');
 
@@ -83,9 +83,9 @@ function apkup_enqueue_scripts()
         wp_enqueue_style('apkup-lightgallery', 'https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/css/lightgallery.min.css', [], APKT_THEME_VERSION, 'all');
         wp_enqueue_script('apkup-lightgallery', $theme_dir . '/assets/js/include/lightgallery.min.js', [], APKT_THEME_VERSION, true);
         wp_enqueue_script('rateyo', $theme_dir . '/assets/js/include/rateYo.min.js', ['jquery'], '2.3.0', true);
-        wp_enqueue_script('apkup-script',  $theme_dir . '/assets/js/script.min.js', ['jquery', 'apkup-lightgallery', 'rateyo'], APKT_THEME_VERSION, true);
+        wp_enqueue_script('apkup-script',  $theme_dir . '/assets/js/script.js', ['jquery', 'apkup-lightgallery', 'rateyo'], APKT_THEME_VERSION, true);
     } else {
-        wp_enqueue_script('apkup-script',  $theme_dir . '/assets/js/script.min.js', ['jquery'], APKT_THEME_VERSION, true);
+        wp_enqueue_script('apkup-script',  $theme_dir . '/assets/js/script.js', ['jquery'], APKT_THEME_VERSION, true);
     }
 
     wp_localize_script('apkup-script', 'apkup_ajax_vars', [

@@ -19,10 +19,20 @@ if(empty($app_banner)) {
 }
 
 $app_url = get_the_permalink();
+
+$is_first = $args['is_first'] ?? false;
+$loading_attr = $is_first ? 'eager' : 'lazy';
+$img_class = 'w-full h-48 object-cover rounded-xl bg-gray-200 dark:bg-gray-700';
+$logo_class = 'rounded-xl shadow-md w-full h-full object-contain bg-gray-100 dark:bg-gray-800';
+
+if (!$is_first) {
+    $img_class .= ' lazyload';
+    $logo_class .= ' lazyload';
+}
 ?>
-<div class="mr-4 w-78">
+<div class="carousel-cell mr-4 w-[85vw] sm:w-78 shrink-0 group">
     <div class="relative mb-4">
-        <img class="w-full h-48 object-cover rounded-xl" src="<?php echo $app_banner; ?>" alt="<?php echo $app_name; ?>">
+        <img class="<?php echo $img_class; ?>" src="<?php echo $app_banner; ?>" alt="<?php echo $app_name; ?>" width="312" height="192" loading="<?php echo $loading_attr; ?>">
 		<?php if(!empty($app_mod_info)) : ?>
 		<p class="absolute top-3 left-3 text-white text-sm font-bold px-2 rounded-full" style="width: fit-content;background-color: #df1e1e;">MOD</p>
 		<?php endif; ?>
@@ -32,11 +42,11 @@ $app_url = get_the_permalink();
     </div>
     <div class="app-items flex items-center gap-4">
         <div class="flex-shrink-0 w-20 h-20">
-            <img src="<?php echo $app_logo; ?>" alt="<?php echo $app_name; ?>" class="rounded-xl shadow-md w-full h-full object-contain">
+            <img src="<?php echo $app_logo; ?>" alt="<?php echo $app_name; ?>" class="<?php echo $logo_class; ?>" width="80" height="80" loading="<?php echo $loading_attr; ?>">
         </div>
         <div class="flex-1 min-w-0">
-            <span class="block font-medium truncate dark:text-gray-300"><?php echo $app_name; ?></span>
-            <div class="flex items-center text-sm text-gray-600 whitespace-nowrap overflow-hidden dark:text-gray-400">
+            <span class="block font-bold text-gray-900 dark:text-white truncate group-hover:text-primary transition-colors text-base"><?php echo $app_name; ?></span>
+            <div class="flex items-center text-xs font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden mt-1">
                 <span class="mr-1 truncate"><?php echo esc_html($app_category); ?></span>
                 <span class="mr-1"> • <?php echo esc_html(number_format((float)$app_rating, 1)); ?></span>
                 <svg class="w-3 h-3 text-yellow-500" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
