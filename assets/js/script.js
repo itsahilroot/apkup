@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
             pageDots: false
         };
 
-        if (item.classList.contains('hero-carousel')) {
+        if (item.classList.contains('hero-carousel') || item.classList.contains('recommended-carousel')) {
             // Infinity scroll options for hero
             options.freeScroll = true;
             options.wrapAround = true;
@@ -109,24 +109,121 @@ document.addEventListener("DOMContentLoaded", function () {
         isManuallyExpanded = !mobileNav.classList.contains('collapsed');
     });
 
-    // --- Open offcanvas menu ---
-    openMenuBtn.addEventListener('click', function () {
-        offcanvas.classList.add('open');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    // Close modal when clicking outside
+    const searchModal = document.getElementById('search-modal'); // Assuming searchModal is defined elsewhere or needs to be defined here
+    if (searchModal) {
+        searchModal.addEventListener('click', (e) => {
+            if (e.target === searchModal) {
+                searchModal.classList.add('hidden');
+            }
+        });
+    }
 
-        // Highlight menu when open
-        openMenuBtn.classList.add('active');
-    });
+    // AJAX Search Logic
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('ajax-search-results');
+    let searchTimeout;
+
+    if (searchInput && searchResults) {
+        searchInput.addEventListener('keyup', function () {
+            const query = this.value.trim();
+
+            clearTimeout(searchTimeout);
+
+            if (query.length < 2) {
+                searchResults.classList.add('hidden');
+                searchResults.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                // Show loading state (optional)
+
+                const formData = new FormData();
+                formData.append('action', 'apkup_ajax_search');
+                formData.append('term', query);
+                formData.append('nonce', apkup_ajax_vars.nonce);
+
+                fetch(apkup_ajax_vars.ajax_url + '?action=apkup_ajax_search&term=' + query + '&nonce=' + apkup_ajax_vars.nonce)
+                    .then(response => response.json())
+                    .then(res => {
+                        if (res.success && res.data.length > 0) {
+                            let html = '<div class="divide-y divide-gray-100 dark:divide-gray-700">';
+                            res.data.forEach(item => {
+                                html += `
+                                <a href="${item.permalink}" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <div class="w-10 h-10 rounded-lg overflow-hidden shrink-0">
+                                        <img src="${item.thumbnail}" alt="${item.title}" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">${item.title}</h4>
+                                        <div class="flex items-center gap-1 mt-0.5">
+                                            <svg class="w-3 h-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">${item.rating}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            `;
+                            });
+                            html += '</div>';
+                            // Add "View all results" link
+                            html += `
+                            <a href="/?s=${query}" class="block text-center p-3 text-sm font-medium text-primary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700">
+                                View all results for "${query}"
+                            </a>
+                        `;
+
+                            searchResults.innerHTML = html;
+                            searchResults.classList.remove('hidden');
+                        } else {
+                            searchResults.innerHTML = `
+                            <div class="p-4 text-center text-gray-500 dark:text-gray-400">
+                                No apps found for "${query}"
+                            </div>
+                        `;
+                            searchResults.classList.remove('hidden');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Search error:', err);
+                    });
+            }, 300); // 300ms debounce
+        });
+
+        // Hide results when clicking outside, but inside the modal
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.add('hidden');
+            }
+        });
+    }
+
+    // --- Open offcanvas menu ---
+    if (openMenuBtn && offcanvas) {
+        openMenuBtn.addEventListener('click', function () {
+            offcanvas.classList.add('open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Highlight menu when open
+            openMenuBtn.classList.add('active');
+        });
+    }
 
     // --- Close offcanvas menu ---
     function closeMenu() {
-        offcanvas.classList.remove('open');
-        overlay.classList.remove('active');
+        if (offcanvas) {
+            offcanvas.classList.remove('open');
+        }
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
         document.body.style.overflow = 'auto';
 
         // Remove menu highlight
-        openMenuBtn.classList.remove('active');
+        if (openMenuBtn) {
+            openMenuBtn.classList.remove('active');
+        }
     }
 
     if (closeMenuBtn) {
@@ -247,17 +344,35 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Lazy Load Fade-in Effect
-    var lazyImages = document.querySelectorAll('.lazyload');
-    lazyImages.forEach(function (img) {
-        if (img.complete) {
-            img.classList.add('loaded');
-        } else {
-            img.addEventListener('load', function () {
-                img.classList.add('loaded');
+    // Lazy Load with IntersectionObserver
+    var lazyImages = [].slice.call(document.querySelectorAll("img.lazyload"));
+
+    if ("IntersectionObserver" in window) {
+        let lazyImageObserver = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    let lazyImage = entry.target;
+                    if (lazyImage.dataset.src) {
+                        lazyImage.src = lazyImage.dataset.src;
+                    }
+                    lazyImage.classList.add("loaded");
+                    lazyImageObserver.unobserve(lazyImage);
+                }
             });
-        }
-    });
+        });
+
+        lazyImages.forEach(function (lazyImage) {
+            lazyImageObserver.observe(lazyImage);
+        });
+    } else {
+        // Fallback for older browsers
+        lazyImages.forEach(function (lazyImage) {
+            if (lazyImage.dataset.src) {
+                lazyImage.src = lazyImage.dataset.src;
+            }
+            lazyImage.classList.add('loaded');
+        });
+    }
 });
 
 // ✅ Toast function

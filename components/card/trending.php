@@ -20,8 +20,8 @@ $app_logo_full = get_the_post_thumbnail_url($post_id, 'full');
 $app_url = get_the_permalink($post_id);
 ?>
 <a href="<?php echo esc_url($app_url); ?>" class="apps-items flex my-2 truncate">
-    <figure class="app-item flex-shrink-0 w-20 h-20">
-        <img src="<?php echo esc_url($app_logo_full); ?>" alt="<?php echo $app_name; ?>" class="app-icon rounded-2xl flex-shrink-0 w-full h-full">
+    <figure class="app-item flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden skeleton-bg">
+        <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo esc_url($app_logo_full); ?>" alt="<?php echo $app_name; ?>" class="app-icon rounded-2xl flex-shrink-0 w-full h-full lazyload">
     </figure>
     <div class="apps-info flex flex-col justify-between ml-4 flex-1 min-w-0 truncate">
         <h3 class="font-semibold text-sm truncate dark:text-gray-300"><?php echo esc_html($app_name); ?></h3>

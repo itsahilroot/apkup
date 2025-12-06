@@ -22,8 +22,8 @@ if(empty($app_banner)) {
 $app_url = get_the_permalink($post_id);
 ?>
 <a href="<?php echo esc_url($app_url); ?>" class="app-card w-72 sm:w-auto">
-    <figure class="app-banner">
-        <img class="rounded-lg w-full h-40 object-cover" src="<?php echo esc_url($app_banner); ?>" alt="<?php echo $app_name; ?>">
+    <figure class="app-banner rounded-lg overflow-hidden skeleton-bg">
+        <img class="rounded-lg w-full h-40 object-cover lazyload" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo esc_url($app_banner); ?>" alt="<?php echo $app_name; ?>">
     </figure>
     <div class="mt-2">
         <h3 class="font-medium leading-tight text-gray-900 dark:text-gray-100 truncate">

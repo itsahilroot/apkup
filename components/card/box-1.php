@@ -18,8 +18,8 @@ $app_logo_full = get_the_post_thumbnail_url($post_id, 'full');
 $app_url = get_the_permalink($post_id);
 ?>
 <a href="<?php echo esc_url($app_url); ?>" class="apps-items flex-shrink-0 sm:flex-shrink min-w-[140px]">
-    <figure class="w-32 h-32">
-        <img src="<?php echo $app_logo_full; ?>" alt="<?php echo $app_name; ?>" class="rounded-2xl">
+    <figure class="w-32 h-32 rounded-2xl overflow-hidden skeleton-bg">
+        <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo $app_logo_full; ?>" alt="<?php echo $app_name; ?>" class="rounded-2xl lazyload">
     </figure>
     <div class="apps-metas max-w-[140px] my-2">
         <h3 class="text-[15px] text-gray-900 dark:text-gray-100 line-clamp-2"><?php echo $app_name; ?></h3>

@@ -4,6 +4,7 @@ $header_menus = !empty($menu_locations['header_menu']) ? wp_get_nav_menu_items($
 $au_header_logo = get_theme_mod('au_header_logo', get_template_directory_uri() . '/assets/img/logo.png');
 $au_header_logo_dark = get_theme_mod('au_header_logo_dark', get_template_directory_uri() . '/assets/img/logo.png');
 $au_home_hero_top_description = get_theme_mod('au_home_hero_top_description', 'GAMES & APPS FOR ANDROID - A LARGE SELECTION OF APPS FOR ANDROID DEVICES FREE AND WITH NO VIRUSES');
+$au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 ?>
 <header class="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,6 +68,10 @@ $au_home_hero_top_description = get_theme_mod('au_home_hero_top_description', 'G
                         </svg>
                         <span class="sr-only"><?php esc_html_e('Search', 'apktemplates'); ?></span>
                     </button>
+                    
+                    <?php if ($au_ajax_search_swt) : ?>
+                        <div id="ajax-search-results" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden z-20 hidden border border-gray-100 dark:border-gray-700 max-h-[60vh] overflow-y-auto"></div>
+                    <?php endif; ?>
                 </form>
                 <div class="mt-4 text-sm text-gray-500 dark:text-gray-300">
                    Ejemplo: PUBG Mobile, Instagram, WhatsApp, TikTok

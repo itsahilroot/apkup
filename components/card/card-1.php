@@ -12,8 +12,8 @@ $blog_url = get_permalink($blog_id);
 ?>
 <a href="<?php echo esc_url($blog_url); ?>"
     class="carditems my-4 mr-4 prose prose-sm dark:prose-invert shrink-0 w-72">
-    <div class="block transition-opacity duration-300 hover:opacity-80">
-        <img class="rounded-3xl w-full aspect-[16/9] object-cover block" src="<?php echo esc_url($blog_thumbnail); ?>" alt="<?php echo esc_attr($blog_title); ?> icon">
+    <div class="block transition-opacity duration-300 hover:opacity-80 rounded-3xl overflow-hidden skeleton-bg">
+        <img class="rounded-3xl w-full aspect-[16/9] object-cover block lazyload" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo esc_url($blog_thumbnail); ?>" alt="<?php echo esc_attr($blog_title); ?> icon">
     </div>
     <div class="meta flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-300 mt-2">
         <span class="flex items-center gap-1 text-gray-500 dark:text-gray-300"><?php echo esc_html($blog_publish_date); ?></span>

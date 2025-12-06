@@ -1,14 +1,62 @@
 <?php
+$au_home_hero_swt = get_theme_mod('au_home_hero_swt', true);
+
+if (!$au_home_hero_swt) {
+    return;
+}
+
+$limit = get_theme_mod('au_home_hero_limit', 16);
+$sort = get_theme_mod('au_home_hero_sort', 'modified');
+$term_id = get_theme_mod('au_home_hero_term_id', '');
+
 $args = array(
     'post_type'           => 'post',
-    'posts_per_page'      => 16,
-    'orderby'             => 'modified',
-    'order'               => 'DESC',
+    'posts_per_page'      => $limit,
     'ignore_sticky_posts' => true,
     'no_found_rows'       => true,
     'update_post_meta_cache' => false,
     'update_post_term_cache' => false,
 );
+
+// Sorting Logic
+switch ($sort) {
+    case 'latest':
+        $args['orderby'] = 'date';
+        $args['order'] = 'DESC';
+        break;
+    case 'popular':
+        $args['orderby'] = 'meta_value_num';
+        $args['meta_key'] = 'post_views_count';
+        $args['order'] = 'DESC';
+        break;
+    case 'a_to_z':
+        $args['orderby'] = 'title';
+        $args['order'] = 'ASC';
+        break;
+    case 'z_to_a':
+        $args['orderby'] = 'title';
+        $args['order'] = 'DESC';
+        break;
+    case 'modified':
+    default:
+        $args['orderby'] = 'modified';
+        $args['order'] = 'DESC';
+        break;
+}
+
+// Filter Logic
+if (!empty($term_id)) {
+    $term = get_term($term_id);
+    if ($term && !is_wp_error($term)) {
+        $args['tax_query'] = array(
+            array(
+                'taxonomy' => $term->taxonomy,
+                'field'    => 'term_id',
+                'terms'    => $term_id,
+            ),
+        );
+    }
+}
 
 $recently_updated_query = new WP_Query($args);
 ?>
@@ -16,7 +64,7 @@ $recently_updated_query = new WP_Query($args);
 	<header class="flex items-center justify-between mb-6 relative">
         <div class="flex items-center gap-3">
             <h2 class="text-3xl font-bold tracking-tight drop-shadow-lg flex items-center space-x-2">
-                <span class="text-black dark:text-gray-200">Últimas actualizaciones</span>
+                <span class="text-black dark:text-gray-200"><?php echo esc_html(get_theme_mod('au_home_hero_title', 'Últimas actualizaciones')); ?></span>
             </h2>
         </div>
     </header>

@@ -7,7 +7,7 @@ function apkt_panel()
             <div class="at-panel-container">
                 <div class="at-panel-left">
                     <div class="at-panel-header">
-                        <h2>Panel <span class="at-panel-version">v2.5</span></h2>
+                        <h2>Panel <span class="at-panel-version" style="font-size: 0.75rem; opacity: 0.7;">v<?php echo APKT_THEME_VERSION; ?></span></h2>
                     </div>
                     <div class="at-panel-tabs">
                         <ul>

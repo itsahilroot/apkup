@@ -4,7 +4,7 @@ Theme URI: https://apktemplates.com/
 Author: APKTEMPLATES
 Author URI: https://apktemplates.com/
 Description: A custom wordpress theme for MOD apk site that helps you to create a MOD apk site. inbuilt lot of features such as apk updates checker, auto google play extractor etc
-Version: 2.0.0
+Version: 2.5.1
 Tags: apkup, apktemplates, blog-theme, customization, news-website, light-weight-theme
 Requires at least: 6.0
 Tested up to: 6.8.2
@@ -14,3 +14,55 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: apkup
 Domain Path: /languages
 */
+
+/* Skeleton Loading */
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-bg {
+    background: #e5e7eb;
+    background: linear-gradient(90deg, #e5e7eb, #f3f4f6, #e5e7eb);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.dark .skeleton-bg {
+    background: #374151;
+    background: linear-gradient(90deg, #374151, #4b5563, #374151);
+    background-size: 200% 100%;
+}
+
+/* Ensure images fade in over skeleton */
+.lazyload {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.lazyload.loaded {
+    opacity: 1;
+}
+
+/* Custom Scrollbar for Search Results */
+#ajax-search-results::-webkit-scrollbar {
+    width: 6px;
+}
+
+#ajax-search-results::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#ajax-search-results::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 20px;
+}
+
+.dark #ajax-search-results::-webkit-scrollbar-thumb {
+    background-color: rgba(75, 85, 99, 0.5);
+}

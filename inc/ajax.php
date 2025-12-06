@@ -52,3 +52,53 @@ function apkup_rate_post() {
 
 add_action('wp_ajax_apkup_rate_post', 'apkup_rate_post');
 add_action('wp_ajax_nopriv_apkup_rate_post', 'apkup_rate_post');
+
+// AJAX Search Handler
+function apkup_ajax_search() {
+    check_ajax_referer('apkup_nonce', 'nonce');
+
+    if (!get_theme_mod('au_ajax_search_swt', false)) {
+        wp_send_json_error(['message' => 'AJAX Search disabled']);
+    }
+
+    $query = sanitize_text_field($_GET['term']);
+    if (strlen($query) < 2) {
+        wp_send_json_success([]);
+    }
+
+    $args = [
+        's'              => $query,
+        'post_type'      => ['post'], // Limit to posts (apps/games)
+        'posts_per_page' => 5,
+        'post_status'    => 'publish',
+    ];
+
+    $search_query = new WP_Query($args);
+    $results = [];
+
+    if ($search_query->have_posts()) {
+        while ($search_query->have_posts()) {
+            $search_query->the_post();
+            
+            $post_id = get_the_ID();
+            $thumbnail = get_the_post_thumbnail_url($post_id, 'thumbnail');
+            if (!$thumbnail) {
+                 // Fallback or attempt to get from meta if your theme stores it there
+                $thumbnail = get_post_meta($post_id, 'wp_poster_GP', true);
+            }
+            // If still no thumbnail, you might want a default icon
+
+            $results[] = [
+                'title'     => get_the_title(),
+                'permalink' => get_permalink(),
+                'thumbnail' => $thumbnail,
+                'rating'    => number_format((float)(get_post_meta($post_id, 'new_rating_average', true) ?: 0), 1)
+            ];
+        }
+        wp_reset_postdata();
+    }
+
+    wp_send_json_success($results);
+}
+add_action('wp_ajax_apkup_ajax_search', 'apkup_ajax_search');
+add_action('wp_ajax_nopriv_apkup_ajax_search', 'apkup_ajax_search');

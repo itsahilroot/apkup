@@ -5,6 +5,7 @@ $au_header_logo_dark = get_theme_mod('au_header_logo_dark', get_template_directo
 $appyn_apikey = get_option('appyn_apikey', '');
 $au_games_menu_url = get_theme_mod('au_games_menu_url', '');
 $au_apps_menu_url = get_theme_mod('au_apps_menu_url', '');
+$au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 $au_head_code = get_theme_mod('au_head_code', '');
 ?>
 <div class="at-field-section active" data-section="general">
@@ -137,6 +138,22 @@ $au_head_code = get_theme_mod('au_head_code', '');
                         <textarea name="au_head_code" class="at-textarea" spellcheck="false"
                             rows="7"><?php echo esc_textarea(trim(stripslashes($au_head_code))); ?></textarea>
                     </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('AJAX Search', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Enable or disable live search suggestions.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <label class="at-switch-btn">
+                        <input type="checkbox" name="au_ajax_search_swt" id="au_ajax_search_swt" <?php checked($au_ajax_search_swt, true); ?> />
+                        <span class="at-switch"></span>
+                    </label>
                 </td>
             </tr>
         </tbody>

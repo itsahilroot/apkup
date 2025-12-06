@@ -1,15 +1,67 @@
 <?php
+$au_home_trending_swt = get_theme_mod('au_home_trending_swt', true);
+
+if (!$au_home_trending_swt) {
+    return;
+}
+
+$limit = get_theme_mod('au_home_trending_limit', 15);
+$sort = get_theme_mod('au_home_trending_sort', 'popular');
+$term_id = get_theme_mod('au_home_trending_term_id', '');
+$title = get_theme_mod('au_home_trending_title', 'Tendencias');
+
 $args = array(
     'post_type'           => 'post',
-    'posts_per_page'      => 15,
-    'meta_key'            => 'px_views',
-    'orderby'             => 'meta_value_num',
-    'order'               => 'DESC',
+    'posts_per_page'      => $limit,
     'ignore_sticky_posts' => true,
     'no_found_rows'       => true,
     'update_post_meta_cache' => false,
     'update_post_term_cache' => false,
 );
+
+// Sorting Logic
+switch ($sort) {
+    case 'latest':
+        $args['orderby'] = 'date';
+        $args['order'] = 'DESC';
+        break;
+    case 'popular':
+        $args['orderby'] = 'meta_value_num';
+        $args['meta_key'] = 'px_views';
+        $args['order'] = 'DESC';
+        break;
+    case 'a_to_z':
+        $args['orderby'] = 'title';
+        $args['order'] = 'ASC';
+        break;
+    case 'z_to_a':
+        $args['orderby'] = 'title';
+        $args['order'] = 'DESC';
+        break;
+    case 'modified':
+        $args['orderby'] = 'modified';
+        $args['order'] = 'DESC';
+        break;
+    default:
+        $args['orderby'] = 'meta_value_num';
+        $args['meta_key'] = 'px_views';
+        $args['order'] = 'DESC';
+        break;
+}
+
+// Filter Logic
+if (!empty($term_id)) {
+    $term = get_term($term_id);
+    if ($term && !is_wp_error($term)) {
+        $args['tax_query'] = array(
+            array(
+                'taxonomy' => $term->taxonomy,
+                'field'    => 'term_id',
+                'terms'    => $term_id,
+            ),
+        );
+    }
+}
 
 $trending_query = new WP_Query($args);
 ?>
@@ -17,7 +69,7 @@ $trending_query = new WP_Query($args);
     <header class="flex items-center justify-between mb-6 relative">
         <div class="flex items-center gap-3">
             <h2 class="text-3xl font-bold tracking-tight drop-shadow-lg flex items-center space-x-2">
-                <span class="text-black dark:text-gray-200">Tendencias</span>
+                <span class="text-black dark:text-gray-200"><?php echo esc_html($title); ?></span>
             </h2>
         </div>
     </header>

@@ -1,6 +1,11 @@
 <?php
 $au_home_hero_top_description = get_theme_mod('au_home_hero_top_description', 'GAMES & APPS FOR ANDROID - A LARGE SELECTION OF APPS FOR ANDROID DEVICES FREE AND WITH NO VIRUSES');
 
+$au_home_hero_swt = get_theme_mod('au_home_hero_swt', true);
+$au_home_hero_limit = get_theme_mod('au_home_hero_limit', 16);
+$au_home_hero_sort = get_theme_mod('au_home_hero_sort', 'modified');
+$au_home_hero_term_id = get_theme_mod('au_home_hero_term_id', '');
+
 $au_hero_title_1 = get_theme_mod('au_hero_title_1', 'Unlock');
 $au_hero_title_2 = get_theme_mod('au_hero_title_2', 'New Games');
 $au_hero_title_3 = get_theme_mod('au_hero_title_3', 'MOD APPS');
@@ -19,7 +24,11 @@ $au_hero_banner_img = get_theme_mod('au_hero_banner_img', get_template_directory
 $au_hero_banner_icon_1 = get_theme_mod('au_hero_banner_icon_1', get_template_directory_uri() . '/assets/img/icon1.png');
 $au_hero_banner_icon_2 = get_theme_mod('au_hero_banner_icon_2', get_template_directory_uri() . '/assets/img/icon2.png');
 
-$au_home_trending_swt = get_theme_mod('au_home_trending_swt', false);
+$au_home_trending_swt = get_theme_mod('au_home_trending_swt', true);
+$au_home_trending_title = get_theme_mod('au_home_trending_title', 'Tendencias');
+$au_home_trending_limit = get_theme_mod('au_home_trending_limit', 15);
+$au_home_trending_sort = get_theme_mod('au_home_trending_sort', 'popular');
+$au_home_trending_term_id = get_theme_mod('au_home_trending_term_id', '');
 $au_home_recommended_swt = get_theme_mod('au_home_recommended_swt', false);
 
 $au_home_recommended = get_theme_mod('au_home_recommended', []);
@@ -54,6 +63,59 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                     <div class="at-mb-2">
                         <p class="at-mini-title"><?php esc_html_e('Top Bar Text', 'apktemplates'); ?></p>
                         <input type="text" name="au_home_hero_top_description" class="at-text-ipt" value="<?php echo esc_attr($au_home_hero_top_description); ?>" placeholder="E.g. GAMES & APPS FOR ANDROID ..." />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('Hero Section Title', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Customize the title for the Hero / Recently Updated section.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Section Title', 'apktemplates'); ?></p>
+                        <input type="text" name="au_home_hero_title" class="at-text-ipt" value="<?php echo esc_attr(get_theme_mod('au_home_hero_title', 'Últimas actualizaciones')); ?>" placeholder="E.g. Latest Updates" />
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Enable Section', 'apktemplates'); ?></p>
+                        <label class="at-switch-btn">
+                            <input type="checkbox" name="au_home_hero_swt" value="1" <?php checked($au_home_hero_swt, 1); ?> />
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Posts Limit', 'apktemplates'); ?></p>
+                        <input type="number" name="au_home_hero_limit" class="at-number-ipt" min="1" max="50" value="<?php echo esc_attr($au_home_hero_limit); ?>" />
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Sort Order', 'apktemplates'); ?></p>
+                        <select class="at-select" name="au_home_hero_sort">
+                            <?php foreach ($posts_sortby as $key => $sort): ?>
+                                <option value="<?php echo esc_attr($key); ?>" <?php selected($au_home_hero_sort, $key); ?>>
+                                    <?php echo esc_html($sort); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Filter by Category/Tag', 'apktemplates'); ?></p>
+                        <div class="at-term-select-wrapper">
+                            <input type="search" class="at-search-ipt term-search" minlength="3" placeholder="<?php esc_attr_e('Enter at least 3 letters...', 'apktemplates'); ?>" />
+                            <div class="term-results" style="display: none"></div>
+                            <div class="term-results-selected">
+                                <?php if (!empty($au_home_hero_term_id) && apkt_is_category_or_tag($au_home_hero_term_id)): ?>
+                                    <div class="selected-term-item" data-term-id="<?php echo esc_attr($au_home_hero_term_id); ?>">
+                                        <?php echo esc_html(get_term_name_by_id($au_home_hero_term_id)); ?>
+                                        <span class="delete-term"><i class="fa fa-trash-alt"></i></span>
+                                        <input type="hidden" name="au_home_hero_term_id" value="<?php echo esc_attr($au_home_hero_term_id); ?>" />
+                                    </div>
+                                <?php else: ?>
+                                    <input type="hidden" name="au_home_hero_term_id" value="" />
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -149,6 +211,59 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
             </tr> -->
             <tr>
                 <td>
+                    <h3><?php esc_html_e('Trending Section', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Customize the Trending section.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Enable Section', 'apktemplates'); ?></p>
+                        <label class="at-switch-btn">
+                            <input type="checkbox" name="au_home_trending_swt" value="1" <?php checked($au_home_trending_swt, 1); ?> />
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Section Title', 'apktemplates'); ?></p>
+                        <input type="text" name="au_home_trending_title" class="at-text-ipt" value="<?php echo esc_attr($au_home_trending_title); ?>" placeholder="E.g. Trending" />
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Posts Limit', 'apktemplates'); ?></p>
+                        <input type="number" name="au_home_trending_limit" class="at-number-ipt" min="1" max="50" value="<?php echo esc_attr($au_home_trending_limit); ?>" />
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Sort Order', 'apktemplates'); ?></p>
+                        <select class="at-select" name="au_home_trending_sort">
+                            <?php foreach ($posts_sortby as $key => $sort): ?>
+                                <option value="<?php echo esc_attr($key); ?>" <?php selected($au_home_trending_sort, $key); ?>>
+                                    <?php echo esc_html($sort); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Filter by Category/Tag', 'apktemplates'); ?></p>
+                        <div class="at-term-select-wrapper">
+                            <input type="search" class="at-search-ipt term-search" minlength="3" placeholder="<?php esc_attr_e('Enter at least 3 letters...', 'apktemplates'); ?>" />
+                            <div class="term-results" style="display: none"></div>
+                            <div class="term-results-selected">
+                                <?php if (!empty($au_home_trending_term_id) && apkt_is_category_or_tag($au_home_trending_term_id)): ?>
+                                    <div class="selected-term-item" data-term-id="<?php echo esc_attr($au_home_trending_term_id); ?>">
+                                        <?php echo esc_html(get_term_name_by_id($au_home_trending_term_id)); ?>
+                                        <span class="delete-term"><i class="fa fa-trash-alt"></i></span>
+                                        <input type="hidden" name="au_home_trending_term_id" value="<?php echo esc_attr($au_home_trending_term_id); ?>" />
+                                    </div>
+                                <?php else: ?>
+                                    <input type="hidden" name="au_home_trending_term_id" value="" />
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <h3><?php esc_html_e('Recommended Posts', 'apktemplates'); ?></h3>
                     <div class="at-field-descr">
                         <?php esc_html_e('Customize home recommended posts.', 'apktemplates'); ?>
@@ -156,6 +271,10 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                 </td>
                 <td>
                     <div id="at-home-rc-field" class="at-mb-2 <?php echo !empty($au_home_recommended) ? 'active' : ''; ?>" <?php echo !empty($au_home_ep) ? 'style="display: block"' : 'style="display: none"'; ?>>
+                        <div class="at-mb-2">
+                            <p class="at-mini-title"><?php esc_html_e('Section Title', 'apktemplates'); ?></p>
+                            <input type="text" name="au_home_recommended_title" class="at-text-ipt" value="<?php echo esc_attr(get_theme_mod('au_home_recommended_title', 'Recommended')); ?>" />
+                        </div>
                         <?php foreach ($au_home_recommended as $index => $recommended): ?>
                             <div class="at-coll-container" data-index="<?php echo esc_attr($index); ?>">
                                 <div class="at-coll-header">
