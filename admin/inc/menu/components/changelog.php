@@ -14,6 +14,24 @@
             </tr>
             <tr>
                 <td>
+                    <h3>v2.5.2</h3>
+                    <span class="at-field-hint"><?php echo date('F j, Y'); ?></span>
+                </td>
+                <td>
+                    <ul style="list-style-type: disc; padding-left: 20px;">
+                         <li><strong>Added:</strong> Skeleton Loading effect (Shimmer) for images.</li>
+                         <li><strong>Added:</strong> AJAX Live Search with Admin Panel toggle.</li>
+                         <li><strong>Added:</strong> Custom Share Modal with social icons and copy link.</li>
+                         <li><strong>Added:</strong> Lazy Loading for Single Page (Featured Image & Screenshots).</li>
+                         <li><strong>Fixed:</strong> Mobile Icon Size issue on the single page.</li>
+                         <li><strong>Fixed:</strong> Mobile Offcanvas Menu opening issue.</li>
+                         <li><strong>Refined:</strong> Detailed Lazy Loading implementation with IntersectionObserver.</li>
+                         <li><strong>Updated:</strong> Admin Panel title now shows dynamic theme version.</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <h3>v2.5.1</h3>
                     <span class="at-field-hint"><?php echo date('F j, Y'); ?></span>
                 </td>

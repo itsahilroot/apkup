@@ -53,19 +53,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     //-- Share
-    let share_button = document.getElementById('post-share');
-    if (share_button) {
-        if (navigator.share) {
-            share_button.addEventListener('click', () => {
-                const canonicalLink = document.querySelector('link[rel=canonical]');
-                const url = canonicalLink ? canonicalLink.href : location.href;
-                navigator.share({
-                    title: document.title, text: document.title, url: url,
-                });
-            });
-        } else {
-            share_button.style.display = 'none';
+    //-- Custom Share Modal
+    //-- Custom Share Modal
+    const shareBtn = document.getElementById('post-share');
+    const shareModal = document.getElementById('share-modal');
+    const closeShareBtn = document.getElementById('close-share-modal');
+    const shareOverlay = document.getElementById('share-overlay');
+    const copyLinkBtn = document.getElementById('copy-link-btn');
+
+    if (shareBtn && shareModal) {
+        // Open Modal
+        shareBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Stop default anchor behavior or native share
+            shareModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+
+        // Close Modal
+        function closeShareModal() {
+            shareModal.classList.add('hidden');
+            document.body.style.overflow = '';
         }
+
+        if (closeShareBtn) {
+            closeShareBtn.addEventListener('click', closeShareModal);
+        }
+        if (shareOverlay) {
+            shareOverlay.addEventListener('click', closeShareModal);
+        }
+
+        // Copy Link
+        if (copyLinkBtn) {
+            copyLinkBtn.addEventListener('click', async () => {
+                const url = copyLinkBtn.getAttribute('data-url');
+                try {
+                    await navigator.clipboard.writeText(url);
+                    showToast('Link copied to clipboard!', 'success');
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                    showToast('Failed to copy link', 'error');
+                }
+            });
+        }
+    } else {
+        console.log('Share modal elements not found:', { shareBtn, shareModal });
     }
 
     // Mobile navigation functionality

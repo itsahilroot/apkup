@@ -14,8 +14,8 @@ if ($au_single_ss_swt && !empty($screenshots)) :
         <div class="carousel-container max-w-7xl mx-auto">
             <div id="lightgallery-container" class="my-4 w-full h-full relative z-[1] flex transition-transform box-content overflow-auto snap-x snap-mandatory">
                 <?php foreach ($limited_screenshots as $index => $url) : ?>
-                    <a href="<?php echo esc_url($url); ?>" data-src="<?php echo esc_url($url); ?>" class="flex justify-center items-center shrink-0 mr-4 mb-4 snap-center cursor-pointer">
-                        <img src="<?php echo esc_url($url); ?>" alt="Screenshot <?php echo $index + 1; ?>" loading="lazy" class="w-auto h-72 object-cover rounded-lg">
+                    <a href="<?php echo esc_url($url); ?>" data-src="<?php echo esc_url($url); ?>" class="flex justify-center items-center shrink-0 mr-4 mb-4 snap-center cursor-pointer skeleton-bg rounded-lg overflow-hidden">
+                        <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo esc_url($url); ?>" alt="Screenshot <?php echo $index + 1; ?>" class="w-auto h-72 object-cover rounded-lg lazyload">
                     </a>
                 <?php endforeach; ?>
             </div>
