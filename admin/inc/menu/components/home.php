@@ -41,6 +41,7 @@ $posts_sortby = [
     'z_to_a' => __('A to Z ↑', 'apktemplates')
 ];
 $au_home_categories = get_theme_mod('au_home_categories', []);
+$au_home_categories_swt = get_theme_mod('au_home_categories_swt', true);
 
 $au_home_blogs_swt = get_theme_mod('au_home_blogs_swt', false);
 $au_home_blogs_title = get_theme_mod('au_home_blogs_title', 'Blogs');
@@ -454,6 +455,22 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                     <button id="add-new-posts" type="button" class="add-button">
                         <?php esc_html_e('Add Posts', 'apktemplates'); ?>
                     </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('Categories Section', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Enable or disable the categories section on the home page.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-1">
+                        <label class="at-switch-btn">
+                            <input type="checkbox" name="au_home_categories_swt" value="1" <?php checked($au_home_categories_swt, 1); ?> />
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
                 </td>
             </tr>
             <tr>

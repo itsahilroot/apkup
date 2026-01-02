@@ -8,7 +8,9 @@ get_header(); ?>
     get_template_part('components/home/recommended');
     get_template_part('components/home/trending');
     get_template_part('components/home/term');
-    get_template_part('components/home/categories');
+    if (get_theme_mod('au_home_categories_swt', true)) {
+        get_template_part('components/home/categories');
+    }
     home_bottom_ad();
     get_template_part('components/home/blogs');
     get_template_part('components/home/footerinfo');

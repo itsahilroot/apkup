@@ -330,8 +330,8 @@ private function upload_banner_image()
     if (!$src_img) return;
 
     // Desired final size
-    $final_w = 312;
-    $final_h = 192;
+    $final_w = 624;
+    $final_h = 384;
 
     // --- Resize / Crop ---
     $dst_img = imagecreatetruecolor($final_w, $final_h);
