@@ -23,6 +23,11 @@ function home_bottom_ad($elem = 'section', $class = '')
 
 function single_top_ad($elem = 'section', $class = '')
 {
+    // Check if ads are disabled for this specific post
+    if (get_post_meta(get_the_ID(), '_apkup_disable_ads', true)) {
+        return;
+    }
+
     $is_single_top_ad = get_theme_mod('single_top_ads_swt', false);
     $single_top_ad_code = get_theme_mod("single_top_ads");
     if ($is_single_top_ad) {
@@ -34,6 +39,11 @@ function single_top_ad($elem = 'section', $class = '')
 
 function single_bottom_ad($elem = 'section', $class = '')
 {
+    // Check if ads are disabled for this specific post
+    if (get_post_meta(get_the_ID(), '_apkup_disable_ads', true)) {
+        return;
+    }
+
     $is_single_bottom_ad = get_theme_mod('single_botm_ads_swt', false);
     $single_bottom_ad_code = get_theme_mod("single_botm_ads");
     if ($is_single_bottom_ad) {

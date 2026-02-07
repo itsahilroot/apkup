@@ -14,6 +14,10 @@ add_action('appyn_send_apps', 'px_appyn_hook_send_apps');
 
 function px_appyn_hook_send_apps()
 {
+   px_check_for_updates();
+}
+
+function px_check_for_updates() {
     global $post;
 
     //if( apply_filters( 'px_appyn_filter_stop_send_apps', false ) ) return; 
@@ -45,16 +49,20 @@ function px_appyn_hook_send_apps()
 
             $re = '/(?<=[?&]id=)[^&]+/m';
             preg_match_all($re, $url, $matches, PREG_SET_ORDER, 0);
-            $app_id = $matches[0][0];
+            
+            if( isset($matches[0][0]) ) {
+                $app_id = $matches[0][0];
 
-            if (!in_array_r($app_id, $list_ids)) {
-                $list_ids[] = array(
-                    'id' => $app_id,
-                    'post_id' => $post->ID,
-                );
+                if (!in_array_r($app_id, $list_ids)) {
+                    $list_ids[] = array(
+                        'id' => $app_id,
+                        'post_id' => $post->ID,
+                    );
+                }
             }
 
         endwhile;
+        wp_reset_postdata();
 
         if (count($list_ids) > 0) {
             $result = apply_filters('remote_post_check_apps', $list_ids);
@@ -65,15 +73,30 @@ function px_appyn_hook_send_apps()
                 else
                     $e = $result;
 
-                if ($e['status'] == 'success') {
+                if (isset($e['status']) && $e['status'] == 'success') {
                     update_option('trans_updated_apps', $e['results']);
                     px_process_list_apps();
-                } elseif ($e['status'] == 'error') {
+                    return ['status' => 'success', 'count' => count($e['results'])];
+                } elseif (isset($e['status']) && $e['status'] == 'error') {
                     update_option('trans_updated_apps', $e['response']);
+                    return ['status' => 'error', 'message' => 'API Error'];
                 }
+            } else {
+                 return ['status' => 'error', 'message' => 'Empty result from remote'];
             }
         }
     endif;
+
+    return ['status' => 'success', 'message' => 'No posts to check or empty list'];
+}
+
+add_action('wp_ajax_px_check_updates_manual', 'px_check_updates_manual');
+function px_check_updates_manual() {
+    if( !current_user_can('manage_options') ) wp_send_json_error('No header');
+    
+    $result = px_check_for_updates();
+    
+    wp_send_json_success($result);
 }
 
 add_action('post_updated', 'px_process_apps_to_update', 10, 1);
@@ -220,7 +243,86 @@ function appyn_updated_apps()
         }
     </style>
     <div id="apps_to_update" class="table_list_apps wrap">
-        <h1><?php echo __('Apps to update', 'appyn'); ?></h1>
+        <h1><?php echo __('Apps to update', 'appyn'); ?> 
+            <button type="button" id="manual_update_check" class="button button-secondary" style="vertical-align: middle; margin-left: 10px;"><?php _e('Check for Updates', 'appyn'); ?></button>
+            <button type="button" id="manual_api_check" class="button button-secondary" style="vertical-align: middle; margin-left: 5px;"><?php _e('Check API Status', 'appyn'); ?></button>
+        </h1>
+        <div id="manual_update_status" style="margin: 10px 0;"></div>
+        <script>
+        jQuery(document).ready(function($) {
+            // Update Check
+            $('#manual_update_check').on('click', function() {
+                var btn = $(this);
+                var status = $('#manual_update_status');
+                btn.prop('disabled', true).text('Checking...');
+                status.html('<span class="spinner is-active" style="float:none; margin:0 5px 0 0;"></span> Checking for updates...');
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'px_check_updates_manual'
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            var msg = 'Check completed.';
+                            if(response.data && response.data.count !== undefined) {
+                                msg += ' Found ' + response.data.count + ' updates.';
+                            } else if (response.data && response.data.message) {
+                                msg += ' ' + response.data.message;
+                            }
+                            status.html('<div class="notice notice-success inline"><p>' + msg + ' Reloading...</p></div>');
+                            setTimeout(function(){ location.reload(); }, 2000);
+                        } else {
+                             status.html('<div class="notice notice-error inline"><p>Error: ' + (response.data || 'Unknown error') + '</p></div>');
+                        }
+                    },
+                    error: function() {
+                         status.html('<div class="notice notice-error inline"><p>Request failed.</p></div>');
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false).text('<?php _e('Check for Updates', 'appyn'); ?>');
+                    }
+                });
+            });
+
+            // API Check
+            $('#manual_api_check').on('click', function() {
+                var btn = $(this);
+                var status = $('#manual_update_status');
+                btn.prop('disabled', true).text('Checking API...');
+                status.html('<span class="spinner is-active" style="float:none; margin:0 5px 0 0;"></span> Connecting to API...');
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'px_check_api_status'
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            var debugData = response.data;
+                            var debugHtml = '<strong>Status Code:</strong> ' + debugData.status + '<br>';
+                            if (debugData.sent_website) debugHtml += '<strong>Sent Website:</strong> ' + debugData.sent_website + '<br>';
+                            if (debugData.sent_apikey) debugHtml += '<strong>Sent API Key:</strong> ' + debugData.sent_apikey + '<br>';
+                            debugHtml += '<strong>Body:</strong> <pre style="background:#f0f0f1; padding:10px; overflow:auto; max-height:200px;">' + 
+                                         (typeof debugData.body === 'string' ? debugData.body.replace(/</g, '&lt;') : JSON.stringify(debugData.body, null, 2)) + 
+                                         '</pre>';
+                            status.html('<div class="notice notice-info inline" style="display:block;"><p>' + debugHtml + '</p></div>');
+                        } else {
+                             status.html('<div class="notice notice-error inline"><p>API Check Failed: ' + (response.data || 'Unknown error') + '</p></div>');
+                        }
+                    },
+                    error: function() {
+                         status.html('<div class="notice notice-error inline"><p>Request failed (Network Error).</p></div>');
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false).text('<?php _e('Check API Status', 'appyn'); ?>');
+                    }
+                });
+            });
+        });
+        </script>
         <?php
         $apps_to_update = new List_Table_ATUL();
         $apps_to_update->prepare_items();
@@ -249,6 +351,10 @@ add_action('appyn_check_apikey', 'px_appyn_hook_check_apikey');
 
 function px_appyn_hook_check_apikey()
 {
+    px_check_apikey_debug();
+}
+
+function px_check_apikey_debug() {
     $url = API_URL . "/check/apikey";
 
     $response = wp_remote_post($url, array(
@@ -269,6 +375,31 @@ function px_appyn_hook_check_apikey()
 
     if (! is_wp_error($response)) {
         update_option('px_status_apikey', json_decode($response['body'], true));
+    }
+    
+    return $response;
+}
+
+add_action('wp_ajax_px_check_api_status', 'px_ajax_check_api_status');
+function px_ajax_check_api_status() {
+    if(!current_user_can('manage_options')) wp_send_json_error('Permission denied');
+    
+    $response = px_check_apikey_debug();
+    $apikey = get_option('appyn_apikey', '');
+    $website = get_site_url();
+    
+    if (is_wp_error($response)) {
+        wp_send_json_error('WP Error: ' . $response->get_error_message());
+    } else {
+        $body = wp_remote_retrieve_body($response);
+        $code = wp_remote_retrieve_response_code($response);
+        wp_send_json_success([
+            'status' => $code,
+            'body' => $body,
+            'sent_website' => $website,
+            'sent_apikey' => !empty($apikey) ? substr($apikey, 0, 5) . '...' . substr($apikey, -5) : '(empty)',
+            'raw' => $response
+        ]);
     }
 }
 

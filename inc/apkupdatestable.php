@@ -104,8 +104,8 @@ class List_Table_ATUL extends WP_List_Table {
 			case 'post_title':
 
 				$modtext = ( appyn_gpm( $item['post_id'], 'app_type' ) == 1 ) ? '<div><span class="modapp">MOD</span></div>' : '';
-
-				return '<div><span><img src="'.( ( has_post_thumbnail( $item['post_id']) ) ? get_the_post_thumbnail_url( $item['post_id'], 'miniatura' ) : px_noimage(true) ).'" width="50"></span> <a href="'.get_edit_post_link( $item['post_id'] ).'" target="_blank" title="'. __( 'Editar post', 'appyn' ) .'">'.$item[$column_name].'</a>'.$modtext.'<a href="https://play.google.com/store/apps/details?id='.$item['app_id'].'" target="_blank" title="'. __( 'Ver en Google Play', 'appyn' ) .'"><img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAQCAMAAAD+iNU2AAAAyVBMVEUAAAAAzf8A/i//2AAA/2L/Plj/MjMA4P8Ayf8AxP8A/yv/MTAA9EwA0v8A+ScA0v/+Q03/My3/1QD/0AD/0wD/3AAA/wD/CgMA/yn/MjMA/y7/MDAA/zf/JTH/1gAA/wD/CAP/0wAA/y7/MTEA/y0Azv8Ay/8A+EoAxf8A/wD/CwP/1gAA5/8A5f8A2v//Pkn/OkP/0QAAwf8A1/0A1fsA/yoA/0H/DTz/KTj/NzP/MzP/AA7/9wD/6QDx6QD02QD/ygD/xAD/swCt0I1nAAAAJXRSTlMA8f0t/v708fHx7OLe29rY1s7EurWtrKGShXZoWEpAKiMdFxAJTZezOAAAAItJREFUCNdNzlcWgyAQBdBJTO+990RMIIKY3qP7X5QoeGD+7jvToFlbglll5Aw2hjN75BxGO207DrIT7SS4VGapVXBtLFLLkR/vWMq2T3PfPyGkK42Ofj58c8L7wjHP3usefHpr0S+JH7e2Jfch9+ThZ3Wu7gkyXJiCqpJLGR7r/4uUDbeaUG+tDEEEzLgTqZH0pKcAAAAASUVORK5CYII=" alt="Google Play" style="height:10px;"></a></div>';
+                $title = isset($item[$column_name]) ? $item[$column_name] : __('(No Title)', 'appyn');
+				return '<div><span><img src="'.( ( has_post_thumbnail( $item['post_id']) ) ? get_the_post_thumbnail_url( $item['post_id'], 'miniatura' ) : px_noimage(true) ).'" width="50"></span> <a href="'.get_edit_post_link( $item['post_id'] ).'" target="_blank" title="'. __( 'Editar post', 'appyn' ) .'">'.$title.'</a>'.$modtext.'<a href="https://play.google.com/store/apps/details?id='.$item['app_id'].'" target="_blank" title="'. __( 'Ver en Google Play', 'appyn' ) .'"><img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAQCAMAAAD+iNU2AAAAyVBMVEUAAAAAzf8A/i//2AAA/2L/Plj/MjMA4P8Ayf8AxP8A/yv/MTAA9EwA0v8A+ScA0v/+Q03/My3/1QD/0AD/0wD/3AAA/wD/CgMA/yn/MjMA/y7/MDAA/zf/JTH/1gAA/wD/CAP/0wAA/y7/MTEA/y0Azv8Ay/8A+EoAxf8A/wD/CwP/1gAA5/8A5f8A2v//Pkn/OkP/0QAAwf8A1/0A1fsA/yoA/0H/DTz/KTj/NzP/MzP/AA7/9wD/6QDx6QD02QD/ygD/xAD/swCt0I1nAAAAJXRSTlMA8f0t/v708fHx7OLe29rY1s7EurWtrKGShXZoWEpAKiMdFxAJTZezOAAAAItJREFUCNdNzlcWgyAQBdBJTO+990RMIIKY3qP7X5QoeGD+7jvToFlbglll5Aw2hjN75BxGO207DrIT7SS4VGapVXBtLFLLkR/vWMq2T3PfPyGkK42Ofj58c8L7wjHP3usefHpr0S+JH7e2Jfch9+ThZ3Wu7gkyXJiCqpJLGR7r/4uUDbeaUG+tDEEEzLgTqZH0pKcAAAAASUVORK5CYII=" alt="Google Play" style="height:10px;"></a></div>';
 				break;
 			
 			case 'current_version':
@@ -115,7 +115,7 @@ class List_Table_ATUL extends WP_List_Table {
 				break;
 		
 			case 'version':
-				return $item[$column_name];
+				return isset($item[$column_name]) ? $item[$column_name] : '';
 				break;
 
             case 'updated_date':

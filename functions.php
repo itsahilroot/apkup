@@ -24,6 +24,7 @@ require $theme_dir . '/inc/filter.php';
 require $theme_dir . '/inc/inits.php';
 require $theme_dir . '/inc/pagination.php';
 require $theme_dir . '/inc/snippet.php';
+require $theme_dir . '/inc/metaboxes.php';
 
 require $theme_dir . '/inc/apkupdates.php';
 require $theme_dir . '/inc/apkupdatestable.php';
