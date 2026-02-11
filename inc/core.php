@@ -713,3 +713,23 @@ function apkup_footer_code() {
     }
 }
 add_action('wp_footer', 'apkup_footer_code');
+
+function apkup_check_hide_desktop() {
+    if (is_single()) {
+        $post_id = get_the_ID();
+        $hide_desktop = get_post_meta($post_id, '_apkup_hide_desktop', true);
+
+        if ($hide_desktop && !wp_is_mobile()) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header(404);
+            nocache_headers();
+            $template = get_query_template('404');
+            if ($template) {
+                include($template);
+            }
+            exit;
+        }
+    }
+}
+add_action('template_redirect', 'apkup_check_hide_desktop');
