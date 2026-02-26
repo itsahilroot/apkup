@@ -63,8 +63,8 @@ $recently_updated_query = new WP_Query($args);
 <section class="relative mb-12">
 	<header class="flex items-center justify-between mb-6 relative">
         <div class="flex items-center gap-3">
-            <h2 class="text-3xl font-bold tracking-tight drop-shadow-lg flex items-center space-x-2">
-                <span class="text-black dark:text-gray-200"><?php echo esc_html(get_theme_mod('au_home_hero_title', 'Últimas actualizaciones')); ?></span>
+            <h2 class="text-3xl font-normal tracking-tight flex items-center space-x-2">
+                <span class="text-gray-500 dark:text-gray-200"><?php echo esc_html(get_theme_mod('au_home_hero_title', 'Últimas actualizaciones')); ?></span>
             </h2>
         </div>
     </header>

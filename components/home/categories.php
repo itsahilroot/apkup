@@ -6,8 +6,8 @@ $categories = get_categories(array(
 <section class="relative mb-12">
     <header class="flex items-center justify-between mb-6 relative">
         <div class="flex items-center gap-3">
-            <h2 class="text-3xl font-bold tracking-tight drop-shadow-lg flex items-center space-x-2">
-                <span class="text-black dark:text-gray-200">Categorías</span>
+            <h2 class="text-3xl font-normal tracking-tight flex items-center space-x-2">
+                <span class="text-gray-500 dark:text-gray-200">Categorías</span>
             </h2>
         </div>
     </header>
