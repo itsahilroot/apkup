@@ -53,7 +53,7 @@ $apps_path   = parse_url($au_apps_menu_url, PHP_URL_PATH);
                 <div class="absolute top-0 right-0 h-full w-1/3 bg-cover bg-center opacity-70"
                     style="background-image: url('<?php echo get_template_directory_uri() . '/assets/img/telegram.webp'; ?>');">
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-r from-green-100/70 to-green-200/70"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-primary/20/70 to-green-200/70"></div>
                 <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between w-full">
                     <div>
                         <?php if (!empty($au_home_footer_tg_title)) : ?>
@@ -67,7 +67,7 @@ $apps_path   = parse_url($au_apps_menu_url, PHP_URL_PATH);
                     </div>
                     <?php if (!empty($au_home_footer_tg_url)) : ?>
                         <a href="<?php echo $au_home_footer_tg_url; ?>" target="_blank"
-                            class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary transition-colors">
                             Únete ahora
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -85,7 +85,7 @@ $apps_path   = parse_url($au_apps_menu_url, PHP_URL_PATH);
         <div class="footer-menu mt-4">
             <ul class="flex flex-wrap items-center gap-6 text-gray-600 border-b border-gray-300 py-4 dark:border-gray-600 dark:text-gray-400 my-2">
                 <?php foreach ($footer_menu_items as $f_menu) : ?>
-                    <li><a href="<?php echo $f_menu->url; ?>" class="hover:text-primary dark:text-white dark:hover:text-green-300"><?php echo $f_menu->title; ?></a></li>
+                    <li><a href="<?php echo $f_menu->url; ?>" class="hover:text-primary dark:text-white dark:hover:text-primary/40"><?php echo $f_menu->title; ?></a></li>
                 <?php endforeach; ?>
             </ul>
         </div>

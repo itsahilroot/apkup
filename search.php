@@ -19,7 +19,7 @@
                 ?>
             </div>
         <?php else : ?>
-            <div class="bg-green-50 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">
+            <div class="bg-primary/10 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">
                 <?php _e('No results found. Please try again with different keywords.', 'apktemplates'); ?>
             </div>
         <?php endif; ?>

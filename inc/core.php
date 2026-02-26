@@ -733,3 +733,35 @@ function apkup_check_hide_desktop() {
     }
 }
 add_action('template_redirect', 'apkup_check_hide_desktop');
+
+function apkup_dynamic_styles() {
+    $au_theme_color = get_theme_mod('au_theme_color', '#22c55e');
+    $au_font_family = get_theme_mod('au_font_family', 'Inter, sans-serif');
+    $au_base_font_size = get_theme_mod('au_base_font_size', '16px');
+    $au_heading_weight = get_theme_mod('au_heading_weight', '600');
+
+    echo "<style>
+        :root {
+            --app-primary: {$au_theme_color};
+        }
+        body {
+            font-family: {$au_font_family};
+            font-size: {$au_base_font_size};
+        }
+        h1, h2, h3, h4, h5, h6, .font-semibold, .font-bold {
+            font-weight: {$au_heading_weight} !important;
+        }
+        .text-primary { color: var(--app-primary) !important; }
+        .bg-primary { background-color: var(--app-primary) !important; }
+        .border-primary { border-color: var(--app-primary) !important; }
+        .hover\:text-primary:hover { color: var(--app-primary) !important; }
+        .hover\:bg-primary:hover { background-color: var(--app-primary) !important; }
+        .hover\:border-primary:hover { border-color: var(--app-primary) !important; }
+        .group:hover .group-hover\:text-primary { color: var(--app-primary) !important; }
+        .jq-ry-container .jq-ry-rated-group svg { fill: var(--app-primary) !important; }
+        .bg-primary\/10, .bg-green-50 { background-color: color-mix(in srgb, var(--app-primary) 10%, transparent) !important; }
+        .bg-primary\/20, .bg-green-100 { background-color: color-mix(in srgb, var(--app-primary) 20%, transparent) !important; }
+        .border-primary\/20, .border-green-200 { border-color: color-mix(in srgb, var(--app-primary) 20%, transparent) !important; }
+    </style>";
+}
+add_action('wp_head', 'apkup_dynamic_styles', 100);

@@ -27,7 +27,7 @@ $blog_url = get_permalink($blog_id);
             <?php echo esc_html($blog_views); ?>
         </span>
     </div>
-    <h2 class="font-semibold text-lg dark:text-gray-200 dark:hover:text-green-300 cursor-pointer leading-snug">
+    <h2 class="font-semibold text-lg dark:text-gray-200 dark:hover:text-primary/40 cursor-pointer leading-snug">
         <?php echo esc_html($blog_title); ?>
     </h2>
 </a>

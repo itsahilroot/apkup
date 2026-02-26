@@ -25,7 +25,7 @@ $app_whatsnew = $data['novedades'] ?? '';
             <div id="descriptionText" class="entry-content wp-block-styles text-gray-700 dark:text-gray-300 max-h-32 overflow-hidden">
                 <?php the_content(); ?>
             </div>
-            <button id="toggleDescriptionBtn" class="text-sm text-primary font-semibold cursor-pointer mt-2 dark:hover:text-green-300" aria-expanded="false">LEER MÁS</button>
+            <button id="toggleDescriptionBtn" class="text-sm text-primary font-semibold cursor-pointer mt-2 dark:hover:text-primary/40" aria-expanded="false">LEER MÁS</button>
         </div>
         <div id="helpContent" class="tab-content hidden opacity-0 transition-opacity duration-300">
             <?php if (!empty($au_single_help_guide_title)) : ?>
@@ -35,7 +35,7 @@ $app_whatsnew = $data['novedades'] ?? '';
                 <div class="space-y-3 text-gray-700 dark:text-gray-300">
                     <?php foreach ($au_single_help_guide as $index => $text) : ?>
                         <div class="flex items-start gap-3">
-                            <span class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium flex-shrink-0"><?php echo $index + 1; ?></span>
+                            <span class="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium flex-shrink-0"><?php echo $index + 1; ?></span>
                             <p><?php echo $text['text']; ?></p>
                         </div>
                     <?php endforeach; ?>

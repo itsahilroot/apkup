@@ -70,7 +70,7 @@ $primary_cat = apkup_get_primary_post_category($post_id);
             </div>
             <div class="app-buttons md:inline-block md:border md:border-gray-200 dark:md:border-gray-500 rounded-xl md:p-4 mx-auto md:mx-0 max-w-lg">
                 <div class="flex flex-col md:flex-row md:items-center gap-8">
-                    <a href="#download-links" class="bg-primary rounded-xl px-4 py-3 text-center text-md md:shrink-0 font-semibold text-white shadow-lg transition-all duration-300 hover:bg-primary dark:hover:bg-green-400 hover:shadow-xl hover:shadow-[rgba(0, 212, 14, 0.3)]">
+                    <a href="#download-links" class="bg-primary rounded-xl px-4 py-3 text-center text-md md:shrink-0 font-semibold text-white shadow-lg transition-all duration-300 hover:bg-primary dark:hover:bg-primary/80 hover:shadow-xl hover:shadow-[rgba(0, 212, 14, 0.3)]">
                         Descargar <?php if(!empty($app_size)) : ?><span class="text-xs text-white/80">(<?php echo $app_size; ?>)</span><?php endif; ?>
                     </a>
                     <div class="flex justify-center md:justify-start items-center gap-8">

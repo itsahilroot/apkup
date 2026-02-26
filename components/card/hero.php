@@ -42,7 +42,7 @@ if ($is_first) {
 }
 ?>
 
-<div class="carousel-cell mr-4 w-[85vw] sm:w-78 shrink-0 group">
+<div class="carousel-cell mr-4 w-[85vw] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] shrink-0 group">
     <div class="relative mb-4">
         <img
             class="<?php echo esc_attr($banner_class); ?>"
@@ -57,12 +57,7 @@ if ($is_first) {
             <?php endif; ?>
         >
 
-        <?php if (!empty($app_mod_info)) : ?>
-            <p class="absolute top-3 left-3 text-white text-sm font-bold px-2 rounded-full"
-               style="width:fit-content;background-color:#df1e1e;">
-                MOD
-            </p>
-        <?php endif; ?>
+
 
         <div class="absolute bottom-0 left-0 w-full p-3 rounded-b-xl bg-gradient-to-t from-black/70 via-black/30 to-transparent">
             <p class="text-white text-sm line-clamp-2 dark:text-gray-300">
@@ -83,22 +78,30 @@ if ($is_first) {
             >
         </div>
 
-        <div class="flex-1 min-w-0">
+        <div class="flex-1 min-w-0 flex flex-col justify-center">
             <span class="block font-bold text-gray-900 dark:text-white truncate group-hover:text-primary transition-colors text-base">
                 <?php echo esc_html($app_name); ?>
             </span>
 
-            <div class="flex items-center text-xs font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden mt-1">
-                <span class="mr-1 truncate"><?php echo esc_html($app_category); ?></span>
-                <span class="mr-1"> • <?php echo esc_html(number_format((float) $app_rating, 1)); ?></span>
-                <svg class="w-3 h-3 text-yellow-500" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
-                    <path d="M10 1.5l2.7 5.47 6.03.88-4.36 4.25 1.03 6.01L10 15.9 4.6 18.1l1.03-6.01L1.28 7.85l6.03-.88L10 1.5z"></path>
-                </svg>
+            <div class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                <?php echo esc_html($app_category); ?>
+            </div>
+
+            <div class="flex items-center text-xs font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden mt-1 gap-2">
+                <div class="flex items-center">
+                    <span class="mr-1"><?php echo esc_html(number_format((float) $app_rating, 1)); ?></span>
+                    <svg class="w-3 h-3 text-yellow-500" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+                        <path d="M10 1.5l2.7 5.47 6.03.88-4.36 4.25 1.03 6.01L10 15.9 4.6 18.1l1.03-6.01L1.28 7.85l6.03-.88L10 1.5z"></path>
+                    </svg>
+                </div>
+                <?php if (!empty($app_mod_info)) : ?>
+                    <span class="bg-red-500/10 text-red-600 dark:text-red-400 dark:bg-red-500/20 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider truncate"><?php echo esc_html($app_mod_info); ?></span>
+                <?php endif; ?>
             </div>
         </div>
 
         <a href="<?php echo esc_url($app_url); ?>"
-           class="flex-shrink-0 shadow-md bg-primary hover:bg-green-700 text-white px-8 py-2 rounded-2xl text-sm h-10 flex items-center relative">
+           class="flex-shrink-0 shadow-md bg-primary hover:bg-primary text-white px-8 py-2 rounded-2xl text-sm h-10 flex items-center relative">
             Instalar
         </a>
     </div>

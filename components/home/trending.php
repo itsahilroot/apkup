@@ -65,11 +65,14 @@ if (!empty($term_id)) {
 
 $trending_query = new WP_Query($args);
 ?>
-<section class="my-12">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white"><?php echo esc_html($title); ?></h2>
-            <?php 
+<section class="relative mb-12">
+    <header class="flex items-center justify-between mb-6 relative">
+        <div class="flex items-center gap-3">
+            <h2 class="text-3xl font-normal tracking-tight flex items-center space-x-2">
+                <span class="text-gray-500 dark:text-gray-200"><?php echo esc_html($title); ?></span>
+            </h2>
+        </div>
+        <?php 
             $view_all_link = '#';
             if (!empty($term_id)) {
                 $term = get_term((int)$term_id);
@@ -78,15 +81,15 @@ $trending_query = new WP_Query($args);
                 }
             } 
             ?>
-            <a href="<?php echo esc_url($view_all_link); ?>" class="group flex items-center text-primary hover:text-green-500 transition-colors rounded-full px-4 py-2 bg-white/70 dark:bg-gray-900/60 shadow-lg border border-green-200 dark:border-green-700">
+            <a href="<?php echo esc_url($view_all_link); ?>" class="group flex items-center text-primary hover:text-primary transition-colors rounded-full px-4 py-2 bg-white/70 dark:bg-gray-900/60 shadow-lg border border-primary/20 dark:border-primary">
                 <span class="mr-2 font-medium">View all</span>
                 <svg class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                 </svg>
             </a>
-        </div>
-        <?php if ($trending_query->have_posts()) : ?>
-            <div class="main-carousel flickity-enabled is-draggable focus:outline-none" data-flickity='{ "cellAlign": "left", "contain": true, "pageDots": false, "prevNextButtons": false, "freeScroll": true }' tabindex="0">
+    </header>
+    <?php if ($trending_query->have_posts()) : ?>
+        <div class="main-carousel focus:outline-none overflow-hidden" data-flickity='{ "cellAlign": "left", "contain": true, "pageDots": false, "prevNextButtons": false, "freeScroll": true }' tabindex="0">
                 <?php
                 $count = 0;
                 while ($trending_query->have_posts()) : $trending_query->the_post();
@@ -111,9 +114,8 @@ $trending_query = new WP_Query($args);
                 ?>
             </div>
         <?php else : ?>
-            <div class="bg-green-50 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">
+            <div class="bg-primary/10 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">
                 No Posts Found!
             </div>
         <?php endif; ?>
-    </div>
 </section>

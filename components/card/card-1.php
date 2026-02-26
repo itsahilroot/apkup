@@ -28,7 +28,7 @@ $blog_url = get_permalink($blog_id);
             <?php echo esc_html($blog_views); ?>
         </span>
     </div>
-    <h3 class="title mt-2 text-gray-600 dark:text-gray-200 dark:hover:text-white dark:hover:text-green-400 transition-colors line-clamp-1">
+    <h3 class="title mt-2 text-gray-600 dark:text-gray-200 dark:hover:text-white dark:hover:text-primary/80 transition-colors line-clamp-1">
         <?php echo esc_html($blog_title); ?>
     </h3>
 </a>

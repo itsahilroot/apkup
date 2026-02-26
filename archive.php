@@ -22,7 +22,7 @@
                         <?php foreach ($sub_cats as $sub_cat) :
                             if ($sub_cat->count > 0) : ?>
                                 <a href="<?php echo esc_url(get_category_link($sub_cat->term_id)); ?>"
-                                    class="category-btn bg-green-100 text-green-500 dark:bg-primary dark:text-white px-3 py-1 rounded-full text-sm font-medium">
+                                    class="category-btn bg-primary/20 text-primary dark:bg-primary dark:text-white px-3 py-1 rounded-full text-sm font-medium">
                                     <?php echo esc_html($sub_cat->name); ?>
                                 </a>
                         <?php endif;
@@ -120,7 +120,7 @@
                     ?>
                 </div>
             <?php else : ?>
-                <div class="bg-green-50 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">
+                <div class="bg-primary/10 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">
                     No Posts Found!
                 </div>
             <?php endif; ?>

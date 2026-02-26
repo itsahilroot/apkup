@@ -53,11 +53,11 @@
     <?php
     $args = [
         'fields' => [
-            'author' => '<input id="author" name="author" type="text" placeholder="Name" class="w-full p-2 border-2 border-gray-200 dark:border-gray-700 dark:focus:border-green-400 rounded-lg focus:outline-none focus:border-primary mb-3 text-md dark:text-gray-300" value="' . esc_attr($commenter['comment_author']) . '" required />',
-            'email'  => '<input id="email" name="email" type="email" placeholder="Email" class="w-full p-2 border-2 border-gray-200 dark:border-gray-700 dark:focus:border-green-400 rounded-lg focus:outline-none focus:border-primary mb-3 text-md dark:text-gray-300" value="' . esc_attr($commenter['comment_author_email']) . '" required />',
+            'author' => '<input id="author" name="author" type="text" placeholder="Name" class="w-full p-2 border-2 border-gray-200 dark:border-gray-700 dark:focus:border-primary/80 rounded-lg focus:outline-none focus:border-primary mb-3 text-md dark:text-gray-300" value="' . esc_attr($commenter['comment_author']) . '" required />',
+            'email'  => '<input id="email" name="email" type="email" placeholder="Email" class="w-full p-2 border-2 border-gray-200 dark:border-gray-700 dark:focus:border-primary/80 rounded-lg focus:outline-none focus:border-primary mb-3 text-md dark:text-gray-300" value="' . esc_attr($commenter['comment_author_email']) . '" required />',
         ],
         'comment_field' =>
-        '<textarea id="comment" name="comment" placeholder="Add a comment..." class="w-full p-3 border-2 border-gray-200 dark:border-gray-700 dark:focus:border-green-400 rounded-lg resize-none focus:outline-none focus:border-primary text-md mb-3 dark:text-gray-300" rows="3" required></textarea>',
+        '<textarea id="comment" name="comment" placeholder="Add a comment..." class="w-full p-3 border-2 border-gray-200 dark:border-gray-700 dark:focus:border-primary/80 rounded-lg resize-none focus:outline-none focus:border-primary text-md mb-3 dark:text-gray-300" rows="3" required></textarea>',
         'submit_button' =>
         '<button type="submit" class="cursor-pointer uppercase bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition">' . __('Post Comment', 'apktemplates') . '</button>',
         'title_reply' => __('Leave a Comment', 'apktemplates'),

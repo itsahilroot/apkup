@@ -21,7 +21,7 @@ if ($au_home_blogs_swt) : ?>
                 </h2>
             </div>
             <a href="<?php echo esc_url(get_site_url(null, '/blog')); ?>"
-                class="group flex items-center text-primary hover:text-green-500 transition-colors rounded-full px-4 py-2 bg-white/70 dark:bg-gray-900/60 shadow-lg border border-green-200 dark:border-green-700">
+                class="group flex items-center text-primary hover:text-primary transition-colors rounded-full px-4 py-2 bg-white/70 dark:bg-gray-900/60 shadow-lg border border-primary/20 dark:border-primary">
                 <span class="mr-2 font-medium">Ver todo</span>
                 <svg class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -39,7 +39,7 @@ if ($au_home_blogs_swt) : ?>
                 ?>
             </div>
         <?php else : ?>
-            <div class="bg-green-50 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">No Blogs Found!</div>
+            <div class="bg-primary/10 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">No Blogs Found!</div>
         <?php endif; ?>
     </section>
 <?php endif; ?>

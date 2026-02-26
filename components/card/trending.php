@@ -22,7 +22,7 @@ $app_url = get_the_permalink($post_id);
 // Generate diverse badge colors dynamically based on post ID
 $mod_colors = [
     'from-yellow-400 to-orange-500',
-    'from-emerald-400 to-green-600',
+    'from-emerald-400 to-primary',
     'from-blue-400 to-indigo-600',
     'from-purple-400 to-fuchsia-600',
     'from-red-400 to-rose-600',
@@ -39,7 +39,7 @@ $color_class = $mod_colors[$post_id % count($mod_colors)];
         <div class="skeleton absolute inset-0"></div>
     </a>
     <div class="min-w-0">
-        <a href="<?php echo esc_url($app_url); ?>" class="font-semibold block truncate group-hover:text-blue-600 transition-colors text-gray-900 dark:text-gray-100"><?php echo esc_html($app_name); ?></a>
+        <a href="<?php echo esc_url($app_url); ?>" class="font-semibold block truncate group-hover:text-primary dark:group-hover:text-primary transition-colors text-gray-900 dark:text-gray-100"><?php echo esc_html($app_name); ?></a>
         <div class="flex items-center gap-1 text-xs text-gray-500 mt-0.5 mb-1.5 flex-wrap">
             <span><?php echo esc_html($app_category); ?></span>
             <?php if (!empty($app_mod_info)) : ?>

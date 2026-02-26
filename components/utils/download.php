@@ -24,7 +24,7 @@ $download_id = absint($custom_download_id);
 get_header(); ?>
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-center my-10 px-4">
     <div class="mb-12">
-        <img src="<?php echo esc_url($app_logo_full); ?>" width="220" height="220" alt="<?php echo $app_name; ?>" class="rounded-3xl shadow-xl border-green-200 p-2 dark:border-green-500">
+        <img src="<?php echo esc_url($app_logo_full); ?>" width="220" height="220" alt="<?php echo $app_name; ?>" class="rounded-3xl shadow-xl border-primary/20 p-2 dark:border-primary">
     </div>
     <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200 my-2">
         Descargar <?php echo $app_name; ?>
@@ -36,7 +36,7 @@ get_header(); ?>
     <?php download_top_ad('div'); ?>
     <div id="progress-section" class="w-full max-w-md mb-12">
         <div class="relative h-12 rounded-full overflow-hidden border border-gray-200 bg-gray-100 dark:bg-gray-800 dark:border-gray-800" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-            <div id="progress-fill" class="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-600 dark:to-emerald-600 transition-[width] duration-200 ease-linear motion-reduce:transition-none" style="width: 0%;"></div>
+            <div id="progress-fill" class="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-primary to-emerald-500 dark:from-primary dark:to-emerald-600 transition-[width] duration-200 ease-linear motion-reduce:transition-none" style="width: 0%;"></div>
             <div class="pointer-events-none absolute inset-0 opacity-15 mix-blend-overlay bg-[repeating-linear-gradient(45deg,white,white_12px,transparent_12px,transparent_24px)] dark:bg-[repeating-linear-gradient(45deg,black,black_12px,transparent_12px,transparent_24px)]"></div>
             <div class="relative z-10 flex h-full items-center justify-center">
                 <span class="px-2 text-sm font-semibold tracking-wide text-gray-900 dark:text-gray-300 mix-blend-difference select-none">Preparando descarga… <span id="seconds-left">5</span>s</span>
@@ -96,10 +96,10 @@ endif;
             </h2>
             <div class="space-y-3">
                 <?php foreach ($au_download_faqs as $faq) : ?>
-                    <details class="group rounded-xl border border-gray-200 bg-white p-4 shadow-sm open:shadow-md open:border-green-300 dark:open:border-green-400 transition-all dark:bg-gray-900 dark:border-gray-800">
+                    <details class="group rounded-xl border border-gray-200 bg-white p-4 shadow-sm open:shadow-md open:border-primary/40 dark:open:border-primary/80 transition-all dark:bg-gray-900 dark:border-gray-800">
                         <summary class="flex cursor-pointer items-center justify-between gap-3 font-semibold">
                             <span class="text-gray-800 dark:text-gray-200"><?php echo $faq['question']; ?></span>
-                            <svg class="chev h-5 w-5 text-green-600 transition-transform dark:text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <svg class="chev h-5 w-5 text-primary transition-transform dark:text-primary/80" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
                             </svg>
                         </summary>

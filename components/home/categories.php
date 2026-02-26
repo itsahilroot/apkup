@@ -17,7 +17,7 @@ $categories = get_categories(array(
             $cat_name = $cat->name;
         ?>
             <a href="<?php echo esc_url($cat_link); ?>" class="group flex-shrink-0">
-                <div class="px-6 py-2.5 rounded-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:bg-primary dark:hover:bg-green-500 hover:border-transparent transition-all duration-300 shadow-sm hover:shadow-lg transform hover:-translate-y-1">
+                <div class="px-6 py-2.5 rounded-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:bg-primary dark:hover:bg-primary hover:border-transparent transition-all duration-300 shadow-sm hover:shadow-lg transform hover:-translate-y-1">
                     <h3 class="font-bold text-sm text-gray-800 dark:text-gray-200 group-hover:text-white transition-colors whitespace-nowrap">
                         <?php echo esc_html($cat_name); ?>
                     </h3>

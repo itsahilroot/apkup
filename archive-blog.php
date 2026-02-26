@@ -16,7 +16,7 @@
                 ?>
             </div>
         <?php else : ?>
-            <div class="bg-green-50 dark:bg-gray-800 text-black dark:text-gray-300 px-8 py-4 text-lg text-center">No Posts Found!</div>
+            <div class="bg-primary/10 dark:bg-gray-800 text-black dark:text-gray-300 px-8 py-4 text-lg text-center">No Posts Found!</div>
         <?php endif; ?>
     </section>
     <?php archive_bottom_ad(); ?>

@@ -5,7 +5,7 @@ $download_links = apkup_get_datos_download($post_id);
 $custom_boxes = get_post_meta($post_id, 'custom_boxes', true);
 $permanent_custom_boxes = get_option('permanent_custom_boxes');
 ?>
-<div id="download-links" class="dl-section bg-green-50 dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+<div id="download-links" class="dl-section bg-primary/10 dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
     <div class="dl-tab-container group" data-open="false">
         <div class="flex mb-8 justify-center lg:justify-start">
             <button class="dl-tab-toggle relative grid grid-cols-2 h-10 bg-[hsla(157,2%,25%,0.05)] dark:bg-gray-700 rounded-full p-1 cursor-pointer text-sm leading-5 shadow-inner outline-none">
@@ -48,7 +48,7 @@ if (!empty($links)) :
             <?php endif; ?>
 
             <a href="<?php echo esc_url($download_url); ?>"
-                   class="px-6 py-3 rounded-xl bg-green-500 text-white shadow hover:shadow-md hover:bg-green-700 transition-all flex items-center justify-center gap-2 mb-6">
+                   class="px-6 py-3 rounded-xl bg-primary text-white shadow hover:shadow-md hover:bg-primary transition-all flex items-center justify-center gap-2 mb-6">
                     <?php echo !empty($dl['texto']) ? esc_html($dl['texto']) : 'DOWNLOAD'; ?>
                     <?php if (!empty($dl['type'])) : ?>
                         <span class="ml-1 rounded bg-black/10 px-2 py-0.5 text-xs dark:bg-white/10">

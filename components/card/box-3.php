@@ -22,7 +22,7 @@ $is_app_mod = get_post_meta($post_id, 'app_type', true);
     <a href="<?php echo esc_url($app_url); ?>" class="flex flex-col after:content-[''] after:absolute after:inset-0 after:z-10">
         <div class="flex items-center flex-wrap gap-1 mb-2">
             <?php if($is_app_mod == '1') : ?>
-            <span class="tag px-2 py-1 bg-green-100 text-green-700 text-sm rounded-xl uppercase leading-4">MOD</span>
+            <span class="tag px-2 py-1 bg-primary/20 text-primary text-sm rounded-xl uppercase leading-4">MOD</span>
             <?php endif; ?>
             <span class="android px-2 py-1 text-gray-500 dark:text-gray-300 text-sm rounded leading-4">Android 6.0</span>
         </div>

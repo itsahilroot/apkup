@@ -20,7 +20,7 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
             <?php if (!empty($header_menus)) : ?>
                 <nav class="hidden md:flex space-x-8">
                     <?php foreach ($header_menus as $menu) : ?>
-                        <a href="<?php echo esc_url($menu->url); ?>" class="text-gray-700 dark:text-gray-200 dark:hover:text-green-300 hover:text-primary px-3 py-2 text-lg font-medium">
+                        <a href="<?php echo esc_url($menu->url); ?>" class="text-gray-700 dark:text-gray-200 dark:hover:text-primary/40 hover:text-primary px-3 py-2 text-lg font-medium">
                             <?php echo esc_html($menu->title); ?>
                         </a>
                     <?php endforeach; ?>

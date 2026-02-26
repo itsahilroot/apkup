@@ -53,7 +53,7 @@ get_header(); ?>
                                 'alt'   => get_the_title()
                             ]); ?>
                             <div class="flex flex-col">
-                                <span class="font-semibold line-clamp-2 hover:text-green-600 dark:text-gray-200 dark:hover:text-green-300"><?php the_title(); ?></span>
+                                <span class="font-semibold line-clamp-2 hover:text-primary dark:text-gray-200 dark:hover:text-primary/40"><?php the_title(); ?></span>
                                 <span class="text-sm mt-2 dark:text-gray-300">By <?php the_author(); ?></span>
                             </div>
                         </a>

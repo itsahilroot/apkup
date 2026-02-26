@@ -128,7 +128,7 @@ body :where(figure) {
 }
 
 .category-btn:hover {
-	background-color: #27b427 !important;
+	background-color: var(--app-primary) !important;
 	color: white !important;
 }
 
@@ -280,7 +280,7 @@ body :where(figure) {
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
-	background: #27b427;
+	background: var(--app-primary);
 	border-top-left-radius: 12px;
 	border-top-right-radius: 12px;
 }
@@ -327,7 +327,7 @@ body :where(figure) {
 }
 
 .nav-tab.active .nav-tab-icon {
-	color: #27b427;
+	color: var(--app-primary);
 }
 
 .nav-tab-text {
@@ -342,7 +342,7 @@ body :where(figure) {
 }
 
 .nav-tab.active .nav-tab-text {
-	color: #27b427;
+	color: var(--app-primary);
 }
 /* Offcanvas Styles */
 .offcanvas {
@@ -368,7 +368,7 @@ body :where(figure) {
 
 .offcanvas-header {
 	padding: 20px;
-	background: #27b427;
+	background: var(--app-primary);
 	color: white;
 	display: flex;
 	justify-content: space-between;
@@ -414,7 +414,7 @@ body :where(figure) {
 }
 
 .offcanvas-link:hover {
-	color: #27b427;
+	color: var(--app-primary);
 }
 
 .offcanvas-icon {
