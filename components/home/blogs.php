@@ -17,7 +17,7 @@ if ($au_home_blogs_swt) : ?>
         <header class="flex items-center justify-between mb-6 relative">
             <div class="flex items-center gap-3">
                 <h2 class="text-3xl font-normal tracking-tight flex items-center space-x-2">
-                    <span class="text-gray-500 dark:text-gray-200"><?php echo esc_html($au_home_blogs_title); ?></span>
+                    <span class="dark:text-gray-200"><?php echo esc_html($au_home_blogs_title); ?></span>
                 </h2>
             </div>
             <a href="<?php echo esc_url(get_site_url(null, '/blog')); ?>"

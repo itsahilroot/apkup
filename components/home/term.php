@@ -71,7 +71,7 @@ foreach ($au_home_posts as $index => $posts) :
         <header class="flex items-center justify-between mb-6 relative">
             <div class="flex items-center gap-3">
                 <h2 class="text-3xl font-normal tracking-tight flex items-center space-x-2">
-                    <span class="text-gray-500 dark:text-gray-200"><?php echo $section_title ?: 'Unknown'; ?></span>
+                    <span class="dark:text-gray-200"><?php echo $section_title ?: 'Unknown'; ?></span>
                 </h2>
             </div>
             <a href="<?php echo esc_url(get_category_link($term_id)); ?>" class="group flex items-center text-primary hover:text-primary transition-colors rounded-full px-4 py-2 bg-white/70 dark:bg-gray-900/60 shadow-lg border border-primary/20 dark:border-primary">

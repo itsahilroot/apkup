@@ -27,8 +27,8 @@ if ($price === 'gratis') {
 $primary_cat = apkup_get_primary_post_category($post_id);
 ?>
 <div class="app-info mb-10">
-    <div class="md:flex">
-        <div class="flex-1">
+    <div class="md:flex md:gap-8 lg:gap-12">
+        <div class="flex-1 min-w-0">
             <div class="text-title mb-7 text-center md:text-left">
                 <h1 class="title text-3xl md:text-5xl text-gray-700 dark:text-gray-200 font-semibold"><?php echo $app_name; ?></h1>
             </div>
@@ -36,59 +36,100 @@ $primary_cat = apkup_get_primary_post_category($post_id);
                 <img fetchpriority="high" class="lazyload rounded-2xl shadow-lg" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo $app_logo_full; ?>" width="220" height="220" alt="<?php echo $app_name; ?>">
             </div>
              
-            <div class="app-meta mb-7 flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] md:flex-wrap md:overflow-visible md:gap-4 whitespace-nowrap py-2">
-                <div class="app-meta-item flex flex-col pr-4 md:border-r md:border-gray-200 md:pr-8 text-sm md:text-base gap-2">
-                    <span class="text-gray-500 dark:text-gray-200">Actualizado</span>
-                    <span class="text-gray-800 dark:text-gray-300 font-medium"><?php echo $post_updated_date; ?></span>
-                </div>
-                <?php if(!empty($app_version)) : ?>
-                <div class="app-meta-item flex flex-col pr-4 md:border-r md:border-gray-200 md:pr-8 text-sm md:text-base gap-2">
-                    <span class="text-gray-500 dark:text-gray-200">Version</span>
-                    <span class="text-gray-800 dark:text-gray-300 font-medium"><?php echo $app_version; ?></span>
-                </div>
-                <?php endif; if(!empty($app_requires)) : ?>
-                <div class="app-meta-item flex flex-col pr-4 md:border-r md:border-gray-200 md:pr-8 text-sm md:text-base gap-2">
-                    <span class="text-gray-500 dark:text-gray-200">Requisitos</span>
-                    <span class="text-gray-800 dark:text-gray-300 font-medium">Android <?php echo apkup_extract_number($app_requires) ?: '8.0'; ?>+</span>
-                </div>
-                <?php endif; if ($primary_cat) : ?>
-                    <div class="app-meta-item flex flex-col pr-4 md:border-r md:border-gray-200 md:pr-8 text-sm md:text-base gap-2">
-                        <span class="text-gray-500 dark:text-gray-200">Género</span>
-                        <a href="<?php echo esc_url($primary_cat['url']); ?>" class="text-gray-800 dark:text-gray-300 font-medium"><?php echo esc_html($primary_cat['name']); ?></span></a>
-                    </div>
-                <?php endif; if(!empty($price)) : ?>
-                <div class="app-meta-item flex flex-col pr-4 text-sm <?php if(!empty($app_mod_info)) echo 'md:border-r md:border-gray-200 md:pr-8'; ?> md:text-base gap-2">
-                    <span class="text-gray-500 dark:text-gray-200">Price</span>
-                    <span class="text-gray-800 dark:text-gray-300 font-medium"><?php echo $price; ?></span>
-                </div>
-                <?php endif; if(!empty($app_mod_info)) : ?>
-                <div class="app-meta-item flex flex-col pr-4 text-sm md:text-base gap-2">
-                    <span class="text-gray-500 dark:text-gray-200">MOD Info</span>
-                    <span class="text-gray-800 dark:text-gray-300 font-medium"><?php echo $app_mod_info; ?></span>
-                </div>
-                <?php endif; ?>
-            </div>
-            <div class="app-buttons md:inline-block md:border md:border-gray-200 dark:md:border-gray-500 rounded-xl md:p-4 mx-auto md:mx-0 max-w-lg">
-                <div class="flex flex-col md:flex-row md:items-center gap-8">
-                    <a href="#download-links" class="bg-primary rounded-xl px-4 py-3 text-center text-md md:shrink-0 font-semibold text-white shadow-lg transition-all duration-300 hover:bg-primary dark:hover:bg-primary/80 hover:shadow-xl hover:shadow-[rgba(0, 212, 14, 0.3)]">
-                        Descargar <?php if(!empty($app_size)) : ?><span class="text-xs text-white/80">(<?php echo $app_size; ?>)</span><?php endif; ?>
+            <div class="app-buttons w-full md:max-w-2xl mx-auto md:mx-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-gray-200/70 dark:border-gray-700/60 rounded-3xl p-5 md:p-7 shadow-sm hover:shadow-lg transition-all duration-500">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <a href="#download-links" class="group flex items-center justify-center gap-3 bg-primary rounded-2xl px-10 py-4 text-center md:shrink-0 font-semibold text-white shadow-md transition-transform duration-300 hover:bg-primary/90 hover:-translate-y-1 md:min-w-[240px] w-full md:w-auto overflow-hidden relative">
+                        <!-- Shine effect -->
+                        <div class="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                        
+                        <svg class="w-6 h-6 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <div class="flex flex-col items-start leading-tight">
+                            <span class="text-[17px] tracking-wide relative z-10">Descargar APK</span>
+                            <?php if(!empty($app_size)) : ?><span class="text-[11px] text-white/90 font-normal relative z-10"><?php echo $app_size; ?></span><?php endif; ?>
+                        </div>
                     </a>
-                    <div class="flex justify-center md:justify-start items-center gap-8">
-                        <div class="flex flex-col items-center">
-                            <div id="rateYo" data-rateyo-rating="<?php echo esc_html(number_format((float)$new_rating_average, 1)); ?>" data-post_id="<?php the_ID(); ?>" style="padding: 0px; width: 170px;" class="jq-ry-container mb-1"></div>
-                            <div class="text-sm text-gray-500 dark:text-gray-300">
-                                <span id="currentRating"><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
-                                (<span id="totalVotes"><?php echo esc_html($new_rating_users); ?></span>)
+                    
+                    <div class="flex justify-between md:justify-start items-center gap-6 md:gap-8 w-full md:w-auto">
+                        <div class="flex flex-col items-center flex-1 md:flex-none bg-gray-50/50 dark:bg-gray-900/30 p-3 rounded-2xl border border-gray-100 dark:border-gray-700/50">
+                            <div id="rateYo" data-rateyo-rating="<?php echo esc_html(number_format((float)$new_rating_average, 1)); ?>" data-post_id="<?php the_ID(); ?>" style="padding: 0px; width: 110px;" class="jq-ry-container mb-1"></div>
+                            <div class="text-[13px] font-medium text-gray-500 dark:text-gray-400 flex items-baseline gap-1">
+                                <span id="currentRating" class="text-gray-900 dark:text-white font-bold text-[16px]"><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
+                                <span class="text-gray-400">/ 5</span> 
+                                <span class="text-[11px] opacity-70 ml-1">(<span id="totalVotes"><?php echo esc_html($new_rating_users); ?></span>)</span>
                             </div>
                         </div>
-                        <a href="javascript:void(0);" id="post-share" class="text-gray-400 hover:text-gray-600 flex flex-col items-center text-xs">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256">
+                        
+                        <div class="w-px h-12 bg-gray-200 dark:bg-gray-700 hidden md:block"></div>
+                        
+                        <a href="javascript:void(0);" id="post-share" class="group flex flex-col items-center gap-1.5 p-3 rounded-2xl text-gray-400 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-all bg-gray-50/50 dark:bg-gray-900/30 border border-gray-100 dark:border-gray-700/50 hover:border-primary/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256" class="transform group-hover:scale-110 transition-transform">
                                 <path d="M176,160a39.89,39.89,0,0,0-28.62,12.09l-46.1-29.63a39.8,39.8,0,0,0,0-28.92l46.1-29.63a40,40,0,1,0-8.66-13.45l-46.1,29.63a40,40,0,1,0,0,55.82l46.1,29.63A40,40,0,1,0,176,160Zm0-128a24,24,0,1,1-24,24A24,24,0,0,1,176,32ZM64,152a24,24,0,1,1,24-24A24,24,0,0,1,64,152Zm112,72a24,24,0,1,1,24-24A24,24,0,0,1,176,224Z"></path>
                             </svg>
-                            Share
+                            <span class="text-[10px] font-bold uppercase tracking-widest">Share</span>
                         </a>
                     </div>
                 </div>
+                
+                <div class="h-px bg-gray-200/80 dark:bg-gray-700/60 my-5"></div>
+                
+                <div class="flex flex-wrap items-center gap-y-3 gap-x-6">
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-gray-500 dark:text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Update</span>
+                            <span class="text-[13px] font-medium text-gray-800 dark:text-gray-200"><?php echo $post_updated_date; ?></span>
+                        </div>
+                    </div>
+                    
+                    <?php if(!empty($app_version)) : ?>
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-gray-500 dark:text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Version</span>
+                            <span class="text-[13px] font-medium text-gray-800 dark:text-gray-200"><?php echo $app_version; ?></span>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if($primary_cat) : ?>
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-gray-500 dark:text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Category</span>
+                            <a href="<?php echo esc_url($primary_cat['url']); ?>" class="text-[13px] font-medium text-primary hover:text-primary/80"><?php echo esc_html($primary_cat['name']); ?></a>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if(!empty($app_requires)) : ?>
+                    <div class="flex items-center gap-2">
+                        <div class="p-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-gray-500 dark:text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Requires</span>
+                            <span class="text-[13px] font-medium text-gray-800 dark:text-gray-200">Android <?php echo apkup_extract_number($app_requires) ?: '8.0'; ?>+</span>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                
+                <?php if(!empty($app_mod_info)) : ?>
+                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                    <div class="flex gap-2.5 items-center">
+                        <span class="flex items-center justify-center shrink-0 w-8 h-8 rounded-full bg-green-100/80 dark:bg-green-900/40 text-green-600 dark:text-green-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </span>
+                        <span class="text-[13px] font-medium text-gray-700 dark:text-gray-300"><?php echo esc_html($app_mod_info); ?></span>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
         <div class="app-icon hidden md:flex justify-center md:justify-end w-48 h-48">

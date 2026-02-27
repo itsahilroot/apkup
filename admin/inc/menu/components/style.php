@@ -1,8 +1,33 @@
 <?php
 $au_theme_color = get_theme_mod('au_theme_color', '#22c55e');
-$au_font_family = get_theme_mod('au_font_family', 'Inter, sans-serif');
+$au_font_family = get_theme_mod('au_font_family', 'Inter');
 $au_base_font_size = get_theme_mod('au_base_font_size', '16px');
+$au_base_font_weight = get_theme_mod('au_base_font_weight', '400');
+$au_heading_font_family = get_theme_mod('au_heading_font_family', 'Inter');
+$au_heading_size = get_theme_mod('au_heading_size', '1.875rem');
 $au_heading_weight = get_theme_mod('au_heading_weight', '600');
+
+$google_fonts = [
+    'Inter' => 'Inter',
+    'Roboto' => 'Roboto',
+    'Open Sans' => 'Open Sans',
+    'Lato' => 'Lato',
+    'Poppins' => 'Poppins',
+    'Montserrat' => 'Montserrat',
+    'Oswald' => 'Oswald',
+    'Raleway' => 'Raleway',
+    'Nunito' => 'Nunito',
+    'Playfair Display' => 'Playfair Display',
+    'Ubuntu' => 'Ubuntu',
+    'Merriweather' => 'Merriweather',
+    'Outfit' => 'Outfit',
+    'Quicksand' => 'Quicksand',
+    'Work Sans' => 'Work Sans',
+    'Fira Sans' => 'Fira Sans',
+    'Rubik' => 'Rubik',
+    'Karla' => 'Karla',
+    'Lora' => 'Lora',
+];
 ?>
 <div class="at-field-section" data-section="style">
     <div class="at-form-header">
@@ -28,22 +53,27 @@ $au_heading_weight = get_theme_mod('au_heading_weight', '600');
             <tr>
                 <td>
                     <h3>
-                        <?php esc_html_e('Font Family', 'apktemplates'); ?>
+                        <?php esc_html_e('Body Font Family', 'apktemplates'); ?>
                     </h3>
                     <div class="at-field-descr">
-                        <?php esc_html_e('Specify the primary font family for the site. (e.g. "Inter", sans-serif)', 'apktemplates'); ?>
+                        <?php esc_html_e('Select the primary body font from Google Fonts.', 'apktemplates'); ?>
                     </div>
                 </td>
                 <td>
                     <div>
-                        <input type="text" name="au_font_family" class="at-text-ipt" value="<?php echo esc_attr($au_font_family); ?>" />
+                        <select name="au_font_family" class="at-select">
+                            <option value="">System Default</option>
+                            <?php foreach ($google_fonts as $key => $font) : ?>
+                                <option value="<?php echo esc_attr($key); ?>" <?php selected($au_font_family, $key); ?>><?php echo esc_html($font); ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td>
                     <h3>
-                        <?php esc_html_e('Base Font Size', 'apktemplates'); ?>
+                        <?php esc_html_e('Base Body Font Size', 'apktemplates'); ?>
                     </h3>
                     <div class="at-field-descr">
                         <?php esc_html_e('Base font size for the body. (e.g. 16px, 1rem)', 'apktemplates'); ?>
@@ -52,6 +82,60 @@ $au_heading_weight = get_theme_mod('au_heading_weight', '600');
                 <td>
                     <div>
                         <input type="text" name="au_base_font_size" class="at-text-ipt" value="<?php echo esc_attr($au_base_font_size); ?>" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Base Body Font Weight', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Select the base font weight.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <select name="au_base_font_weight" class="at-select">
+                            <option value="300" <?php selected($au_base_font_weight, '300'); ?>>Light (300)</option>
+                            <option value="400" <?php selected($au_base_font_weight, '400'); ?>>Regular (400)</option>
+                            <option value="500" <?php selected($au_base_font_weight, '500'); ?>>Medium (500)</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Heading Font Family', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Select the font family for section headings.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <select name="au_heading_font_family" class="at-select">
+                            <option value="">System Default</option>
+                            <?php foreach ($google_fonts as $key => $font) : ?>
+                                <option value="<?php echo esc_attr($key); ?>" <?php selected($au_heading_font_family, $key); ?>><?php echo esc_html($font); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Heading Font Size', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Specify the font size applied to section headings. (e.g. 1.875rem, 30px)', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="text" name="au_heading_size" class="at-text-ipt" value="<?php echo esc_attr($au_heading_size); ?>" />
                     </div>
                 </td>
             </tr>

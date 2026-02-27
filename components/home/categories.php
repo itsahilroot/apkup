@@ -7,7 +7,7 @@ $categories = get_categories(array(
     <header class="flex items-center justify-between mb-6 relative">
         <div class="flex items-center gap-3">
             <h2 class="text-3xl font-normal tracking-tight flex items-center space-x-2">
-                <span class="text-gray-500 dark:text-gray-200">Categorías</span>
+                <span class="dark:text-gray-200">Categorías</span>
             </h2>
         </div>
     </header>
