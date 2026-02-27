@@ -88,9 +88,9 @@ if ($is_first) {
             </div>
 
             <div class="flex items-center text-xs font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden mt-1 gap-2">
-                <div class="flex items-center">
-                    <span class="mr-1"><?php echo esc_html(number_format((float) $app_rating, 1)); ?></span>
-                    <svg class="w-3 h-3 text-yellow-500" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+                <div class="flex items-center bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">
+                    <span class="mr-1 text-xs font-bold text-gray-700 dark:text-gray-300"><?php echo esc_html(number_format((float) $app_rating, 1)); ?></span>
+                    <svg class="w-3 h-3 text-primary" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
                         <path d="M10 1.5l2.7 5.47 6.03.88-4.36 4.25 1.03 6.01L10 15.9 4.6 18.1l1.03-6.01L1.28 7.85l6.03-.88L10 1.5z"></path>
                     </svg>
                 </div>

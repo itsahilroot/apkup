@@ -50,7 +50,7 @@ $color_class = $mod_colors[$post_id % count($mod_colors)];
         <div class="flex items-center gap-2 text-sm">
             <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 w-max px-2 py-0.5 rounded-full">
                 <span class="text-sm text-gray-600 font-normal dark:text-gray-300"><?php echo esc_html(number_format((float)$app_rating, 1)); ?></span>
-                <svg class="text-blue-600" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+                <svg class="text-primary" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
                     <path d="m6.87 14.33-1.83 6.4c-.12.4.03.84.37 1.08.34.25.8.26 1.14.02L12 18.2l5.45 3.63a.99.99 0 0 0 1.14-.02c.34-.25.49-.68.37-1.08l-1.83-6.4 4.54-4.08c.3-.27.41-.69.28-1.06-.13-.38-.47-.64-.87-.68l-5.7-.45-2.47-5.46a.998.998 0 0 0-1.82 0L8.62 8.06l-5.7.45c-.4.03-.74.3-.87.68s-.02.8.28 1 .99 .99 .99 .99z">
                     </path>
                 </svg>
