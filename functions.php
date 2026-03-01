@@ -73,6 +73,7 @@ function apkup_enqueue_scripts()
 {
     $theme_dir = get_template_directory_uri();
 
+    wp_enqueue_style('apkup-theme-style', get_stylesheet_uri(), [], APKT_THEME_VERSION, 'all');
     wp_enqueue_style('apkup-tailwind', $theme_dir . '/assets/css/input.css', [], APKT_THEME_VERSION, 'all');
     wp_enqueue_style('apkup-style', $theme_dir . '/assets/css/style.min.css', ['apkup-tailwind'], APKT_THEME_VERSION, 'all');
     wp_enqueue_style('apkup-fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], APKT_THEME_VERSION, 'all');

@@ -32,50 +32,38 @@ $apps_path   = parse_url($au_apps_menu_url, PHP_URL_PATH);
 <footer class="max-w-7xl mx-auto px-4">
     <div class="mb-8">
         <?php if ($au_home_footer_info_swt) : ?>
-            <div class="about border border-gray-200 dark:border-gray-600 rounded-3xl p-8">
+            <div class="info-card">
                 <?php if (!empty($au_home_footer_info_title)) : ?>
-                    <h2 class="title text-xl mb-4 dark:text-gray-200">
+                    <h2>
                         <?php echo $au_home_footer_info_title; ?>
                     </h2>
                 <?php endif;
                 if (!empty($au_home_footer_info_description)) : ?>
-                    <p id="desc" class="desc text-gray-400 dark:text-gray-300 line-clamp-3 transition-all duration-300">
+                    <p id="desc" class="line-clamp-3 transition-all duration-300">
                         <?php echo $au_home_footer_info_description; ?>
                     </p>
-                    <button id="toggleBtn" class="mt-3 text-primary hover:underline text-sm font-semibold focus:outline-none cursor-pointer">
+                    <button id="toggleBtn" class="leer-mas bg-transparent border-none cursor-pointer">
                         LEER MÁS
                     </button>
                 <?php endif; ?>
             </div>
         <?php endif;
         if ($au_home_footer_tg_swt) : ?>
-            <div class="telegram my-4 relative rounded-2xl p-8 flex items-center justify-between overflow-hidden">
-                <div class="absolute top-0 right-0 h-full w-1/3 bg-cover bg-center opacity-70"
-                    style="background-image: url('<?php echo get_template_directory_uri() . '/assets/img/telegram.webp'; ?>');">
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-r from-primary/20/70 to-green-200/70"></div>
-                <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between w-full">
-                    <div>
-                        <?php if (!empty($au_home_footer_tg_title)) : ?>
-                            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2"><?php echo $au_home_footer_tg_title; ?></h2>
-                        <?php endif;
-                        if (!empty($au_home_footer_tg_desc)) : ?>
-                            <p class="hidden lg:block text-gray-600 dark:text-gray-200 mb-4 lg:mb-0">
-                                <?php echo $au_home_footer_tg_desc; ?>
-                            </p>
-                        <?php endif; ?>
-                    </div>
-                    <?php if (!empty($au_home_footer_tg_url)) : ?>
-                        <a href="<?php echo $au_home_footer_tg_url; ?>" target="_blank"
-                            class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary transition-colors">
-                            Únete ahora
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </a>
+            <div class="telegram-banner mt-4 flex">
+                <div class="absolute top-0 right-0 h-full w-full md:w-2/3 bg-cover bg-right opacity-0 md:opacity-60 pointer-events-none transition-opacity duration-300 z-0" style="background-image: url('<?php echo get_template_directory_uri(); ?>/assets/img/telegram.webp'); mask-image: linear-gradient(to right, transparent 0%, black 50%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 50%); mix-blend-mode: multiply;"></div>
+                
+                <div class="relative z-10 flex flex-col md:items-start justify-center text-center md:text-left md:pr-4 md:flex-1 w-full">
+                    <h3><?php echo !empty($au_home_footer_tg_title) ? $au_home_footer_tg_title : 'Únete <span>a</span> nuestro Telegram'; ?></h3>
+                    <?php if (!empty($au_home_footer_tg_desc)) : ?>
+                        <p class="hidden md:block text-gray-700 dark:text-gray-200 text-sm font-bold opacity-80 max-w-md m-0">
+                            <?php echo $au_home_footer_tg_desc; ?>
+                        </p>
                     <?php endif; ?>
+                </div>
+                <div class="relative z-10 flex items-center justify-center shrink-0 mt-5 md:mt-0">
+                    <a href="<?php echo $au_home_footer_tg_url ?: 'https://t.me/apkgamingstore'; ?>" target="_blank" class="btn-join">
+                        Únete ahora &rarr;
+                    </a>
                 </div>
             </div>
         <?php endif; ?>
@@ -98,10 +86,9 @@ $apps_path   = parse_url($au_apps_menu_url, PHP_URL_PATH);
             <?php endif; ?>
         </div>
         <div class="right-footer">
-            <a href="#top" aria-label="Scroll to top" class="inline-flex items-center justify-center text-gray-400 hover:bg-gray-200 border-2 border-gray-300 dark:border-gray-600 rounded-full p-2 transition-colors">
-                <svg class="text-gray-700" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M213.66,165.66a8,8,0,0,1-11.32,0L128,91.31,53.66,165.66a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,165.66Z">
-                    </path>
+            <a href="#top" aria-label="Scroll to top" class="btn-icon !w-12 !h-12 flex items-center justify-center">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
                 </svg>
             </a>
         </div>
@@ -110,23 +97,23 @@ $apps_path   = parse_url($au_apps_menu_url, PHP_URL_PATH);
 <?php
 if ($mobile_menu_items) : ?>
     <div class="offcanvas" id="offcanvas">
-        <div class="offcanvas-header">
-            <h2 class="text-xl font-bold">Menu</h2>
-            <button class="offcanvas-close" id="closeMenu">
-                <i class="fas fa-times"></i>
+        <div class="offcanvas-header bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 p-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white">Menu</h2>
+            <button class="offcanvas-close w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-full shadow-sm text-gray-500 transition-colors" id="closeMenu">
+                <i class="fas fa-times text-lg"></i>
             </button>
         </div>
-        <div class="offcanvas-body">
-            <ul class="offcanvas-menu">
+        <div class="offcanvas-body p-4 bg-white dark:bg-gray-900 h-full">
+            <ul class="flex flex-col gap-2">
                 <?php foreach ($mobile_menu_items as $mb_menu) :
                     $icon_type = get_post_meta($mb_menu->ID, 'apkup_menu_icon_class', true);
+                    $icon_class = $icon_type ? esc_attr($icon_type) : 'fas fa-home';
                 ?>
-                    <li class="offcanvas-item">
-                        <a href="<?php echo esc_url($mb_menu->url); ?>" class="offcanvas-link">
-                            <?php
-                            $icon_class = $icon_type ? esc_attr($icon_type) : 'fas fa-home';
-                            ?>
-                            <i class="<?php echo $icon_class; ?> offcanvas-icon"></i>
+                    <li>
+                        <a href="<?php echo esc_url($mb_menu->url); ?>" class="flex items-center gap-4 p-3 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:shadow-sm hover:translate-x-1 transition-all duration-300 font-bold group">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50 dark:bg-gray-800 group-hover:bg-blue-100 dark:group-hover:bg-gray-700 transition-colors duration-300 shadow-sm">
+                                <i class="<?php echo $icon_class; ?> text-blue-500 dark:text-gray-400 group-hover:scale-110 transition-transform duration-300"></i>
+                            </span>
                             <?php echo esc_html($mb_menu->title); ?>
                         </a>
                     </li>
@@ -137,35 +124,41 @@ if ($mobile_menu_items) : ?>
 <?php endif; ?>
 <!-- Overlay -->
 <div class="overlay" id="overlay"></div>
-<!-- Mobile Navigation -->
-<nav class="mobile-nav" id="mobileNav">
-    <div class="nav-handle" id="navHandle">
-        <i class="fas fa-chevron-up nav-handle-icon"></i>
+<nav class="fixed bottom-0 left-0 w-full bg-white/30 dark:bg-[#1c1c1e]/30 backdrop-blur-2xl backdrop-saturate-[180%] border-t border-black/5 dark:border-white/10 z-50 md:hidden shadow-[0_-8px_30px_rgba(0,0,0,0.05)] transition-transform duration-300" id="mobileNav">
+    <!-- Restored Pull Handle -->
+    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-16 h-6 bg-white/30 dark:bg-[#1c1c1e]/30 backdrop-blur-2xl backdrop-saturate-[180%] rounded-t-xl border-t border-l border-r border-black/5 dark:border-white/10 flex items-center justify-center cursor-pointer shadow-[0_-4px_10px_rgba(0,0,0,0.02)] group" id="navHandle">
+        <i class="fas fa-chevron-up text-gray-400 group-hover:text-primary transition-colors text-xs nav-handle-icon"></i>
     </div>
-    <div class="nav-content">
-        <div class="nav-tabs">
-            <a href="<?php echo esc_url(home_url('/')); ?>"
-                class="nav-tab <?php echo is_front_page() ? 'active' : ''; ?>">
-                <i class="fas fa-home nav-tab-icon"></i>
-                <span class="nav-tab-text">Inicio</span>
-            </a>
+    <div class="flex justify-around items-center px-1 py-3 pb-safe">
+        <a href="<?php echo esc_url(home_url('/')); ?>"
+            class="flex flex-col items-center justify-center w-16 gap-1.5 group <?php echo is_front_page() ? 'text-primary' : 'text-gray-500 dark:text-gray-400'; ?> hover:text-primary transition-colors">
+            <span class="flex items-center justify-center w-10 h-10 rounded-full <?php echo is_front_page() ? 'bg-blue-50 dark:bg-gray-700 shadow-inner' : 'bg-transparent'; ?> group-hover:bg-blue-50 dark:group-hover:bg-gray-700 transition-all duration-300">
+                <i class="fas fa-home text-[1.1rem] group-hover:scale-110 transition-transform group-active:scale-95"></i>
+            </span>
+            <span class="text-[10px] font-bold tracking-wider">Inicio</span>
+        </a>
 
-            <a href="<?php echo esc_url($au_games_menu_url); ?>"
-                class="nav-tab <?php echo (strpos($current_url, $games_path) === 0) ? 'active' : ''; ?>">
-                <i class="fas fa-gamepad nav-tab-icon"></i>
-                <span class="nav-tab-text">Juegos</span>
-            </a>
+        <a href="<?php echo esc_url($au_games_menu_url); ?>"
+            class="flex flex-col items-center justify-center w-16 gap-1.5 group <?php echo (strpos($current_url, $games_path) === 0) ? 'text-primary' : 'text-gray-500 dark:text-gray-400'; ?> hover:text-primary transition-colors">
+            <span class="flex items-center justify-center w-10 h-10 rounded-full <?php echo (strpos($current_url, $games_path) === 0) ? 'bg-blue-50 dark:bg-gray-700 shadow-inner' : 'bg-transparent'; ?> group-hover:bg-blue-50 dark:group-hover:bg-gray-700 transition-all duration-300">
+                <i class="fas fa-gamepad text-[1.1rem] group-hover:scale-110 transition-transform group-active:scale-95"></i>
+            </span>
+            <span class="text-[10px] font-bold tracking-wider">Juegos</span>
+        </a>
 
-            <a href="<?php echo esc_url($au_apps_menu_url); ?>"
-                class="nav-tab <?php echo (strpos($current_url, $apps_path) === 0) ? 'active' : ''; ?>">
-                <i class="fas fa-th nav-tab-icon"></i>
-                <span class="nav-tab-text">Apps</span>
-            </a>
+        <a href="<?php echo esc_url($au_apps_menu_url); ?>"
+            class="flex flex-col items-center justify-center w-16 gap-1.5 group <?php echo (strpos($current_url, $apps_path) === 0) ? 'text-primary' : 'text-gray-500 dark:text-gray-400'; ?> hover:text-primary transition-colors">
+            <span class="flex items-center justify-center w-10 h-10 rounded-full <?php echo (strpos($current_url, $apps_path) === 0) ? 'bg-blue-50 dark:bg-gray-700 shadow-inner' : 'bg-transparent'; ?> group-hover:bg-blue-50 dark:group-hover:bg-gray-700 transition-all duration-300">
+                <i class="fa-solid fa-layer-group text-[1.1rem] group-hover:scale-110 transition-transform group-active:scale-95"></i>
+            </span>
+            <span class="text-[10px] font-bold tracking-wider">Apps</span>
+        </a>
 
-            <button class="nav-tab" id="openMenu">
-                <i class="fas fa-bars nav-tab-icon"></i>
-                <span class="nav-tab-text">Menu</span>
-            </button>
-        </div>
+        <button id="openMenu" class="flex flex-col items-center justify-center w-16 gap-1.5 group text-gray-500 dark:text-gray-400 hover:text-primary transition-colors outline-none cursor-pointer">
+            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-transparent group-hover:bg-blue-50 dark:group-hover:bg-gray-700 transition-all duration-300">
+                <i class="fas fa-bars text-[1.1rem] group-hover:scale-110 transition-transform group-active:scale-95"></i>
+            </span>
+            <span class="text-[10px] font-bold tracking-wider">Menu</span>
+        </button>
     </div>
 </nav>

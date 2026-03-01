@@ -48,7 +48,7 @@ if (!empty($links)) :
             <?php endif; ?>
 
             <a href="<?php echo esc_url($download_url); ?>"
-                   class="px-6 py-3 rounded-xl bg-primary text-white shadow hover:shadow-md hover:bg-primary transition-all flex items-center justify-center gap-2 mb-6">
+                   class="btn-primary-action mb-6 w-full md:w-[70%] lg:w-1/2 mx-auto">
                     <?php echo !empty($dl['texto']) ? esc_html($dl['texto']) : 'DOWNLOAD'; ?>
                     <?php if (!empty($dl['type'])) : ?>
                         <span class="ml-1 rounded bg-black/10 px-2 py-0.5 text-xs dark:bg-white/10">

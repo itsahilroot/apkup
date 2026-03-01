@@ -35,18 +35,19 @@ get_header(); ?>
     </div>
     <?php download_top_ad('div'); ?>
     <div id="progress-section" class="w-full max-w-md mb-12">
-        <div class="relative h-12 rounded-full overflow-hidden border border-gray-200 bg-gray-100 dark:bg-gray-800 dark:border-gray-800" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-            <div id="progress-fill" class="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-primary to-emerald-500 dark:from-primary dark:to-emerald-600 transition-[width] duration-200 ease-linear motion-reduce:transition-none" style="width: 0%;"></div>
-            <div class="pointer-events-none absolute inset-0 opacity-15 mix-blend-overlay bg-[repeating-linear-gradient(45deg,white,white_12px,transparent_12px,transparent_24px)] dark:bg-[repeating-linear-gradient(45deg,black,black_12px,transparent_12px,transparent_24px)]"></div>
-            <div class="relative z-10 flex h-full items-center justify-center">
-                <span class="px-2 text-sm font-semibold tracking-wide text-gray-900 dark:text-gray-300 mix-blend-difference select-none">Preparando descarga… <span id="seconds-left">5</span>s</span>
+        <div class="progress-container-premium w-full" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+            <div id="progress-fill" class="progress-fill-premium" style="width: 0%;"></div>
+            <div class="relative z-10 flex h-full items-center justify-center pointer-events-none drop-shadow-md">
+                <span class="px-4 py-1.5 rounded-full bg-black/20 dark:bg-black/40 text-sm md:text-base font-black tracking-wide text-white select-none backdrop-blur-md border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
+                    Preparando descarga… <span id="seconds-left">5</span>s
+                </span>
             </div>
         </div>
         <p class="mt-2 text-center text-sm text-gray-500 dark:text-gray-300">
             Tus enlaces aparecerán cuando la barra se complete.
         </p>
     </div>
-    <div id="button-group" class="hidden flex-col w-full max-w-md space-y-4 mb-12">
+    <div id="button-group" class="hidden flex-col w-full max-w-md gap-4 mb-12">
         <?php
         $links = [];
 if (!empty($download_links['links_options'])) {
@@ -65,28 +66,36 @@ if (!empty($links)) :
             // Priority: link_original > link
             $download_url = !empty($download['link_original']) ? $download['link_original'] : $download['link'];
             if (!empty($download_url)) : ?>
-                <a href="<?php echo esc_url($download_url); ?>" target="_blank" class="block bg-primary rounded-xl shadow-sm p-4 mb-6">
-                <div class="flex justify-center items-center justify-between text-white">
-                    <span id="downloadBtn" class="bg-black/10 dark:bg-white/10 px-6 py-2 rounded-lg font-medium transition-colors uppercase">
-                        Descargar <?php echo !empty($dl['type']) ? esc_html($dl['type']) : 'APK'; ?>
-                    </span>
-                </div>
-            </a>
+                <a href="<?php echo esc_url($download_url); ?>" target="_blank" class="btn-download">
+                    <span id="downloadBtn">Descargar <?php echo !empty($dl['type']) ? esc_html($dl['type']) : 'APK'; ?></span>
+                </a>
             <?php endif;
         endif;
     endforeach;
 endif;
 ?>
 		<?php if (!empty($au_home_footer_tg_url)) : ?>
-		<a href="<?php echo esc_url($au_home_footer_tg_url); ?>" class="block rounded-xl shadow-sm p-4 mb-6" style="background-color: #24A1DE">
-			<div class="flex justify-center items-center justify-between text-white">
-				<span class="bg-black/10 dark:bg-white/10 px-6 py-2 rounded-lg font-medium transition-colors uppercase">
-					Join Telegram
-				</span>
-			</div>
-		</a>
+		<a href="<?php echo esc_url($au_home_footer_tg_url); ?>" target="_blank" class="btn-telegram">
+            <span>Únete a Telegram</span>
+        </a>
 		<?php endif; ?>
-        <a href="<?php echo get_site_url(); ?>" class="px-6 py-3 rounded-xl bg-gray-200 text-gray-900 shadow hover:shadow-md hover:bg-gray-300 transition-all flex items-center justify-center gap-2 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700">Back to Home</a>
+        <a href="<?php echo get_site_url(); ?>"
+           class="relative flex items-center justify-center w-full
+                  py-4 rounded-full overflow-hidden
+                  font-bold text-lg uppercase tracking-wide
+                  text-gray-900
+                  bg-[linear-gradient(to_bottom,#f3f4f6_0%,#e5e7eb_50%,#d1d5db_100%)]
+                  shadow-[0_6px_0_#9ca3af]
+                  active:translate-y-[2px]
+                  active:shadow-[0_3px_0_#9ca3af]
+                  transition-all duration-150">
+
+            <span class="absolute top-0 left-0 w-full h-1/2
+                         bg-gradient-to-b from-white/60 to-transparent
+                         rounded-full pointer-events-none"></span>
+
+            <span class="relative z-10">Back to Home</span>
+        </a>
     </div>
     <?php download_bottom_ad('div'); ?>
     <?php if (!empty($au_download_faqs)) : ?>

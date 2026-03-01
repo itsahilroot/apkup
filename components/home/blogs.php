@@ -20,9 +20,9 @@ if ($au_home_blogs_swt) : ?>
                     <span class="dark:text-gray-200"><?php echo esc_html($au_home_blogs_title); ?></span>
                 </h2>
             </div>
-            <a href="<?php echo esc_url(get_site_url(null, '/blog')); ?>"
-                class="group flex items-center text-primary hover:text-primary transition-colors rounded-full px-4 py-2 bg-white/70 dark:bg-gray-900/60 shadow-lg border border-primary/20 dark:border-primary">
-                <span class="mr-2 font-medium">Ver todo</span>
+            <a href="<?php echo esc_url(get_permalink(get_option('page_for_posts'))); ?>" 
+                class="btn-primary-action group">
+                <span class="font-bold">View all</span>
                 <svg class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                 </svg>

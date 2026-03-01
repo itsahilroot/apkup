@@ -38,11 +38,8 @@ $primary_cat = apkup_get_primary_post_category($post_id);
              
             <div class="app-buttons w-full md:max-w-2xl mx-auto md:mx-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-gray-200/70 dark:border-gray-700/60 rounded-3xl p-5 md:p-7 shadow-sm hover:shadow-lg transition-all duration-500">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <a href="#download-links" class="group flex items-center justify-center gap-3 bg-primary rounded-2xl px-10 py-4 text-center md:shrink-0 font-semibold text-white shadow-md transition-transform duration-300 hover:bg-primary/90 hover:-translate-y-1 md:min-w-[240px] w-full md:w-auto overflow-hidden relative">
-                        <!-- Shine effect -->
-                        <div class="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                        
-                        <svg class="w-6 h-6 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <a href="#download-links" class="btn-download !w-full md:!w-auto !px-10 !py-4 md:!min-w-[240px]">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         <div class="flex flex-col items-start leading-tight">
                             <span class="text-[17px] tracking-wide relative z-10">Descargar APK</span>
                             <?php if(!empty($app_size)) : ?><span class="text-[11px] text-white/90 font-normal relative z-10"><?php echo $app_size; ?></span><?php endif; ?>
