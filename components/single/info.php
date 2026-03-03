@@ -36,9 +36,27 @@ $primary_cat = apkup_get_primary_post_category($post_id);
                 <img fetchpriority="high" class="lazyload rounded-2xl shadow-lg" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo $app_logo_full; ?>" width="220" height="220" alt="<?php echo $app_name; ?>">
             </div>
              
+            <!-- Top tag row (Fecha + Android version) -->
+            <div class="tag-row w-full md:max-w-2xl mx-auto md:mx-0">
+                <div class="tags">
+                    <div class="tag">
+                        Fecha
+                    </div>
+                    <div class="tag green">
+                        <span style="font-size: 1.1em; line-height: 1;">⬆</span> Android <?php echo apkup_extract_number($app_requires) ?: '8.0'; ?>+
+                    </div>
+                </div>
+                <div class="dots-grid pl-2">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
             <div class="app-buttons w-full md:max-w-2xl mx-auto md:mx-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-gray-200/70 dark:border-gray-700/60 rounded-3xl p-5 md:p-7 shadow-sm hover:shadow-lg transition-all duration-500">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <a href="#download-links" class="btn-download !w-full md:!w-auto !px-10 !py-4 md:!min-w-[240px]">
+                    <a href="#download-links" class="btn-download !w-full md:!w-auto !px-8 !py-3 md:!min-w-[240px]">
                         <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         <div class="flex flex-col items-start leading-tight">
                             <span class="text-[17px] tracking-wide relative z-10">Descargar APK</span>

@@ -29,9 +29,21 @@ get_header(); ?>
     <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200 my-2">
         Descargar <?php echo $app_name; ?>
     </h1>
-    <div class="meta my-2 text-gray-600 dark:text-gray-300 space-x-4 mb-12">
-        <span class="version">v<?php echo $app_version; ?></span>
-        <span class="android">Android <?php echo apkup_extract_number($app_requires) ?: '8.0'; ?>+</span>
+    <div class="tag-row w-full max-w-md mb-8">
+        <div class="tags">
+            <div class="tag">
+                v<?php echo $app_version; ?>
+            </div>
+            <div class="tag green">
+                <span style="font-size: 1.1em; line-height: 1;">⬆</span> Android <?php echo apkup_extract_number($app_requires) ?: '8.0'; ?>+
+            </div>
+        </div>
+        <div class="dots-grid pl-2">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
     </div>
     <?php download_top_ad('div'); ?>
     <div id="progress-section" class="w-full max-w-md mb-12">
@@ -67,6 +79,11 @@ if (!empty($links)) :
             $download_url = !empty($download['link_original']) ? $download['link_original'] : $download['link'];
             if (!empty($download_url)) : ?>
                 <a href="<?php echo esc_url($download_url); ?>" target="_blank" class="btn-download">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 3v12"/>
+                        <path d="M7.5 10.5 12 15l4.5-4.5"/>
+                        <path d="M3 15v3a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-3"/>
+                    </svg>
                     <span id="downloadBtn">Descargar <?php echo !empty($dl['type']) ? esc_html($dl['type']) : 'APK'; ?></span>
                 </a>
             <?php endif;
@@ -76,25 +93,17 @@ endif;
 ?>
 		<?php if (!empty($au_home_footer_tg_url)) : ?>
 		<a href="<?php echo esc_url($au_home_footer_tg_url); ?>" target="_blank" class="btn-telegram">
+            <svg viewBox="0 0 24 24" fill="#2196F3">
+                <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+            </svg>
             <span>Únete a Telegram</span>
         </a>
 		<?php endif; ?>
-        <a href="<?php echo get_site_url(); ?>"
-           class="relative flex items-center justify-center w-full
-                  py-4 rounded-full overflow-hidden
-                  font-bold text-lg uppercase tracking-wide
-                  text-gray-900
-                  bg-[linear-gradient(to_bottom,#f3f4f6_0%,#e5e7eb_50%,#d1d5db_100%)]
-                  shadow-[0_6px_0_#9ca3af]
-                  active:translate-y-[2px]
-                  active:shadow-[0_3px_0_#9ca3af]
-                  transition-all duration-150">
-
-            <span class="absolute top-0 left-0 w-full h-1/2
-                         bg-gradient-to-b from-white/60 to-transparent
-                         rounded-full pointer-events-none"></span>
-
-            <span class="relative z-10">Back to Home</span>
+        <a href="<?php echo get_site_url(); ?>" class="btn-back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path d="m6 12 6 5v-4h6v-2h-6V7z"></path>
+            </svg>
+            <span>BACK TO HOME</span>
         </a>
     </div>
     <?php download_bottom_ad('div'); ?>

@@ -135,10 +135,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // --- Toggle nav with handle ---
-    navHandle.addEventListener('click', function () {
-        mobileNav.classList.toggle('collapsed');
-        isManuallyExpanded = !mobileNav.classList.contains('collapsed');
-    });
+    if (navHandle) {
+        navHandle.addEventListener('click', function () {
+            mobileNav.classList.toggle('collapsed');
+            isManuallyExpanded = !mobileNav.classList.contains('collapsed');
+        });
+    }
 
     // Close modal when clicking outside
     const searchModal = document.getElementById('search-modal'); // Assuming searchModal is defined elsewhere or needs to be defined here

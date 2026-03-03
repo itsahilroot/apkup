@@ -124,41 +124,41 @@ if ($mobile_menu_items) : ?>
 <?php endif; ?>
 <!-- Overlay -->
 <div class="overlay" id="overlay"></div>
-<nav class="fixed bottom-0 left-0 w-full bg-white/30 dark:bg-[#1c1c1e]/30 backdrop-blur-2xl backdrop-saturate-[180%] border-t border-black/5 dark:border-white/10 z-50 md:hidden shadow-[0_-8px_30px_rgba(0,0,0,0.05)] transition-transform duration-300" id="mobileNav">
-    <!-- Restored Pull Handle -->
-    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-16 h-6 bg-white/30 dark:bg-[#1c1c1e]/30 backdrop-blur-2xl backdrop-saturate-[180%] rounded-t-xl border-t border-l border-r border-black/5 dark:border-white/10 flex items-center justify-center cursor-pointer shadow-[0_-4px_10px_rgba(0,0,0,0.02)] group" id="navHandle">
-        <i class="fas fa-chevron-up text-gray-400 group-hover:text-primary transition-colors text-xs nav-handle-icon"></i>
-    </div>
-    <div class="flex justify-around items-center px-1 py-3 pb-safe">
-        <a href="<?php echo esc_url(home_url('/')); ?>"
-            class="flex flex-col items-center justify-center w-16 gap-1.5 group <?php echo is_front_page() ? 'text-primary' : 'text-gray-500 dark:text-gray-400'; ?> hover:text-primary transition-colors">
-            <span class="flex items-center justify-center w-10 h-10 rounded-full <?php echo is_front_page() ? 'bg-blue-50 dark:bg-gray-700 shadow-inner' : 'bg-transparent'; ?> group-hover:bg-blue-50 dark:group-hover:bg-gray-700 transition-all duration-300">
-                <i class="fas fa-home text-[1.1rem] group-hover:scale-110 transition-transform group-active:scale-95"></i>
-            </span>
-            <span class="text-[10px] font-bold tracking-wider">Inicio</span>
+<div class="bottom-nav-wrap md:hidden" id="mobileNav">
+    <nav class="bottom-nav">
+        <!-- Inicio -->
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="nav-item <?php echo is_front_page() ? 'active' : ''; ?>">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Inicio</span>
         </a>
 
-        <a href="<?php echo esc_url($au_games_menu_url); ?>"
-            class="flex flex-col items-center justify-center w-16 gap-1.5 group <?php echo (strpos($current_url, $games_path) === 0) ? 'text-primary' : 'text-gray-500 dark:text-gray-400'; ?> hover:text-primary transition-colors">
-            <span class="flex items-center justify-center w-10 h-10 rounded-full <?php echo (strpos($current_url, $games_path) === 0) ? 'bg-blue-50 dark:bg-gray-700 shadow-inner' : 'bg-transparent'; ?> group-hover:bg-blue-50 dark:group-hover:bg-gray-700 transition-all duration-300">
-                <i class="fas fa-gamepad text-[1.1rem] group-hover:scale-110 transition-transform group-active:scale-95"></i>
-            </span>
-            <span class="text-[10px] font-bold tracking-wider">Juegos</span>
+        <!-- Juegos -->
+        <a href="<?php echo esc_url($au_games_menu_url); ?>" class="nav-item <?php echo (strpos($current_url, $games_path) === 0) ? 'active' : ''; ?>">
+            <svg class="juegos-icon" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="2 2 20 20">
+                <path d="M15 5H9c-3.85 0-6.99 3.13-7 6.99v.04C2.01 15.88 5.15 19 9 19h6c3.85 0 6.99-3.13 7-6.97V12c-.01-3.87-3.15-7-7-7m-3 8h-2v2H8v-2H6v-2h2V9h2v2h2zm3 1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1m2-2c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1"></path>
+            </svg>
+            <span>Juegos</span>
         </a>
 
-        <a href="<?php echo esc_url($au_apps_menu_url); ?>"
-            class="flex flex-col items-center justify-center w-16 gap-1.5 group <?php echo (strpos($current_url, $apps_path) === 0) ? 'text-primary' : 'text-gray-500 dark:text-gray-400'; ?> hover:text-primary transition-colors">
-            <span class="flex items-center justify-center w-10 h-10 rounded-full <?php echo (strpos($current_url, $apps_path) === 0) ? 'bg-blue-50 dark:bg-gray-700 shadow-inner' : 'bg-transparent'; ?> group-hover:bg-blue-50 dark:group-hover:bg-gray-700 transition-all duration-300">
-                <i class="fa-solid fa-layer-group text-[1.1rem] group-hover:scale-110 transition-transform group-active:scale-95"></i>
-            </span>
-            <span class="text-[10px] font-bold tracking-wider">Apps</span>
+        <!-- Apps -->
+        <a href="<?php echo esc_url($au_apps_menu_url); ?>" class="nav-item apps-custom <?php echo (strpos($current_url, $apps_path) === 0) ? 'active' : ''; ?>">
+            <svg viewBox="0 0 36 36" fill="none" width="28" height="28">
+                <rect x="5" y="5" width="12" height="12" rx="2.5" fill="#22C55E" />
+                <rect x="19" y="5" width="12" height="12" rx="2.5" fill="#22C55E" fill-opacity="0.8" />
+                <rect x="5" y="19" width="12" height="12" rx="2.5" fill="#22C55E" fill-opacity="0.7" />
+                <rect x="19" y="19" width="12" height="12" rx="2.5" fill="#22C55E" fill-opacity="0.5" />
+            </svg>
+            <span>Apps</span>
         </a>
 
-        <button id="openMenu" class="flex flex-col items-center justify-center w-16 gap-1.5 group text-gray-500 dark:text-gray-400 hover:text-primary transition-colors outline-none cursor-pointer">
-            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-transparent group-hover:bg-blue-50 dark:group-hover:bg-gray-700 transition-all duration-300">
-                <i class="fas fa-bars text-[1.1rem] group-hover:scale-110 transition-transform group-active:scale-95"></i>
-            </span>
-            <span class="text-[10px] font-bold tracking-wider">Menu</span>
+        <!-- Menú -->
+        <button id="openMenu" class="nav-item border-none outline-none cursor-pointer bg-transparent">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+            <span>Menú</span>
         </button>
-    </div>
-</nav>
+    </nav>
+</div>
