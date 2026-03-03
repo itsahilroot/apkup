@@ -124,41 +124,190 @@ if ($mobile_menu_items) : ?>
 <?php endif; ?>
 <!-- Overlay -->
 <div class="overlay" id="overlay"></div>
-<div class="fixed bottom-6 left-0 right-0 z-50 md:hidden flex justify-center px-4 transition-transform duration-500 ease-in-out" id="mobileNav">
-    <nav class="flex items-center justify-between w-full max-w-sm bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-none border border-primary/20 dark:border-gray-600/50 rounded-full px-6 py-2">
-        <!-- Inicio -->
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="flex flex-col items-center justify-center gap-1 transition-colors <?php echo is_front_page() ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary'; ?>">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span class="text-[10px] font-semibold leading-none">Inicio</span>
-        </a>
+<style>
+/* ══════════════════════════════
+    MOBILE NAV GLASS BAR
+══════════════════════════════ */
+.mobile-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 998;
+}
 
-        <!-- Juegos -->
-        <a href="<?php echo esc_url($au_games_menu_url); ?>" class="flex flex-col items-center justify-center gap-1 transition-colors <?php echo (strpos($current_url, $games_path) === 0) ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary'; ?>">
-            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="2 2 20 20">
-                <path d="M15 5H9c-3.85 0-6.99 3.13-7 6.99v.04C2.01 15.88 5.15 19 9 19h6c3.85 0 6.99-3.13 7-6.97V12c-.01-3.87-3.15-7-7-7m-3 8h-2v2H8v-2H6v-2h2V9h2v2h2zm3 1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1m2-2c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1"></path>
-            </svg>
-            <span class="text-[10px] font-semibold leading-none">Juegos</span>
-        </a>
+/* handle pill */
+.nav-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0 2px;
+  cursor: pointer;
+  background: transparent;
+  width: 100%;
+}
+.nav-handle-pill {
+  width: 36px; height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.7);
+}
+.dark .nav-handle-pill {
+  background: rgba(255,255,255,0.25);
+}
 
-        <!-- Apps -->
-        <a href="<?php echo esc_url($au_apps_menu_url); ?>" class="flex flex-col items-center justify-center gap-1 transition-colors <?php echo (strpos($current_url, $apps_path) === 0) ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary'; ?>">
-            <svg viewBox="0 0 36 36" fill="none" class="w-6 h-6">
-                <rect x="5" y="5" width="12" height="12" rx="2.5" fill="currentColor" />
-                <rect x="19" y="5" width="12" height="12" rx="2.5" fill="currentColor" fill-opacity="0.8" />
-                <rect x="5" y="19" width="12" height="12" rx="2.5" fill="currentColor" fill-opacity="0.7" />
-                <rect x="19" y="19" width="12" height="12" rx="2.5" fill="currentColor" fill-opacity="0.5" />
-            </svg>
-            <span class="text-[10px] font-semibold leading-none">Apps</span>
-        </a>
+/* glass bar */
+.nav-content {
+  padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 8px);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: saturate(200%) blur(30px);
+  -webkit-backdrop-filter: saturate(200%) blur(30px);
+  border-top: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 -1px 0 rgba(0,0,0,0.06), 0 -20px 60px rgba(0,0,0,0.1);
+  border-radius: 0;
+}
+.dark .nav-content {
+  background: rgba(15, 15, 26, 0.65);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 -1px 0 rgba(255,255,255,0.06), 0 -20px 60px rgba(0,0,0,0.35);
+}
 
-        <!-- Menú -->
-        <button id="openMenu" class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors bg-transparent border-none outline-none cursor-pointer">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-            </svg>
-            <span class="text-[10px] font-semibold leading-none">Menú</span>
-        </button>
-    </nav>
-</div>
+.nav-tabs {
+  display: flex !important;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 4px;
+}
+
+.nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: none;
+  background: transparent;
+  color: rgba(0,0,0,0.45);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s, transform 0.15s;
+  min-width: 56px;
+  flex: 1;
+  position: relative;
+}
+.dark .nav-tab { color: rgba(255,255,255,0.45); }
+
+.nav-tab:hover {
+  background: rgba(0,0,0,0.06);
+  color: rgba(0,0,0,0.75);
+}
+.dark .nav-tab:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.75);
+}
+.nav-tab:active { transform: scale(0.92); }
+
+.nav-tab.active { color: #000; }
+.dark .nav-tab.active { color: #fff; }
+
+/* active glow pill behind icon */
+.nav-tab.active::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  background: rgba(0, 122, 255, 0.15);
+  box-shadow: 0 0 14px rgba(0,122,255,0.4);
+  z-index: 0;
+}
+.dark .nav-tab.active::before { background: rgba(0, 122, 255, 0.25); }
+
+.nav-tab-icon {
+  font-size: 20px;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+}
+.nav-tab.active .nav-tab-icon { transform: scale(1.15); }
+
+.nav-tab-text {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  position: relative;
+  z-index: 1;
+  transition: opacity 0.2s;
+}
+
+/* active tab label — iOS SF style */
+.nav-tab.active .nav-tab-text {
+  color: #007aff;
+  text-shadow: 0 0 12px rgba(0,122,255,0.3);
+}
+.dark .nav-tab.active .nav-tab-text {
+  text-shadow: 0 0 12px rgba(0,122,255,0.6);
+}
+.nav-tab.active .nav-tab-icon { color: #007aff; }
+
+/* bounce on click */
+@keyframes tabBounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(0.85); }
+  70%  { transform: scale(1.2); }
+  100% { transform: scale(1.1); }
+}
+.nav-tab.active .nav-tab-icon { animation: tabBounce 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+/* notification badge */
+.nav-badge {
+  position: absolute;
+  top: 3px;
+  right: calc(50% - 22px);
+  background: #ff375f;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 1.5px solid rgba(255,255,255,0.8);
+  z-index: 2;
+}
+.dark .nav-badge { border: 1.5px solid rgba(15,15,26,0.8); }
+</style>
+
+<nav class="mobile-nav block md:hidden" id="mobileNav">
+    <div class="nav-handle" id="navHandle">
+        <div class="nav-handle-pill"></div>
+    </div>
+    <div class="nav-content">
+        <div class="nav-tabs">
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="nav-tab <?php echo is_front_page() ? 'active' : ''; ?>">
+                <i class="fas fa-home nav-tab-icon"></i>
+                <span class="nav-tab-text">Inicio</span>
+            </a>
+
+            <a href="<?php echo esc_url($au_games_menu_url); ?>" class="nav-tab <?php echo (strpos($current_url, $games_path) === 0) ? 'active' : ''; ?>">
+                <span class="nav-badge">3</span>
+                <i class="fas fa-gamepad nav-tab-icon"></i>
+                <span class="nav-tab-text">Juegos</span>
+            </a>
+
+            <a href="<?php echo esc_url($au_apps_menu_url); ?>" class="nav-tab <?php echo (strpos($current_url, $apps_path) === 0) ? 'active' : ''; ?>">
+                <i class="fa-solid fa-layer-group nav-tab-icon"></i>
+                <span class="nav-tab-text">Apps</span>
+            </a>
+
+            <button class="nav-tab" id="openMenu">
+                <i class="fas fa-bars nav-tab-icon"></i>
+                <span class="nav-tab-text">Menú</span>
+            </button>
+        </div>
+    </div>
+</nav>
