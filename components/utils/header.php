@@ -32,13 +32,13 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
                     <?php endforeach; ?>
                 </nav>
             <?php endif; ?>
-            <div class="flex items-center space-x-4">
-                <button type="button" id="searchButton" class="btn-icon" aria-label="Open search">
+            <div class="flex items-center space-x-3">
+                <button type="button" id="searchButton" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100/60 hover:bg-primary/10 dark:bg-gray-700/60 dark:hover:bg-primary/20 text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-all duration-300 backdrop-blur-md shadow-sm border border-gray-200/50 dark:border-gray-600/50 focus:outline-none hover:cursor-pointer" aria-label="Open search">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </button>
-                <button type="button" id="darkModeToggle" class="btn-icon btn-icon-green relative overflow-hidden" aria-label="Toggle dark mode">
+                <button type="button" id="darkModeToggle" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100/60 hover:bg-primary/10 dark:bg-gray-700/60 dark:hover:bg-primary/20 text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-all duration-300 backdrop-blur-md shadow-sm border border-gray-200/50 dark:border-gray-600/50 relative overflow-hidden focus:outline-none hover:cursor-pointer" aria-label="Toggle dark mode">
                     <svg id="moonIcon" class="h-5 w-5 absolute transition-all duration-300 transform scale-100 rotate-0 opacity-100" fill="currentColor" stroke="none" viewBox="0 0 24 24">
                         <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
@@ -109,15 +109,11 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
             moonIcon.classList.remove('scale-100', 'rotate-0', 'opacity-100');
             sunIcon.classList.remove('scale-0', 'rotate-90', 'opacity-0');
             sunIcon.classList.add('scale-100', 'rotate-0', 'opacity-100');
-            darkModeToggle.classList.remove('btn-icon-green');
-            darkModeToggle.classList.add('btn-icon-yellow');
         } else {
             sunIcon.classList.add('scale-0', 'rotate-90', 'opacity-0');
             sunIcon.classList.remove('scale-100', 'rotate-0', 'opacity-100');
             moonIcon.classList.remove('scale-0', '-rotate-90', 'opacity-0');
             moonIcon.classList.add('scale-100', 'rotate-0', 'opacity-100');
-            darkModeToggle.classList.remove('btn-icon-yellow');
-            darkModeToggle.classList.add('btn-icon-green');
         }
     }
 

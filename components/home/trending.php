@@ -81,8 +81,8 @@ $trending_query = new WP_Query($args);
                 }
             } 
             ?>
-            <a href="<?php echo esc_url($view_all_link); ?>" class="btn-primary-action group">
-                <span class="font-bold">View all</span>
+            <a href="<?php echo esc_url($view_all_link); ?>" class="group flex items-center text-primary hover:text-primary transition-colors rounded-full px-4 py-2 bg-white/70 dark:bg-gray-900/60 shadow-lg border border-primary/20 dark:border-primary">
+                <span class="mr-2 font-medium">View all</span>
                 <svg class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                 </svg>

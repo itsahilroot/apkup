@@ -124,41 +124,41 @@ if ($mobile_menu_items) : ?>
 <?php endif; ?>
 <!-- Overlay -->
 <div class="overlay" id="overlay"></div>
-<div class="bottom-nav-wrap md:hidden" id="mobileNav">
-    <nav class="bottom-nav">
+<div class="fixed bottom-6 left-0 right-0 z-50 md:hidden flex justify-center px-4 transition-transform duration-500 ease-in-out" id="mobileNav">
+    <nav class="flex items-center justify-between w-full max-w-sm bg-white/80 dark:bg-gray-900/70 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-none border border-primary/20 dark:border-gray-600/50 rounded-full px-6 py-2">
         <!-- Inicio -->
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="nav-item <?php echo is_front_page() ? 'active' : ''; ?>">
-            <svg viewBox="0 0 24 24" fill="currentColor">
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="flex flex-col items-center justify-center gap-1 transition-colors <?php echo is_front_page() ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary'; ?>">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
             </svg>
-            <span>Inicio</span>
+            <span class="text-[10px] font-semibold leading-none">Inicio</span>
         </a>
 
         <!-- Juegos -->
-        <a href="<?php echo esc_url($au_games_menu_url); ?>" class="nav-item <?php echo (strpos($current_url, $games_path) === 0) ? 'active' : ''; ?>">
-            <svg class="juegos-icon" xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="2 2 20 20">
+        <a href="<?php echo esc_url($au_games_menu_url); ?>" class="flex flex-col items-center justify-center gap-1 transition-colors <?php echo (strpos($current_url, $games_path) === 0) ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary'; ?>">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="2 2 20 20">
                 <path d="M15 5H9c-3.85 0-6.99 3.13-7 6.99v.04C2.01 15.88 5.15 19 9 19h6c3.85 0 6.99-3.13 7-6.97V12c-.01-3.87-3.15-7-7-7m-3 8h-2v2H8v-2H6v-2h2V9h2v2h2zm3 1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1m2-2c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1"></path>
             </svg>
-            <span>Juegos</span>
+            <span class="text-[10px] font-semibold leading-none">Juegos</span>
         </a>
 
         <!-- Apps -->
-        <a href="<?php echo esc_url($au_apps_menu_url); ?>" class="nav-item apps-custom <?php echo (strpos($current_url, $apps_path) === 0) ? 'active' : ''; ?>">
-            <svg viewBox="0 0 36 36" fill="none" width="28" height="28">
-                <rect x="5" y="5" width="12" height="12" rx="2.5" fill="#22C55E" />
-                <rect x="19" y="5" width="12" height="12" rx="2.5" fill="#22C55E" fill-opacity="0.8" />
-                <rect x="5" y="19" width="12" height="12" rx="2.5" fill="#22C55E" fill-opacity="0.7" />
-                <rect x="19" y="19" width="12" height="12" rx="2.5" fill="#22C55E" fill-opacity="0.5" />
+        <a href="<?php echo esc_url($au_apps_menu_url); ?>" class="flex flex-col items-center justify-center gap-1 transition-colors <?php echo (strpos($current_url, $apps_path) === 0) ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary'; ?>">
+            <svg viewBox="0 0 36 36" fill="none" class="w-6 h-6">
+                <rect x="5" y="5" width="12" height="12" rx="2.5" fill="currentColor" />
+                <rect x="19" y="5" width="12" height="12" rx="2.5" fill="currentColor" fill-opacity="0.8" />
+                <rect x="5" y="19" width="12" height="12" rx="2.5" fill="currentColor" fill-opacity="0.7" />
+                <rect x="19" y="19" width="12" height="12" rx="2.5" fill="currentColor" fill-opacity="0.5" />
             </svg>
-            <span>Apps</span>
+            <span class="text-[10px] font-semibold leading-none">Apps</span>
         </a>
 
         <!-- Menú -->
-        <button id="openMenu" class="nav-item border-none outline-none cursor-pointer bg-transparent">
-            <svg viewBox="0 0 24 24" fill="currentColor">
+        <button id="openMenu" class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors bg-transparent border-none outline-none cursor-pointer">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
             </svg>
-            <span>Menú</span>
+            <span class="text-[10px] font-semibold leading-none">Menú</span>
         </button>
     </nav>
 </div>
