@@ -27,19 +27,21 @@ $app_banner = get_post_meta($post_id, 'wp_poster_GP', true);
 ?>
 
 <?php if ($au_dl_banner_swt && !empty($app_banner)): ?>
-<div class="w-full h-64 md:h-80 relative overflow-hidden -z-10 before:absolute before:inset-0 before:bg-gradient-to-t before:from-white before:via-white/70 before:to-transparent dark:before:from-gray-900 dark:before:via-gray-900/70">
-    <img src="<?php echo esc_url($app_banner); ?>" alt="<?php echo esc_attr($app_name); ?> Banner" class="w-full h-full object-cover">
+<div class="w-full h-64 md:h-80 relative overflow-hidden -z-10 bg-gray-900">
+    <div class="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-white via-white/70 to-transparent dark:from-gray-900 dark:via-gray-900/70 z-10 pointer-events-none"></div>
+    <img src="<?php echo esc_url($app_banner); ?>" alt="<?php echo esc_attr($app_name); ?> Banner" class="w-full h-full object-cover object-center opacity-90">
 </div>
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 flex flex-col items-center -mt-32 relative z-10 px-4">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 flex flex-col items-center -mt-32 relative z-20 px-4">
 <?php else: ?>
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-center my-10 px-4">
 <?php endif; ?>
     <div class="mb-12">
         <img src="<?php echo esc_url($app_logo_full); ?>" width="220" height="220" alt="<?php echo $app_name; ?>" class="rounded-3xl shadow-xl border-primary/20 p-2 dark:border-primary">
     </div>
-    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200 my-2">
+    <h2 class="text-3xl text-gray-800 dark:text-gray-200 my-2">
         Descargar <?php echo $app_name; ?>
-    </h1>
+    </h2>
     <div class="tag-row w-full max-w-md mb-8">
         <div class="tags">
             <div class="tag">

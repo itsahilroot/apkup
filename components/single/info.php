@@ -37,22 +37,6 @@ $primary_cat = apkup_get_primary_post_category($post_id);
             </div>
              
             <!-- Top tag row (Fecha + Android version) -->
-            <div class="tag-row w-full md:max-w-2xl mx-auto md:mx-0">
-                <div class="tags">
-                    <div class="tag">
-                        Fecha
-                    </div>
-                    <div class="tag green">
-                        <span style="font-size: 1.1em; line-height: 1;">⬆</span> Android <?php echo apkup_extract_number($app_requires) ?: '8.0'; ?>+
-                    </div>
-                </div>
-                <div class="dots-grid pl-2">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                </div>
-            </div>
 
             <div class="app-buttons w-full md:max-w-2xl mx-auto md:mx-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-gray-200/70 dark:border-gray-700/60 rounded-3xl p-5 md:p-7 shadow-sm hover:shadow-lg transition-all duration-500">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">

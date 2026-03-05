@@ -87,7 +87,7 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
     </div>
     
     <!-- Full-screen Theme Transition Overlay -->
-    <div id="themeTransitionOverlay" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 hidden backdrop-blur-2xl bg-white/60 dark:bg-black/60">
+    <div id="themeTransitionOverlay" class="fixed inset-x-0 top-0 h-[100dvh] z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 hidden backdrop-blur-2xl bg-white/60 dark:bg-black/60">
         <svg id="centerMoonIcon" class="w-48 h-48 text-gray-800 dark:text-white hidden transform scale-0 transition-transform duration-500 ease-out drop-shadow-2xl" fill="currentColor" stroke="none" viewBox="0 0 24 24">
             <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>

@@ -427,43 +427,30 @@ html {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: linear-gradient(180deg, color-mix(in srgb, var(--app-primary) 70%, white) 0%, var(--app-primary) 60%, color-mix(in srgb, var(--app-primary) 85%, black) 100%);
+    background: var(--app-primary);
     color: white;
     font-family: 'Nunito', sans-serif;
     font-size: 1.05rem;
-    font-weight: 900;
-    padding: 13px 32px;
-    border-radius: 50px;
+    font-weight: 700;
+    padding: 10px 32px;
+    border-radius: 9999px;
     text-decoration: none;
-    box-shadow: 0 5px 0 color-mix(in srgb, var(--app-primary) 60%, black), 0 7px 18px color-mix(in srgb, var(--app-primary) 40%, transparent), inset 0 2px 4px rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.15);
-    position: relative;
-    z-index: 1;
+    box-shadow: 0 4px 6px -1px color-mix(in srgb, var(--app-primary) 40%, transparent), 0 2px 4px -1px color-mix(in srgb, var(--app-primary) 30%, transparent);
     cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, filter 0.3s ease;
-    overflow: hidden;
-}
-
-.btn-join::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 45%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
-    border-radius: 0 0 50% 50%;
-    pointer-events: none;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
 }
 
 .btn-join:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 0 color-mix(in srgb, var(--app-primary) 60%, black), 0 10px 22px color-mix(in srgb, var(--app-primary) 50%, transparent), inset 0 2px 3px rgba(255, 255, 255, 0.5);
-    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--app-primary) 40%, transparent), 0 4px 6px -2px color-mix(in srgb, var(--app-primary) 30%, transparent);
+    filter: brightness(1.1);
 }
 
 .btn-join:active {
-    transform: translateY(3px) scale(0.98);
-    box-shadow: 0 2px 0 color-mix(in srgb, var(--app-primary) 60%, black), 0 3px 10px color-mix(in srgb, var(--app-primary) 30%, transparent);
+    transform: translateY(0);
+    box-shadow: 0 2px 4px -1px color-mix(in srgb, var(--app-primary) 40%, transparent);
     filter: brightness(0.95);
 }
 
@@ -582,8 +569,8 @@ html {
     }
 
     .btn-join {
-        font-size: 1.15rem;
-        padding: 16px 40px;
+        font-size: 1.1rem;
+        padding: 12px 36px;
     }
 }
 
