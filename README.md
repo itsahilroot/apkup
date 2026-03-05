@@ -99,4 +99,8 @@ Replaced the dated gradient fills and hard drop shadows on the Telegram footer b
 
 ---
 
+<<<<<<< HEAD
 *APKUP Theme · UI Overhaul Release*
+=======
+*APKUP Theme · UI Overhaul Release*
+>>>>>>> 9d01747e8029e16344f16a0b2f154a39c79169ba
