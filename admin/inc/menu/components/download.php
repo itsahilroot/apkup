@@ -24,6 +24,23 @@ $au_download_faqs = get_theme_mod('au_download_faqs', []);
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('App Banner', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Show/Hide the app banner on the download page if the post has a banner set.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <label class="at-switch-btn">
+                            <?php $au_dl_banner_swt = get_theme_mod('au_dl_banner_swt', false); ?>
+                            <input type="checkbox" name="au_dl_banner_swt" <?php checked($au_dl_banner_swt, 1); ?>>
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
+                </td>
+            </tr>
 <!--             <tr>
                 <td>
                     <h3><?php esc_html_e('Related Posts', 'apktemplates'); ?></h3>

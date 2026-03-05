@@ -6,7 +6,7 @@ $au_header_logo_dark = get_theme_mod('au_header_logo_dark', get_template_directo
 $au_home_hero_top_description = get_theme_mod('au_home_hero_top_description', 'GAMES & APPS FOR ANDROID - A LARGE SELECTION OF APPS FOR ANDROID DEVICES FREE AND WITH NO VIRUSES');
 $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 ?>
-<header class="sticky top-0 z-40 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+<header class="sticky top-0 z-40 bg-white/70 dark:bg-[rgba(15,15,26,0.65)] backdrop-blur-[30px] backdrop-saturate-200 shadow-sm border-b border-gray-200/50 dark:border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <a href="<?php echo get_site_url(); ?>" class="flex items-center">
@@ -23,9 +23,9 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
                         $icon_type = get_post_meta($menu->ID, 'apkup_menu_icon_class', true);
                         $icon_class = $icon_type ? esc_attr($icon_type) : 'fas fa-star';
                     ?>
-                        <a href="<?php echo esc_url($menu->url); ?>" class="flex items-center gap-3 pr-4 pl-1.5 py-1.5 bg-transparent hover:bg-white dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 font-bold text-sm tracking-wide group">
-                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 group-hover:bg-blue-50 dark:group-hover:bg-gray-600 transition-colors duration-300 shadow-sm">
-                                <i class="<?php echo $icon_class; ?> text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors duration-300 text-xs"></i>
+                        <a href="<?php echo esc_url($menu->url); ?>" class="flex items-center gap-3 pr-4 pl-1.5 py-1.5 bg-transparent hover:bg-white dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 font-bold text-sm tracking-wide group">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors duration-300 shadow-sm">
+                                <i class="<?php echo $icon_class; ?> text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors duration-300 text-xs"></i>
                             </span>
                             <?php echo esc_html($menu->title); ?>
                         </a>
@@ -50,7 +50,7 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
         </div>
     </div>
     <!-- Search Shutter -->
-    <div id="searchModal" class="absolute left-0 w-full top-full bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-xl search-shutter -z-10">
+    <div id="searchModal" class="absolute left-0 w-full top-full bg-white/80 dark:bg-[rgba(15,15,26,0.85)] backdrop-blur-[30px] backdrop-saturate-200 border-b border-gray-200/50 dark:border-white/10 shadow-xl search-shutter -z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">búsqueda de Apps</h3>

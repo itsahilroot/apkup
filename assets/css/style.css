@@ -6,7 +6,7 @@ body {
 }
 
 body {
-    padding-bottom: 80px;
+	padding-bottom: 80px;
 }
 
 body :where(figure) {
@@ -29,50 +29,60 @@ body :where(figure) {
 
 /*HERO SECTION ANIMATION */
 @keyframes float1 {
+
 	0%,
 	100% {
 		transform: translate3d(0, 0, 0) rotate(0deg);
 	}
+
 	50% {
 		transform: translate3d(-20px, -30px, 0) rotate(5deg);
 	}
 }
 
 @keyframes float2 {
+
 	0%,
 	100% {
 		transform: translate3d(0, 0, 0) rotate(0deg);
 	}
+
 	50% {
 		transform: translate3d(15px, -20px, 0) rotate(-3deg);
 	}
 }
 
 @keyframes float3 {
+
 	0%,
 	100% {
 		transform: translate3d(0, 0, 0) rotate(0deg);
 	}
+
 	50% {
 		transform: translate3d(-10px, 25px, 0) rotate(2deg);
 	}
 }
 
 @keyframes float4 {
+
 	0%,
 	100% {
 		transform: translate3d(0, 0, 0) rotate(0deg);
 	}
+
 	50% {
 		transform: translate3d(10px, -15px, 0) rotate(5deg);
 	}
 }
 
 @keyframes float5 {
+
 	0%,
 	100% {
 		transform: translate3d(0, 0, 0) rotate(0deg);
 	}
+
 	50% {
 		transform: translate3d(-10px, 10px, 0) rotate(-5deg);
 	}
@@ -137,6 +147,7 @@ body :where(figure) {
 	-ms-overflow-style: none;
 	scrollbar-width: none;
 }
+
 .hide-scrollbar::-webkit-scrollbar {
 	display: none;
 }
@@ -177,27 +188,27 @@ body :where(figure) {
 	cursor: default;
 }
 
-.jq-ry-container > .jq-ry-group-wrapper {
+.jq-ry-container>.jq-ry-group-wrapper {
 	position: relative;
 	width: 100%;
 }
 
-.jq-ry-container > .jq-ry-group-wrapper > .jq-ry-group {
+.jq-ry-container>.jq-ry-group-wrapper>.jq-ry-group {
 	position: relative;
 	line-height: 0;
 	z-index: 10;
 	white-space: nowrap;
 }
 
-.jq-ry-container > .jq-ry-group-wrapper > .jq-ry-group > svg {
+.jq-ry-container>.jq-ry-group-wrapper>.jq-ry-group>svg {
 	display: inline-block;
 }
 
-.jq-ry-container > .jq-ry-group-wrapper > .jq-ry-group.jq-ry-normal-group {
+.jq-ry-container>.jq-ry-group-wrapper>.jq-ry-group.jq-ry-normal-group {
 	width: 100%;
 }
 
-.jq-ry-container > .jq-ry-group-wrapper > .jq-ry-group.jq-ry-rated-group {
+.jq-ry-container>.jq-ry-group-wrapper>.jq-ry-group.jq-ry-rated-group {
 	width: 0;
 	z-index: 11;
 	position: absolute;
@@ -344,6 +355,7 @@ body :where(figure) {
 .nav-tab.active .nav-tab-text {
 	color: var(--app-primary);
 }
+
 /* Offcanvas Styles */
 .offcanvas {
 	position: fixed;

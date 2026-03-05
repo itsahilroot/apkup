@@ -6,6 +6,8 @@ $au_base_font_weight = get_theme_mod('au_base_font_weight', '400');
 $au_heading_font_family = get_theme_mod('au_heading_font_family', 'Inter');
 $au_heading_size = get_theme_mod('au_heading_size', '1.875rem');
 $au_heading_weight = get_theme_mod('au_heading_weight', '600');
+$au_button_font_family = get_theme_mod('au_button_font_family', 'Nunito');
+$au_button_font_weight = get_theme_mod('au_button_font_weight', '700');
 
 $google_fonts = [
     'Inter' => 'Inter',
@@ -157,6 +159,48 @@ $google_fonts = [
                             <option value="700" <?php selected($au_heading_weight, '700'); ?>>Bold (700)</option>
                             <option value="800" <?php selected($au_heading_weight, '800'); ?>>Extra Bold (800)</option>
                             <option value="900" <?php selected($au_heading_weight, '900'); ?>>Black (900)</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Button Font Family', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Select the font family for buttons.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <select name="au_button_font_family" class="at-select">
+                            <option value="">System Default</option>
+                            <?php foreach ($google_fonts as $key => $font) : ?>
+                                <option value="<?php echo esc_attr($key); ?>" <?php selected($au_button_font_family, $key); ?>><?php echo esc_html($font); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Button Font Weight', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Select the font weight for buttons.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <select name="au_button_font_weight" class="at-select">
+                            <option value="400" <?php selected($au_button_font_weight, '400'); ?>>Regular (400)</option>
+                            <option value="500" <?php selected($au_button_font_weight, '500'); ?>>Medium (500)</option>
+                            <option value="600" <?php selected($au_button_font_weight, '600'); ?>>Semi-Bold (600)</option>
+                            <option value="700" <?php selected($au_button_font_weight, '700'); ?>>Bold (700)</option>
+                            <option value="800" <?php selected($au_button_font_weight, '800'); ?>>Extra Bold (800)</option>
+                            <option value="900" <?php selected($au_button_font_weight, '900'); ?>>Black (900)</option>
                         </select>
                     </div>
                 </td>

@@ -110,9 +110,9 @@ if ($mobile_menu_items) : ?>
                     $icon_class = $icon_type ? esc_attr($icon_type) : 'fas fa-home';
                 ?>
                     <li>
-                        <a href="<?php echo esc_url($mb_menu->url); ?>" class="flex items-center gap-4 p-3 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:shadow-sm hover:translate-x-1 transition-all duration-300 font-bold group">
-                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50 dark:bg-gray-800 group-hover:bg-blue-100 dark:group-hover:bg-gray-700 transition-colors duration-300 shadow-sm">
-                                <i class="<?php echo $icon_class; ?> text-blue-500 dark:text-gray-400 group-hover:scale-110 transition-transform duration-300"></i>
+                        <a href="<?php echo esc_url($mb_menu->url); ?>" class="flex items-center gap-4 p-3 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:shadow-sm hover:translate-x-1 transition-all duration-300 font-bold group">
+                            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors duration-300 shadow-sm">
+                                <i class="<?php echo $icon_class; ?> text-gray-500 dark:text-gray-400 group-hover:text-primary group-hover:scale-110 transition-all duration-300"></i>
                             </span>
                             <?php echo esc_html($mb_menu->title); ?>
                         </a>
@@ -210,7 +210,7 @@ if ($mobile_menu_items) : ?>
 .dark .nav-tab.active { color: #fff; }
 
 /* active glow pill behind icon */
-.nav-tab.active::before {
+/* .nav-tab.active::before {
   content: '';
   position: absolute;
   top: 6px;
@@ -222,7 +222,7 @@ if ($mobile_menu_items) : ?>
   box-shadow: 0 0 14px rgba(0,122,255,0.4);
   z-index: 0;
 }
-.dark .nav-tab.active::before { background: rgba(0, 122, 255, 0.25); }
+.dark .nav-tab.active::before { background: rgba(0, 122, 255, 0.25); } */
 
 .nav-tab-icon {
   font-size: 20px;
@@ -242,14 +242,13 @@ if ($mobile_menu_items) : ?>
 }
 
 /* active tab label — iOS SF style */
-.nav-tab.active .nav-tab-text {
+/* .nav-tab.active .nav-tab-text {
   color: #007aff;
   text-shadow: 0 0 12px rgba(0,122,255,0.3);
 }
 .dark .nav-tab.active .nav-tab-text {
   text-shadow: 0 0 12px rgba(0,122,255,0.6);
-}
-.nav-tab.active .nav-tab-icon { color: #007aff; }
+} */
 
 /* bounce on click */
 @keyframes tabBounce {

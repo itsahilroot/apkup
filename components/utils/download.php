@@ -21,8 +21,19 @@ $au_home_footer_tg_url = get_theme_mod('au_home_footer_tg_url', 'https://t.me/ap
 global $custom_download_id;
 $download_id = absint($custom_download_id);
 
-get_header(); ?>
+get_header(); 
+$au_dl_banner_swt = get_theme_mod('au_dl_banner_swt', false);
+$app_banner = get_post_meta($post_id, 'wp_poster_GP', true);
+?>
+
+<?php if ($au_dl_banner_swt && !empty($app_banner)): ?>
+<div class="w-full h-64 md:h-80 relative overflow-hidden -z-10 before:absolute before:inset-0 before:bg-gradient-to-t before:from-white before:via-white/70 before:to-transparent dark:before:from-gray-900 dark:before:via-gray-900/70">
+    <img src="<?php echo esc_url($app_banner); ?>" alt="<?php echo esc_attr($app_name); ?> Banner" class="w-full h-full object-cover">
+</div>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 flex flex-col items-center -mt-32 relative z-10 px-4">
+<?php else: ?>
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-center my-10 px-4">
+<?php endif; ?>
     <div class="mb-12">
         <img src="<?php echo esc_url($app_logo_full); ?>" width="220" height="220" alt="<?php echo $app_name; ?>" class="rounded-3xl shadow-xl border-primary/20 p-2 dark:border-primary">
     </div>
@@ -47,16 +58,26 @@ get_header(); ?>
     </div>
     <?php download_top_ad('div'); ?>
     <div id="progress-section" class="w-full max-w-md mb-12">
-        <div class="progress-container-premium w-full" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-            <div id="progress-fill" class="progress-fill-premium" style="width: 0%;"></div>
-            <div class="relative z-10 flex h-full items-center justify-center pointer-events-none drop-shadow-md">
-                <span class="px-4 py-1.5 rounded-full bg-black/20 dark:bg-black/40 text-sm md:text-base font-black tracking-wide text-white select-none backdrop-blur-md border border-white/20 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
-                    Preparando descarga… <span id="seconds-left">5</span>s
-                </span>
+        <div class="progress-label-modern text-gray-800 dark:text-gray-200">
+            <div class="flex flex-col">
+                <span class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 font-bold mb-1">Status</span>
+                <span class="text-sm md:text-base font-black">Preparando enlaces...</span>
+            </div>
+            <div class="text-right flex flex-col items-end">
+                <span class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 font-bold mb-1">Espera</span>
+                <div class="flex items-baseline gap-1 text-primary">
+                    <span id="seconds-left" class="progress-percentage">5</span>
+                    <span class="text-sm font-bold opacity-75">s</span>
+                </div>
             </div>
         </div>
-        <p class="mt-2 text-center text-sm text-gray-500 dark:text-gray-300">
-            Tus enlaces aparecerán cuando la barra se complete.
+        
+        <div class="progress-container-modern w-full" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+            <div id="progress-fill" class="progress-fill-modern" style="width: 0%;"></div>
+        </div>
+        
+        <p class="mt-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+            Tus enlaces aparecerán pronto
         </p>
     </div>
     <div id="button-group" class="hidden flex-col w-full max-w-md gap-4 mb-12">
@@ -133,31 +154,41 @@ endif;
 <script>
     (function() {
         const duration = <?php echo $au_dl_timer; ?>;
-        let startAt = Date.now();
-
+        
         const fill = document.getElementById('progress-fill');
         const secondsEl = document.getElementById('seconds-left');
         const progressSection = document.getElementById('progress-section');
         const buttonGroup = document.getElementById('button-group');
 
-        function tick() {
+        // Force reflow to ensure the bar starts at 0 before we apply the precise transition
+        void fill.offsetWidth;
+        
+        // Use a buttery smooth CSS transition mapped exactly to the required seconds
+        fill.style.transition = `width ${duration}ms linear`;
+        
+        // Start filling the bar
+        fill.style.width = '100%';
+
+        let startAt = Date.now();
+
+        function updateTimer() {
             const now = Date.now();
             const elapsed = now - startAt;
-            const percent = Math.min(100, (elapsed / duration) * 100);
-            fill.style.width = percent + '%';
-
             const msLeft = Math.max(0, duration - elapsed);
+            
             secondsEl.textContent = Math.ceil(msLeft / 1000);
 
             if (elapsed < duration) {
-                requestAnimationFrame(tick);
+                requestAnimationFrame(updateTimer);
             } else {
-                progressSection.classList.add('hidden');
-                buttonGroup.classList.remove('hidden');
-                buttonGroup.classList.add('flex');
+                setTimeout(() => {
+                    progressSection.classList.add('hidden');
+                    buttonGroup.classList.remove('hidden');
+                    buttonGroup.classList.add('flex');
+                }, 50); // Little grace period buffer to visibly show the full bar for a frame
             }
         }
-        requestAnimationFrame(tick);
+        requestAnimationFrame(updateTimer);
     })();
 </script>
 <?php get_footer(); ?>

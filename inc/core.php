@@ -742,13 +742,39 @@ function apkup_dynamic_styles() {
     $au_heading_font_family = get_theme_mod('au_heading_font_family', 'Inter');
     $au_heading_size = get_theme_mod('au_heading_size', '1.875rem');
     $au_heading_weight = get_theme_mod('au_heading_weight', '600');
+    $au_button_font_family = get_theme_mod('au_button_font_family', 'Nunito');
+    $au_button_font_weight = get_theme_mod('au_button_font_weight', '700');
+
+    $families = array();
+
+    if (!empty($au_font_family)) {
+        $families[$au_font_family][] = '0,300';
+        $families[$au_font_family][] = '0,400';
+        $families[$au_font_family][] = '0,500';
+        $families[$au_font_family][] = '0,600';
+        $families[$au_font_family][] = '0,700';
+        $families[$au_font_family][] = '1,400';
+    }
+
+    if (!empty($au_heading_font_family)) {
+        $families[$au_heading_font_family][] = '0,' . $au_heading_weight;
+    }
+
+    if (!empty($au_button_font_family)) {
+        $families[$au_button_font_family][] = '0,400';
+        $families[$au_button_font_family][] = '0,500';
+        $families[$au_button_font_family][] = '0,600';
+        $families[$au_button_font_family][] = '0,700';
+        $families[$au_button_font_family][] = '0,800';
+        $families[$au_button_font_family][] = '0,900';
+    }
 
     $fonts = array();
-    if (!empty($au_font_family)) {
-        $fonts[] = $au_font_family . ':ital,wght@0,300;0,400;0,500;0,600;0,700;1,400';
-    }
-    if (!empty($au_heading_font_family) && $au_heading_font_family !== $au_font_family) {
-        $fonts[] = $au_heading_font_family . ':wght@' . $au_heading_weight;
+    foreach ($families as $family => $weights) {
+        $unique_weights = array_unique($weights);
+        sort($unique_weights);
+        $weight_string = implode(';', $unique_weights);
+        $fonts[] = $family . ':ital,wght@' . $weight_string;
     }
 
     if (!empty($fonts)) {
@@ -765,10 +791,12 @@ function apkup_dynamic_styles() {
 
     $body_font = !empty($au_font_family) ? "'{$au_font_family}', sans-serif" : "Inter, sans-serif";
     $heading_font = !empty($au_heading_font_family) ? "'{$au_heading_font_family}', sans-serif" : "Inter, sans-serif";
+    $button_font = !empty($au_button_font_family) ? "'{$au_button_font_family}', sans-serif" : "Nunito, sans-serif";
 
     echo "<style>
         :root {
             --app-primary: {$au_theme_color};
+            --app-btn-font: {$button_font};
         }
         body {
             font-family: {$body_font};
@@ -778,6 +806,10 @@ function apkup_dynamic_styles() {
         h1, h2, h3, h4, h5, h6 {
             font-family: {$heading_font} !important;
             font-weight: {$au_heading_weight} !important;
+        }
+        button, .btn-primary-action, .btn-download, .btn-join, .btn-telegram, .btn-back, input[type='submit'], input[type='button'], .btn-icon {
+            font-family: var(--app-btn-font) !important;
+            font-weight: {$au_button_font_weight} !important;
         }
         main section header h2, section header h2, .section-heading {
             font-size: {$au_heading_size} !important;
