@@ -27,12 +27,10 @@ $app_banner = get_post_meta($post_id, 'wp_poster_GP', true);
 ?>
 
 <?php if ($au_dl_banner_swt && !empty($app_banner)): ?>
-<div class="w-full h-64 md:h-80 relative overflow-hidden -z-10 bg-gray-900">
-    <div class="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent z-10 pointer-events-none"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-white via-white/70 to-transparent dark:from-gray-900 dark:via-gray-900/70 z-10 pointer-events-none"></div>
-    <img src="<?php echo esc_url($app_banner); ?>" alt="<?php echo esc_attr($app_name); ?> Banner" class="w-full h-full object-cover object-center opacity-90">
+<div class="w-full h-64 md:h-80 relative overflow-hidden -z-10 before:absolute before:inset-0 before:bg-gradient-to-t before:from-white before:via-white/70 before:to-transparent dark:before:from-gray-900 dark:before:via-gray-900/70">
+    <img src="<?php echo esc_url($app_banner); ?>" alt="<?php echo esc_attr($app_name); ?> Banner" class="w-full h-full object-cover">
 </div>
-<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 flex flex-col items-center -mt-32 relative z-20 px-4">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 flex flex-col items-center -mt-32 relative z-10 px-4">
 <?php else: ?>
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-center my-10 px-4">
 <?php endif; ?>
