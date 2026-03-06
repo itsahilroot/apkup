@@ -33,13 +33,13 @@ $mod_colors = [
 ];
 $color_class = $mod_colors[$post_id % count($mod_colors)];
 ?>
-<div class="flex gap-3 items-start group hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl p-2 transition-colors duration-200 -mx-2">
+<article class="flex gap-3 items-start group hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl p-2 transition-colors duration-200 -mx-2">
     <a href="<?php echo esc_url($app_url); ?>" class="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 block">
         <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo esc_url($app_logo_full); ?>" alt="<?php echo esc_attr($app_name); ?>" class="app-icon w-full h-full object-cover lazyload">
         <div class="skeleton absolute inset-0"></div>
     </a>
     <div class="min-w-0">
-        <a href="<?php echo esc_url($app_url); ?>" class="font-semibold block truncate group-hover:text-primary dark:group-hover:text-primary transition-colors text-gray-900 dark:text-gray-100"><?php echo esc_html($app_name); ?></a>
+        <a href="<?php echo esc_url($app_url); ?>"><h3 class="font-semibold block truncate group-hover:text-primary dark:group-hover:text-primary transition-colors text-gray-900 dark:text-gray-100"><?php echo esc_html($app_name); ?></h3></a>
         <div class="flex items-center gap-1 text-xs text-gray-500 mt-0.5 mb-1.5 flex-wrap">
             <span><?php echo esc_html($app_category); ?></span>
             <?php if (!empty($app_mod_info)) : ?>
@@ -60,4 +60,4 @@ $color_class = $mod_colors[$post_id % count($mod_colors)];
             <?php endif; ?>
         </div>
     </div>
-</div>
+</article>

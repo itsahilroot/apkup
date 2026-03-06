@@ -308,53 +308,7 @@ html {
     transform: translateY(2px);
 }
 
-.info-card {
-    background: white;
-    border-radius: 18px;
-    padding: 20px 18px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
-}
 
-.dark .info-card {
-    background: #1f2937;
-}
-
-.info-card h2 {
-    font-size: 1.2rem !important;
-    font-weight: 900 !important;
-    color: #1a1a1a !important;
-    line-height: 1.3 !important;
-    margin-bottom: 10px !important;
-}
-
-.dark .info-card h2 {
-    color: #f9fafb !important;
-}
-
-.info-card p {
-    font-size: 0.92rem !important;
-    color: #555 !important;
-    line-height: 1.6 !important;
-    font-weight: 600 !important;
-    margin-bottom: 12px !important;
-}
-
-.dark .info-card p {
-    color: #d1d5db !important;
-}
-
-.leer-mas {
-    color: var(--app-primary);
-    font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    text-decoration: none;
-}
-
-.leer-mas:hover {
-    text-decoration: underline;
-}
 
 .telegram-banner {
     border-radius: 18px;

@@ -15,6 +15,7 @@ $app_logo_full = get_the_post_thumbnail_url($post_id, 'full');
 $is_app_mod = get_post_meta($post_id, 'app_type', true);
 ?>
 <a href="<?php echo esc_url($app_url); ?>" class="flex-shrink-0 w-80 bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 relative">
+    <article class="flex flex-col w-full h-full">
     <div class="card-number"><?php echo $args['rank']; ?></div>
     <?php if($is_app_mod == '1') : ?>
     <div class="absolute top-3 right-3 px-2 py-1 bg-orange-100 text-orange-700 dark:bg-orange-700 dark:text-orange-100 text-xs font-semibold rounded uppercase tracking-wider">
@@ -33,4 +34,5 @@ $is_app_mod = get_post_meta($post_id, 'app_type', true);
             </div>
         </div>
     </div>
+    </article>
 </a>

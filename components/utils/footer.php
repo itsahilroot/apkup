@@ -12,10 +12,6 @@ $mobile_menu_items = array_slice($mobile_menu_items, 0, 5);
 $au_header_logo = get_theme_mod('au_header_logo', get_template_directory_uri() . '/assets/img/logo.png');
 $footer_copyright = get_theme_mod('footer_copyright', 'Copyright © 2025 APKTEMPLATES.');
 
-$au_home_footer_info_swt = get_theme_mod('au_home_footer_info_swt', false);
-$au_home_footer_info_title = get_theme_mod('au_home_footer_info_title', 'Best Android Apps & Games for free');
-$au_home_footer_info_description = get_theme_mod('au_home_footer_info_description', 'Hre is the best place to dwonload android premium apps and mod games for free.');
-
 $au_home_footer_tg_swt = get_theme_mod('au_home_footer_tg_swt', false);
 $au_home_footer_tg_title = get_theme_mod('au_home_footer_tg_title', 'Join our Telegram');
 $au_home_footer_tg_desc = get_theme_mod('au_home_footer_tg_desc', 'Get the latest updates and news directly on Telegram.');
@@ -31,33 +27,16 @@ $apps_path   = parse_url($au_apps_menu_url, PHP_URL_PATH);
 
 <footer class="max-w-7xl mx-auto px-4">
     <div class="mb-8">
-        <?php if ($au_home_footer_info_swt) : ?>
-            <div class="info-card">
-                <?php if (!empty($au_home_footer_info_title)) : ?>
-                    <h2>
-                        <?php echo $au_home_footer_info_title; ?>
-                    </h2>
-                <?php endif;
-                if (!empty($au_home_footer_info_description)) : ?>
-                    <p id="desc" class="line-clamp-3 transition-all duration-300">
-                        <?php echo $au_home_footer_info_description; ?>
-                    </p>
-                    <button id="toggleBtn" class="leer-mas bg-transparent border-none cursor-pointer">
-                        LEER MÁS
-                    </button>
-                <?php endif; ?>
-            </div>
-        <?php endif;
-        if ($au_home_footer_tg_swt) : ?>
+        <?php if ($au_home_footer_tg_swt) : ?>
             <div class="telegram-banner mt-4 flex">
                 <div class="absolute top-0 right-0 h-full w-full md:w-2/3 bg-cover bg-right opacity-0 md:opacity-60 pointer-events-none transition-opacity duration-300 z-0" style="background-image: url('<?php echo get_template_directory_uri(); ?>/assets/img/telegram.webp'); mask-image: linear-gradient(to right, transparent 0%, black 50%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 50%); mix-blend-mode: multiply;"></div>
                 
                 <div class="relative z-10 flex flex-col md:items-start justify-center text-center md:text-left md:pr-4 md:flex-1 w-full">
-                    <h3><?php echo !empty($au_home_footer_tg_title) ? $au_home_footer_tg_title : 'Únete <span>a</span> nuestro Telegram'; ?></h3>
+                    <span class="title dark:text-gray-200"><?php echo !empty($au_home_footer_tg_title) ? $au_home_footer_tg_title : 'Únete <span>a</span> nuestro Telegram'; ?></span>
                     <?php if (!empty($au_home_footer_tg_desc)) : ?>
-                        <p class="hidden md:block text-gray-700 dark:text-gray-200 text-sm font-bold opacity-80 max-w-md m-0">
+                        <span class="desc hidden md:block text-gray-700 dark:text-gray-200 text-sm font-bold opacity-80 max-w-md m-0">
                             <?php echo $au_home_footer_tg_desc; ?>
-                        </p>
+                        </span>
                     <?php endif; ?>
                 </div>
                 <div class="relative z-10 flex items-center justify-center shrink-0 mt-5 md:mt-0">

@@ -22,7 +22,7 @@ $is_app_mod = get_post_meta($post_id, 'app_type', true);
 $app_mod_info = $data['mod_info'] ?? '';
 $is_mod = ($is_app_mod === 'mod' || !empty($app_mod_info));
 ?>
-<div class="carousel-cell mr-4 w-72 shrink-0 group">
+<article class="carousel-cell mr-4 w-72 shrink-0 group">
     <a href="<?php echo esc_url($app_url); ?>" class="flex flex-col bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-gray-100 dark:border-gray-700/50 p-4 relative overflow-hidden h-full min-h-[170px]">
         
         <!-- Large Serial Number Watermark -->
@@ -74,4 +74,4 @@ $is_mod = ($is_app_mod === 'mod' || !empty($app_mod_info));
         </div>
         
     </a>
-</div>
+</article>

@@ -11,6 +11,7 @@ $blog_thumbnail = get_the_post_thumbnail_url($blog_id, 'large');
 $blog_url = get_permalink($blog_id);
 ?>
 <a href="<?php echo esc_url($blog_url); ?>" class="flex flex-col gap-2">
+    <article class="flex flex-col w-full h-full">
     <figure class="w-full h-[180px] overflow-hidden rounded-2xl">
         <img class="w-full h-full object-cover hover:scale-105 transition" src="<?php echo $blog_thumbnail; ?>" alt="<?php echo $blog_title; ?>">
     </figure>
@@ -27,7 +28,8 @@ $blog_url = get_permalink($blog_id);
             <?php echo esc_html($blog_views); ?>
         </span>
     </div>
-    <h2 class="font-semibold text-lg dark:text-gray-200 dark:hover:text-primary/40 cursor-pointer leading-snug">
+    <h3 class="font-semibold text-lg dark:text-gray-200 dark:hover:text-primary/40 cursor-pointer leading-snug">
         <?php echo esc_html($blog_title); ?>
-    </h2>
+    </h3>
+    </article>
 </a>

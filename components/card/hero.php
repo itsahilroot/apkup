@@ -42,7 +42,7 @@ if ($is_first) {
 }
 ?>
 
-<div class="carousel-cell mr-4 w-[85vw] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] shrink-0 group">
+<article class="carousel-cell mr-4 w-[85vw] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)] shrink-0 group">
     <div class="relative mb-4">
         <img
             class="<?php echo esc_attr($banner_class); ?>"
@@ -79,9 +79,9 @@ if ($is_first) {
         </div>
 
         <div class="flex-1 min-w-0 flex flex-col justify-center">
-            <span class="block font-bold text-gray-900 dark:text-white truncate group-hover:text-primary transition-colors text-base">
+            <h3 class="block font-bold text-gray-900 dark:text-white truncate group-hover:text-primary transition-colors text-base">
                 <?php echo esc_html($app_name); ?>
-            </span>
+            </h3>
 
             <div class="text-xs font-medium text-gray-500 dark:text-gray-400 truncate mt-0.5">
                 <?php echo esc_html($app_category); ?>
@@ -105,4 +105,4 @@ if ($is_first) {
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Instalar
         </a>
     </div>
-</div>
+</article>

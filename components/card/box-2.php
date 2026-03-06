@@ -22,6 +22,7 @@ if(empty($app_banner)) {
 $app_url = get_the_permalink($post_id);
 ?>
 <a href="<?php echo esc_url($app_url); ?>" class="app-card w-72 sm:w-auto group block">
+    <article class="flex flex-col h-full w-full">
     <figure class="app-banner rounded-lg overflow-hidden skeleton-bg relative">
         <img class="rounded-lg w-full h-40 object-cover lazyload group-hover:scale-105 transition-transform duration-300" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo esc_url($app_banner); ?>" alt="<?php echo $app_name; ?>">
         <div class="absolute top-2 left-2 flex items-center bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-1.5 py-0.5 rounded-md shadow-sm z-10 pointer-events-none">
@@ -39,4 +40,5 @@ $app_url = get_the_permalink($post_id);
             <span><?php echo esc_html($app_category); ?></span><?php if (!empty($app_mod_info)) echo '<span class="mx-1">•</span><span>' . $app_mod_info . '</span>'; ?>
         </p>
     </div>
+    </article>
 </a>
