@@ -5,7 +5,7 @@ if (!$au_home_trending_swt) {
     return;
 }
 
-$limit = get_theme_mod('au_home_trending_limit', 15);
+$limit = get_theme_mod('au_home_trending_limit', 12); // Default to 12 for 4x3 grid layout
 $sort = get_theme_mod('au_home_trending_sort', 'popular');
 $term_id = get_theme_mod('au_home_trending_term_id', '');
 $title = get_theme_mod('au_home_trending_title', 'Tendencias');
@@ -64,58 +64,89 @@ if (!empty($term_id)) {
 }
 
 $trending_query = new WP_Query($args);
+
+if (!function_exists('apkup_get_relative_time_spanish')) {
+    function apkup_get_relative_time_spanish($post_time) {
+        $current_time = current_time('timestamp');
+        $diff = $current_time - $post_time;
+
+        if ($diff < 86400 && date('Ymd', $post_time) === date('Ymd', $current_time)) {
+            return 'Hoy';
+        } elseif ($diff < 172800 && date('Ymd', $post_time) === date('Ymd', strtotime('yesterday', $current_time))) {
+            return 'Ayer';
+        } else {
+            $days = round($diff / 86400);
+            if ($days <= 0) {
+                $days = 1;
+            }
+            return 'Hace ' . $days . ' ' . _n('día', 'días', $days, 'apktemplates');
+        }
+    }
+}
 ?>
-<section class="relative mb-12">
-    <header class="flex items-center justify-between mb-6 relative">
-        <div class="flex items-center gap-3">
-            <h2 class="text-3xl font-normal tracking-tight flex items-center space-x-2">
-                <span class="dark:text-gray-200"><?php echo esc_html($title); ?></span>
-            </h2>
-        </div>
-        <?php 
-            $view_all_link = '#';
-            if (!empty($term_id)) {
-                $term = get_term((int)$term_id);
-                if ($term && !is_wp_error($term)) {
-                    $view_all_link = get_term_link($term);
-                }
-            } 
-            ?>
-            <a href="<?php echo esc_url($view_all_link); ?>" class="group flex items-center text-primary hover:text-primary transition-colors rounded-full px-4 py-2 bg-white/70 dark:bg-gray-900/60 shadow-lg border border-primary/20 dark:border-primary">
-                <span class="mr-2 font-medium">View all</span>
-                <svg class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                </svg>
+
+<?php if ($trending_query->have_posts()) : ?>
+<section class="mt-8" data-purpose="actualizaciones-list">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-bold dark:text-white"><?php echo esc_html($title); ?></h2>
+    <a class="right-arrow-btn" href="<?php echo esc_url(home_url('/trending/')); ?>">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+      </svg>
+    </a>
+  </div>
+  <div
+    class="grid grid-flow-col auto-cols-[100%] grid-rows-4 gap-2 overflow-x-auto md:grid-flow-row md:grid-cols-3 md:grid-rows-none md:auto-cols-auto md:gap-x-6 md:gap-y-3 scrollbar-hide">
+
+    <?php
+    while ($trending_query->have_posts()) : $trending_query->the_post();
+        $post_id = get_the_ID();
+        $app_name = get_the_title($post_id);
+        $app_url = get_the_permalink($post_id);
+        
+        $data = get_post_meta($post_id, 'datos_informacion', true);
+        $data = is_array($data) ? $data : [];
+        $app_size = $data['tamano'] ?? '';
+        $app_type = get_post_meta($post_id, 'app_type', true);
+        $is_mod = ($app_type == 1);
+        
+        $app_rating = get_post_meta($post_id, 'new_rating_average', true) ?: 0;
+        $app_logo = get_the_post_thumbnail_url($post_id, 'thumbnail') ?: get_the_post_thumbnail_url($post_id, 'full');
+        $app_desc = apkup_get_post_short_description($post_id);
+        $app_mod_info = $data['mod_info'] ?? '';
+        
+        $time_pretty = apkup_get_relative_time_spanish(get_the_time('U'));
+    ?>
+        <!-- Item: <?php echo esc_html($app_name); ?> -->
+        <div class="flex items-start gap-3 py-2 rounded-2xl post-card">
+          <img alt="<?php echo esc_attr($app_name); ?>" class="w-14 h-14 rounded-xl shrink-0 object-cover"
+            src="<?php echo esc_url($app_logo); ?>">
+          <div class="flex-1 min-w-0">
+            <a href="<?php echo esc_url($app_url); ?>">
+              <h3 class="font-bold text-sm truncate dark:text-white hover:text-primary dark:hover:text-primary transition-colors"><?php echo esc_html($app_name); ?></h3>
             </a>
-    </header>
-    <?php if ($trending_query->have_posts()) : ?>
-        <div class="main-carousel focus:outline-none overflow-hidden" data-flickity='{ "cellAlign": "left", "contain": true, "pageDots": false, "prevNextButtons": false, "freeScroll": true }' tabindex="0">
-                <?php
-                $count = 0;
-                while ($trending_query->have_posts()) : $trending_query->the_post();
-
-                    // Open a new "carousel-cell" for every 3 posts
-                    if ($count % 3 == 0) {
-                        echo '<div class="carousel-cell w-[90%] sm:w-[48%] lg:w-[32%] mr-6 shrink-0">';
-                        echo '<div class="flex flex-col gap-6">';
-                    }
-
-                    get_template_part('components/card/trending');
-
-                    $count++;
-
-                    // Close "carousel-cell" after 3 posts OR at the last post
-                    if ($count % 3 == 0 || $count == $trending_query->post_count) {
-                        echo '</div></div>';
-                    }
-
-                endwhile;
-                wp_reset_postdata();
-                ?>
+            <p class="text-gray-500 dark:text-gray-400 text-xs mt-0.5 line-clamp-2"><?php echo esc_html($app_desc); ?></p>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[10px] text-gray-400 dark:text-gray-500"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
+              <?php if (!empty($app_size)) : ?>
+                <span class="text-[10px] text-gray-400 dark:text-gray-500"><?php echo esc_html($app_size); ?></span>
+              <?php endif; ?>
+              <?php if ($is_mod) : ?>
+                <span class="text-[10px] bg-green-500 text-white font-bold px-1 rounded">MOD</span>
+              <?php endif; ?>
+              <?php if ($is_mod && !empty($app_mod_info)) : ?>
+                <span class="text-[10px] text-gray-400 dark:text-gray-500"><?php echo esc_html($app_mod_info); ?></span>
+              <?php else : ?>
+                <span class="text-[10px] text-gray-400 dark:text-gray-500"><?php echo esc_html($time_pretty); ?></span>
+              <?php endif; ?>
             </div>
-        <?php else : ?>
-            <div class="bg-primary/10 dark:bg-gray-800 text-black dark:text-white px-8 py-4 text-lg text-center">
-                No Posts Found!
-            </div>
-        <?php endif; ?>
+          </div>
+        </div>
+    <?php
+    endwhile;
+    wp_reset_postdata();
+    ?>
+
+  </div>
 </section>
+<?php endif; ?>

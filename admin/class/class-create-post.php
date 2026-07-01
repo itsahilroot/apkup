@@ -177,17 +177,17 @@ class AT_Create_GP_Post
         $datos_informacion['descargas'] = $this->apk_installs;
         $datos_informacion['os'] = 'ANDROID';
         $datos_informacion['categoria_app'] = $this->apk_category ?? '';
-        add_post_meta($this->post_id, "wp_GP_ID", $this->apk_id);
-        add_post_meta($this->post_id, "app_type", "0");
+        update_post_meta($this->post_id, "wp_GP_ID", $this->apk_id);
+        update_post_meta($this->post_id, "app_type", "0");
 
-        add_post_meta($this->post_id, "datos_informacion", $datos_informacion);
+        update_post_meta($this->post_id, "datos_informacion", $datos_informacion);
 
         if ($this->is_advanced_options && !empty($this->post_mod_feature)) {
-            add_post_meta($this->post_id, "wp_mods", $this->post_mod_feature);
+            update_post_meta($this->post_id, "wp_mods", $this->post_mod_feature);
         }
 
-        add_post_meta($this->post_id, "new_rating_average", floatval($this->apk_rating));
-        add_post_meta($this->post_id, "new_rating_users", intval($this->apk_votes));
+        update_post_meta($this->post_id, "new_rating_average", floatval($this->apk_rating));
+        update_post_meta($this->post_id, "new_rating_users", intval($this->apk_votes));
     }
 
     private function upload_image_to_wp($image_url, $format = null, $name = 'thumbnail')
@@ -397,7 +397,7 @@ private function upload_banner_image()
 
     // Save meta URL
     $banner_url = wp_get_attachment_url($attach_id);
-    add_post_meta($this->post_id, "wp_poster_GP", $banner_url);
+    update_post_meta($this->post_id, "wp_poster_GP", $banner_url);
 }
 
 
@@ -485,16 +485,73 @@ private function upload_banner_image()
         $category = $this->get_category();
         $post_content = wp_encode_emoji($this->apk_content);
 
-        $new_post = [
-            "post_title" => $this->generate_post_title(),
-            "post_name" => $post_permalink,
-            "post_content" => $post_content,
-            "post_status" => $this->post_status,
-            "post_category" => [$category['parent_id'], $category['child_id']],
-            "post_type" => "post",
-        ];
+        // Check if post already exists with the same Google Play ID (package ID)
+        $is_update = false;
+        if (!empty($this->apk_id)) {
+            $existing_posts = get_posts([
+                'post_type' => 'post',
+                'post_status' => 'any',
+                'meta_query' => [
+                    [
+                        'key' => 'wp_GP_ID',
+                        'value' => $this->apk_id,
+                        'compare' => '=',
+                    ]
+                ],
+                'posts_per_page' => 1,
+                'fields' => 'ids',
+            ]);
+            $is_update = !empty($existing_posts);
+        }
 
-        $post_id = wp_insert_post($new_post);
+        if ($is_update) {
+            $post_id = $existing_posts[0];
+            $new_post = [
+                "ID" => $post_id,
+                "post_title" => $this->generate_post_title(),
+                "post_content" => $post_content,
+                "post_status" => $this->post_status,
+                "post_category" => [$category['parent_id'], $category['child_id']],
+            ];
+            wp_update_post($new_post);
+
+            // Clean up old media attachments to prevent orphans in media library
+            // Old thumbnail
+            $old_thumbnail_id = get_post_thumbnail_id($post_id);
+            if ($old_thumbnail_id) {
+                wp_delete_attachment($old_thumbnail_id, true);
+            }
+
+            // Old banner
+            $old_banner_url = get_post_meta($post_id, 'wp_poster_GP', true);
+            if ($old_banner_url) {
+                $old_banner_id = attachment_url_to_postid($old_banner_url);
+                if ($old_banner_id) {
+                    wp_delete_attachment($old_banner_id, true);
+                }
+            }
+
+            // Old screenshots
+            $old_screenshots = get_post_meta($post_id, 'datos_imagenes', true);
+            if (is_array($old_screenshots)) {
+                foreach ($old_screenshots as $url) {
+                    $attachment_id = attachment_url_to_postid($url);
+                    if ($attachment_id) {
+                        wp_delete_attachment($attachment_id, true);
+                    }
+                }
+            }
+        } else {
+            $new_post = [
+                "post_title" => $this->generate_post_title(),
+                "post_name" => $post_permalink,
+                "post_content" => $post_content,
+                "post_status" => $this->post_status,
+                "post_category" => [$category['parent_id'], $category['child_id']],
+                "post_type" => "post",
+            ];
+            $post_id = wp_insert_post($new_post);
+        }
 
         $this->post_id = $post_id;
 
@@ -511,7 +568,9 @@ private function upload_banner_image()
         $response = [
             'status' => 'success',
             'data' => [
-                'message' => '<strong><a href="' . get_edit_post_link($this->post_id) . '" target="_blank">' . $this->apk_name . '</a></strong> post uploaded.',
+                'message' => $is_update
+                    ? '<strong><a href="' . get_edit_post_link($this->post_id) . '" target="_blank">' . $this->apk_name . '</a></strong> post updated.'
+                    : '<strong><a href="' . get_edit_post_link($this->post_id) . '" target="_blank">' . $this->apk_name . '</a></strong> post uploaded.',
             ],
         ];
 

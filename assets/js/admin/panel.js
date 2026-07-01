@@ -181,7 +181,7 @@ jQuery(document).ready(function ($) {
                     <div class="${wrapperClass}">
                         <p class="at-mini-title">${field.label}</p>
                         ${field.description ? `<p>${field.description}</p>` : ''}
-                        <select class="at-select" name="${field.name_prefix}[${index_placeholder}][${field.key}]" style="width: 100%;">
+                        <select class="at-select" name="${field.name_prefix}[${index_placeholder}][${field.key}]" data-field-key="${field.key}" style="width: 100%;">
                             <option value="">Select</option>
                             ${Object.keys(field.options).map(key => `
                                 <option value="${key}">${field.options[key]}</option>
@@ -815,6 +815,7 @@ jQuery(document).ready(function ($) {
                     options: {
                         'boxed': 'Boxed',
                         'rectangle': 'Rectangle',
+                        'landscape': 'Landscape',
                     }
                 },
                 {
@@ -879,6 +880,88 @@ jQuery(document).ready(function ($) {
                 }
             ],
             add_button_id: 'add-new-dl-faq',
+        },
+        {
+            container_id: 'archive-dynamic-subcats',
+            item_name: 'Subcategory',
+            fields: [
+                {
+                    type: 'checkbox',
+                    label: 'Enable/Disable',
+                    description: 'Show/Hide this section.',
+                    name_prefix: 'archive_dynamic_subcats',
+                    key: 'enable'
+                },
+                {
+                    type: 'text',
+                    label: 'Custom Title',
+                    description: 'Leave empty to use category name.',
+                    name_prefix: 'archive_dynamic_subcats',
+                    key: 'title'
+                },
+                {
+                    type: 'search',
+                    label: 'Subcategory',
+                    description: 'Search and select the subcategory.',
+                    name_prefix: 'archive_dynamic_subcats',
+                    key: 'term_id',
+                    search_class: 'coll-search',
+                    results_class: 'coll-results',
+                    save_key: 'term'
+                },
+                {
+                    type: 'select',
+                    label: 'Parent Category Filter',
+                    description: 'Show this section on this parent category page only.',
+                    name_prefix: 'archive_dynamic_subcats',
+                    key: 'parent_cat',
+                    options: window.apktemplates_ajax_vars && window.apktemplates_ajax_vars.parent_cats ? window.apktemplates_ajax_vars.parent_cats : { 'all': 'All' }
+                },
+                {
+                    type: 'select',
+                    label: 'Display Style',
+                    description: 'Choose the layout style.',
+                    name_prefix: 'archive_dynamic_subcats',
+                    key: 'style',
+                    options: {
+                        'boxed': 'Boxed',
+                        'rectangle': 'Rectangle',
+                        'landscape': 'Landscape'
+                    }
+                },
+                {
+                    type: 'select',
+                    label: 'Order By',
+                    description: 'Sorting order for this subcategory.',
+                    name_prefix: 'archive_dynamic_subcats',
+                    key: 'posts_order',
+                    options: {
+                        'latest': 'Latest',
+                        'popular': 'Popular',
+                        'oldest': 'Oldest',
+                        'modified': 'Recently Modified',
+                        'a_to_z': 'A to Z',
+                        'random': 'Random'
+                    }
+                },
+                {
+                    type: 'number',
+                    label: 'Posts Limit',
+                    description: 'Number of apps to show.',
+                    name_prefix: 'archive_dynamic_subcats',
+                    key: 'limit',
+                    attributes: 'min="1" max="100"'
+                }
+            ],
+            search_config: {
+                search_class: 'coll-search',
+                results_class: 'coll-results',
+                action: 'at_search_term',
+                save_key: 'term',
+                limit: 1,
+                name_prefix: 'archive_dynamic_subcats'
+            },
+            add_button_id: 'add-new-dynamic-subcat',
         }
     ];
 
@@ -901,6 +984,8 @@ jQuery(document).ready(function ($) {
                     $input = $container.find(`.${field.results_class}-selected input[type="hidden"][data-field-key="${field.key}"]`);
                 } else if (field.type === 'checkbox') {
                     $input = $container.find(`input[type="checkbox"][data-field-key="${field.key}"]`);
+                } else if (field.type === 'select') {
+                    $input = $container.find(`select[data-field-key="${field.key}"]`);
                 } else {
                     $input = $container.find(`input[type="${field.type}"][data-field-key="${field.key}"]`);
                 }
@@ -968,6 +1053,35 @@ jQuery(document).ready(function ($) {
 
     $(document).ready(function () {
         at_init_wp_media_uploader();
+        at_init_term_search('at-hero-term-wrapper', 'au_home_hero_term_id');
+        at_init_term_search('at-trending-term-wrapper', 'au_home_trending_term_id');
+        at_init_term_search('at-premium-term-wrapper', 'au_home_premium_term_id');
     });
     $('.color-picker').wpColorPicker();
+
+    // Clear Archive Cache Button Handler
+    $(document).on('click', '#apkup-clear-cache-btn', function (e) {
+        e.preventDefault();
+        const $btn = $(this);
+        const originalText = $btn.text();
+        $btn.prop('disabled', true).text('Clearing...');
+
+        $.post(apktemplates_ajax_vars.ajax_url, {
+            action: 'apkup_clear_archive_cache',
+            nonce: apktemplates_ajax_vars.nonce
+        })
+            .done(function (response) {
+                if (response.success) {
+                    show_snackbar('Archive cache cleared successfully!');
+                } else {
+                    show_snackbar('Failed to clear cache.');
+                }
+            })
+            .fail(function () {
+                show_snackbar('Request failed.');
+            })
+            .always(function () {
+                $btn.prop('disabled', false).text(originalText);
+            });
+    });
 });

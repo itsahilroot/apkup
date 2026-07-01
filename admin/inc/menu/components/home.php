@@ -29,6 +29,11 @@ $au_home_trending_title = get_theme_mod('au_home_trending_title', 'Tendencias');
 $au_home_trending_limit = get_theme_mod('au_home_trending_limit', 15);
 $au_home_trending_sort = get_theme_mod('au_home_trending_sort', 'popular');
 $au_home_trending_term_id = get_theme_mod('au_home_trending_term_id', '');
+$au_home_premium_swt = get_theme_mod('au_home_premium_swt', false);
+$au_home_premium_title = get_theme_mod('au_home_premium_title', 'Juegos Populares Baratos / Premium Gratis');
+$au_home_premium_limit = get_theme_mod('au_home_premium_limit', 10);
+$au_home_premium_sort = get_theme_mod('au_home_premium_sort', 'modified');
+$au_home_premium_term_id = get_theme_mod('au_home_premium_term_id', '');
 $au_home_recommended_swt = get_theme_mod('au_home_recommended_swt', false);
 
 $au_home_recommended = get_theme_mod('au_home_recommended', []);
@@ -102,19 +107,19 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                     </div>
                     <div class="at-mb-2">
                         <p class="at-mini-title"><?php esc_html_e('Filter by Category/Tag', 'apktemplates'); ?></p>
-                        <div class="at-term-select-wrapper">
-                            <input type="search" class="at-search-ipt term-search" minlength="3" placeholder="<?php esc_attr_e('Enter at least 3 letters...', 'apktemplates'); ?>" />
+                        <div class="at-term-select-wrapper" id="at-hero-term-wrapper">
+                            <input type="search" class="at-search-ipt" minlength="3" placeholder="<?php esc_attr_e('Enter at least 3 letters...', 'apktemplates'); ?>" />
                             <div class="term-results" style="display: none"></div>
-                            <div class="term-results-selected">
-                                <?php if (!empty($au_home_hero_term_id) && apkt_is_category_or_tag($au_home_hero_term_id)): ?>
-                                    <div class="selected-term-item" data-term-id="<?php echo esc_attr($au_home_hero_term_id); ?>">
-                                        <?php echo esc_html(get_term_name_by_id($au_home_hero_term_id)); ?>
-                                        <span class="delete-term"><i class="fa fa-trash-alt"></i></span>
-                                        <input type="hidden" name="au_home_hero_term_id" value="<?php echo esc_attr($au_home_hero_term_id); ?>" />
-                                    </div>
-                                <?php else: ?>
-                                    <input type="hidden" name="au_home_hero_term_id" value="" />
-                                <?php endif; ?>
+                            <div class="term-selected at-mt-1">
+                                <ul>
+                                    <?php if (!empty($au_home_hero_term_id) && apkt_is_category_or_tag($au_home_hero_term_id)): ?>
+                                        <li data-term-id="<?php echo esc_attr($au_home_hero_term_id); ?>">
+                                            <?php echo esc_html(get_term_name_by_id($au_home_hero_term_id)); ?>
+                                            <span class="delete"><i class="fa fa-trash-alt"></i></span>
+                                            <input type="hidden" name="au_home_hero_term_id" value="<?php echo esc_attr($au_home_hero_term_id); ?>" />
+                                        </li>
+                                    <?php endif; ?>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -245,21 +250,73 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                     </div>
                     <div class="at-mb-2">
                         <p class="at-mini-title"><?php esc_html_e('Filter by Category/Tag', 'apktemplates'); ?></p>
-                        <div class="at-term-select-wrapper">
-                            <input type="search" class="at-search-ipt term-search" minlength="3" placeholder="<?php esc_attr_e('Enter at least 3 letters...', 'apktemplates'); ?>" />
+                        <div class="at-term-select-wrapper" id="at-trending-term-wrapper">
+                            <input type="search" class="at-search-ipt" minlength="3" placeholder="<?php esc_attr_e('Enter at least 3 letters...', 'apktemplates'); ?>" />
                             <div class="term-results" style="display: none"></div>
-                            <div class="term-results-selected">
-                                <?php if (!empty($au_home_trending_term_id) && apkt_is_category_or_tag($au_home_trending_term_id)): ?>
-                                    <div class="selected-term-item" data-term-id="<?php echo esc_attr($au_home_trending_term_id); ?>">
-                                        <?php echo esc_html(get_term_name_by_id($au_home_trending_term_id)); ?>
-                                        <span class="delete-term"><i class="fa fa-trash-alt"></i></span>
-                                        <input type="hidden" name="au_home_trending_term_id" value="<?php echo esc_attr($au_home_trending_term_id); ?>" />
-                                    </div>
-                                <?php else: ?>
-                                    <input type="hidden" name="au_home_trending_term_id" value="" />
-                                <?php endif; ?>
+                            <div class="term-selected at-mt-1">
+                                <ul>
+                                    <?php if (!empty($au_home_trending_term_id) && apkt_is_category_or_tag($au_home_trending_term_id)): ?>
+                                        <li data-term-id="<?php echo esc_attr($au_home_trending_term_id); ?>">
+                                            <?php echo esc_html(get_term_name_by_id($au_home_trending_term_id)); ?>
+                                            <span class="delete"><i class="fa fa-trash-alt"></i></span>
+                                            <input type="hidden" name="au_home_trending_term_id" value="<?php echo esc_attr($au_home_trending_term_id); ?>" />
+                                        </li>
+                                    <?php endif; ?>
+                                </ul>
                             </div>
                         </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('Premium Section', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Customize the Premium Apps and Games section.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Enable Section', 'apktemplates'); ?></p>
+                        <label class="at-switch-btn">
+                            <input type="checkbox" name="au_home_premium_swt" value="1" <?php checked($au_home_premium_swt, 1); ?> />
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Section Title', 'apktemplates'); ?></p>
+                        <input type="text" name="au_home_premium_title" class="at-text-ipt" value="<?php echo esc_attr($au_home_premium_title); ?>" placeholder="E.g. Premium Apps" />
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Posts Limit', 'apktemplates'); ?></p>
+                        <input type="number" name="au_home_premium_limit" class="at-number-ipt" min="1" max="50" value="<?php echo esc_attr($au_home_premium_limit); ?>" />
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Sort Order', 'apktemplates'); ?></p>
+                        <select class="at-select" name="au_home_premium_sort">
+                            <?php foreach ($posts_sortby as $key => $sort): ?>
+                                <option value="<?php echo esc_attr($key); ?>" <?php selected($au_home_premium_sort, $key); ?>>
+                                    <?php echo esc_html($sort); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Filter by Category/Tag', 'apktemplates'); ?></p>
+                        <div class="at-term-select-wrapper" id="at-premium-term-wrapper">
+                            <input type="search" class="at-search-ipt" minlength="3" placeholder="<?php esc_attr_e('Enter at least 3 letters...', 'apktemplates'); ?>" />
+                            <div class="term-results" style="display: none"></div>
+                            <div class="term-selected at-mt-1">
+                                <ul>
+                                    <?php if (!empty($au_home_premium_term_id) && apkt_is_category_or_tag($au_home_premium_term_id)): ?>
+                                        <li data-term-id="<?php echo esc_attr($au_home_premium_term_id); ?>">
+                                            <?php echo esc_html(get_term_name_by_id($au_home_premium_term_id)); ?>
+                                            <span class="delete"><i class="fa fa-trash-alt"></i></span>
+                                            <input type="hidden" name="au_home_premium_term_id" value="<?php echo esc_attr($au_home_premium_term_id); ?>" />
+                                        </li>
+                                    <?php endif; ?>
+                                </ul>
+                            </div>
                     </div>
                 </td>
             </tr>
@@ -404,6 +461,7 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                                             <option value="">Select</option>
                                             <option value="boxed" <?php selected($current_style, 'boxed'); ?>>Boxed</option>
                                             <option value="rectangle" <?php selected($current_style, 'rectangle'); ?>>Rectangle</option>
+                                            <option value="landscape" <?php selected($current_style, 'landscape'); ?>>Landscape</option>
                                         </select>
                                     </div>
                                     <div class="at-mb-2 at-pb-2">

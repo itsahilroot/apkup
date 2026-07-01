@@ -132,7 +132,7 @@ function get_apktemplates_post_meta($post, $field_name, $request) {
         'wp_version_GP'	=> get_post_meta($post['id'], 'wp_version_GP', true),
         'wp_developers_GP'  => get_post_meta($post['id'], 'wp_developers_GP', true),
         'wp_sizes_GP'  => get_post_meta($post['id'], 'wp_sizes_GP', true),
-        'wp_GP_ID'  => get_post_meta($post['id'], 'wp_GP_ID', true),
+        'wp_GP_ID'  => get_post_meta($post['id'], 'wp_GP_ID', true) ?: get_post_meta($post['id'], 'px_app_id', true),
         'wp_mods'  => get_post_meta($post['id'], 'wp_mods', true),
         'avg_rating'  => get_post_meta($post['id'], 'avg_rating', true),
         'total_votes'  => get_post_meta($post['id'], 'total_votes', true),

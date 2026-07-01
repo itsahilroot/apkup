@@ -4,186 +4,436 @@ $post_id = get_the_ID();
 $app_name = get_the_title();
 $post_updated_date = get_the_modified_date('d M Y', $post_id);
 $app_logo_full = get_the_post_thumbnail_url($post_id, 'full');
+if (empty($app_logo_full)) {
+    $app_logo_full = 'https://placehold.co/150x150/0052e0/ffffff?text=App';
+}
 
 $is_app_mod = get_post_meta($post_id, 'app_type', true);
 
 $data = get_post_meta($post_id, 'datos_informacion', true);
 $data = is_array($data) ? $data : [];
-$app_version = $data['version'] ?? '';
-$app_requires = $data['requerimientos'] ?? '';
-$app_size = $data['tamano'] ?? '';
-$app_mod_info = $data['mod_info'] ?? '';
+$app_version = !empty($data['version']) ? $data['version'] : '1.0';
+$app_requires = !empty($data['requerimientos']) ? $data['requerimientos'] : '7.0';
+$app_size = !empty($data['tamano']) ? $data['tamano'] : '100 MB';
+$app_downloads = !empty($data['descargas']) ? (function_exists('apkup_format_downloads') ? apkup_format_downloads($data['descargas']) : $data['descargas']) : '10M+';
+$app_consiguelo = !empty($data['consiguelo']) ? $data['consiguelo'] : '';
 
-$new_rating_average = get_post_meta($post_id, 'new_rating_average', true) ?: 0;
-$new_rating_users = get_post_meta($post_id, 'new_rating_users', true) ?: 0;
+$new_rating_average = get_post_meta($post_id, 'new_rating_average', true) ?: '4.2';
+$new_rating_users = get_post_meta($post_id, 'new_rating_users', true) ?: '2500000';
+$formatted_reviews = function_exists('apkup_format_views_count') ? apkup_format_views_count($new_rating_users) : $new_rating_users;
+$publisher_terms = get_the_terms($post_id, 'publisher');
+$developer_name = 'Supercell';
+$developer_search_url = '';
 
-$price = apkup_get_appyn_datos_info('offer', 'price') ?: 'gratis';
-if ($price === 'gratis') {
-    $price = 'Free';
+if (!empty($publisher_terms) && !is_wp_error($publisher_terms)) {
+    $first_publisher = array_shift($publisher_terms);
+    $developer_name = $first_publisher->name;
+    $term_link = get_term_link($first_publisher);
+    $developer_search_url = !is_wp_error($term_link) ? $term_link : esc_url(add_query_arg('s', $developer_name, home_url('/')));
 } else {
-    $price = 'Paid';
+    $developer_name = get_post_meta($post_id, 'wp_developers_GP', true) ?: 'Supercell';
+    $developer_search_url = esc_url(add_query_arg('s', $developer_name, home_url('/')));
 }
 
 $primary_cat = apkup_get_primary_post_category($post_id);
 ?>
-<div class="app-info mb-10">
-    <div class="md:flex md:gap-8 lg:gap-12">
-        <div class="flex-1 min-w-0">
-            <div class="text-title mb-7 text-center md:text-left">
-                <h1 class="title text-3xl md:text-5xl text-gray-700 dark:text-gray-200 font-semibold"><?php echo $app_name; ?></h1>
-            </div>
-            <div class="app-icon flex justify-center md:justify-end md:hidden mb-8" skeleton-bg>
-                <img fetchpriority="high" class="lazyload rounded-2xl shadow-lg" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201%201'%3E%3C/svg%3E" data-src="<?php echo $app_logo_full; ?>" width="220" height="220" alt="<?php echo $app_name; ?>">
-            </div>
-             
-            <!-- Top tag row (Fecha + Android version) -->
+<!-- App Details Hero Section -->
+<section class="bg-white dark:bg-brand-darkCard rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-brand-darkBorder transition-all flex flex-col items-stretch space-y-4">
 
-            <div class="app-buttons w-full md:max-w-2xl mx-auto md:mx-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-gray-200/70 dark:border-gray-700/60 rounded-3xl p-5 md:p-7 shadow-sm hover:shadow-lg transition-all duration-500">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <a href="#download-links" class="btn-download !w-full md:!w-auto !px-8 !py-3 md:!min-w-[240px]">
-                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        <div class="flex flex-col items-start leading-tight">
-                            <span class="text-[17px] tracking-wide relative z-10">Descargar APK</span>
-                            <?php if(!empty($app_size)) : ?><span class="text-[11px] text-white/90 font-normal relative z-10"><?php echo $app_size; ?></span><?php endif; ?>
-                        </div>
-                    </a>
-                    
-                    <div class="flex justify-between md:justify-start items-center gap-6 md:gap-8 w-full md:w-auto">
-                        <div class="flex flex-col items-center flex-1 md:flex-none bg-gray-50/50 dark:bg-gray-900/30 p-3 rounded-2xl border border-gray-100 dark:border-gray-700/50">
-                            <div id="rateYo" data-rateyo-rating="<?php echo esc_html(number_format((float)$new_rating_average, 1)); ?>" data-post_id="<?php the_ID(); ?>" style="padding: 0px; width: 110px;" class="jq-ry-container mb-1"></div>
-                            <div class="text-[13px] font-medium text-gray-500 dark:text-gray-400 flex items-baseline gap-1">
-                                <span id="currentRating" class="text-gray-900 dark:text-white font-bold text-[16px]"><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
-                                <span class="text-gray-400">/ 5</span> 
-                                <span class="text-[11px] opacity-70 ml-1">(<span id="totalVotes"><?php echo esc_html($new_rating_users); ?></span>)</span>
-                            </div>
-                        </div>
-                        
-                        <div class="w-px h-12 bg-gray-200 dark:bg-gray-700 hidden md:block"></div>
-                        
-                        <a href="javascript:void(0);" id="post-share" class="group flex flex-col items-center gap-1.5 p-3 rounded-2xl text-gray-400 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-all bg-gray-50/50 dark:bg-gray-900/30 border border-gray-100 dark:border-gray-700/50 hover:border-primary/20">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 256 256" class="transform group-hover:scale-110 transition-transform">
-                                <path d="M176,160a39.89,39.89,0,0,0-28.62,12.09l-46.1-29.63a39.8,39.8,0,0,0,0-28.92l46.1-29.63a40,40,0,1,0-8.66-13.45l-46.1,29.63a40,40,0,1,0,0,55.82l46.1,29.63A40,40,0,1,0,176,160Zm0-128a24,24,0,1,1-24,24A24,24,0,0,1,176,32ZM64,152a24,24,0,1,1,24-24A24,24,0,0,1,64,152Zm112,72a24,24,0,1,1,24-24A24,24,0,0,1,176,224Z"></path>
-                            </svg>
-                            <span class="text-[10px] font-bold uppercase tracking-widest">Share</span>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="h-px bg-gray-200/80 dark:bg-gray-700/60 my-5"></div>
-                
-                <div class="flex flex-wrap items-center gap-y-3 gap-x-6">
-                    <div class="flex items-center gap-2">
-                        <div class="p-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-gray-500 dark:text-gray-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Update</span>
-                            <span class="text-[13px] font-medium text-gray-800 dark:text-gray-200"><?php echo $post_updated_date; ?></span>
-                        </div>
-                    </div>
-                    
-                    <?php if(!empty($app_version)) : ?>
-                    <div class="flex items-center gap-2">
-                        <div class="p-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-gray-500 dark:text-gray-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Version</span>
-                            <span class="text-[13px] font-medium text-gray-800 dark:text-gray-200"><?php echo $app_version; ?></span>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if($primary_cat) : ?>
-                    <div class="flex items-center gap-2">
-                        <div class="p-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-gray-500 dark:text-gray-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Category</span>
-                            <a href="<?php echo esc_url($primary_cat['url']); ?>" class="text-[13px] font-medium text-primary hover:text-primary/80"><?php echo esc_html($primary_cat['name']); ?></a>
-                        </div>
-                    </div>
-                    <?php endif; ?>
+  <!-- Breadcrumbs -->
+  <div class="border-b border-slate-100 dark:border-brand-darkBorder/40 pb-2.5">
+    <?php if (function_exists('apkup_breadcrumb')) apkup_breadcrumb(); ?>
+  </div>
 
-                    <?php if(!empty($app_requires)) : ?>
-                    <div class="flex items-center gap-2">
-                        <div class="p-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg text-gray-500 dark:text-gray-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Requires</span>
-                            <span class="text-[13px] font-medium text-gray-800 dark:text-gray-200">Android <?php echo apkup_extract_number($app_requires) ?: '8.0'; ?>+</span>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-                </div>
-                
-                <?php if(!empty($app_mod_info)) : ?>
-                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
-                    <div class="flex gap-2.5 items-center">
-                        <span class="flex items-center justify-center shrink-0 w-8 h-8 rounded-full bg-green-100/80 dark:bg-green-900/40 text-green-600 dark:text-green-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        </span>
-                        <span class="text-[13px] font-medium text-gray-700 dark:text-gray-300"><?php echo esc_html($app_mod_info); ?></span>
-                    </div>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
-        <div class="app-icon hidden md:flex justify-center md:justify-end w-48 h-48">
-            <img fetchpriority="high" class="rounded-2xl shadow-lg w-full h-full" src="<?php echo $app_logo_full; ?>" alt="<?php echo $app_name; ?>">
-        </div>
+  <!-- Icon and Meta block layout -->
+  <div class="flex items-start text-left space-x-4 md:space-x-6 w-full">
+    <!-- App icon -->
+    <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-3xl overflow-hidden shadow-md border border-slate-100 dark:border-brand-darkBorder">
+      <img src="<?php echo esc_url($app_logo_full); ?>" alt="<?php echo esc_attr($app_name); ?> App Icon" class="w-full h-full object-cover" width="112" height="112" onerror="this.onerror=null; this.src='https://placehold.co/150x150/0052e0/ffffff?text=App';">
     </div>
-</div>
 
-<!-- Share Modal -->
-<div id="share-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="share-overlay"></div>
-    <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all scale-100 opacity-100">
-        <!-- Header -->
-        <div class="p-5 flex items-start justify-between">
-            <div class="flex items-center gap-4">
-                <img src="<?php echo $app_logo_full; ?>" alt="<?php echo $app_name; ?>" class="w-12 h-12 rounded-full object-cover shadow-sm bg-gray-100 dark:bg-gray-700">
-                <div>
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white leading-tight"><?php echo $app_name; ?></h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Share this app</p>
-                </div>
-            </div>
-            <button id="close-share-modal" class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+    <!-- Meta Text Column + Stats grid side-by-side -->
+    <div class="flex-grow space-y-3.5 w-full">
+      <div>
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <?php echo esc_html($app_name); ?>
+        </h1>
+        <a href="<?php echo $developer_search_url; ?>"
+          aria-label="Ver más de <?php echo esc_attr($developer_name); ?>"
+          class="inline-flex items-center mt-1 text-primary hover:underline font-semibold text-sm transition-colors">
+          <span><?php echo esc_html($developer_name); ?></span>
+          <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Specifications Stats Row Table -->
+      <div class="grid grid-cols-3 gap-2 border-t border-slate-100 dark:border-brand-darkBorder/70 pt-3 text-xs sm:text-sm max-w-[320px]">
+        <!-- Stats Col 1 -->
+        <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder">
+          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white">
+            <span class="text-amber-500">★</span>
+            <span><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
+          </div>
+          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center"><?php echo esc_html($formatted_reviews); ?> reviews</span>
         </div>
-        
-        <!-- Social Icons -->
-        <div class="px-5 pb-2 flex gap-4 overflow-x-auto py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-            <!-- Telegram -->
-            <a href="https://t.me/share/url?url=<?php echo urlencode(get_permalink()); ?>&text=<?php echo urlencode($app_name); ?>" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-[#2AABEE] text-white hover:opacity-90 transition-opacity">
-                <svg class="w-6 h-6 transform -ml-0.5 translate-y-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 11.944 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-            </a>
-            <!-- Facebook -->
-            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-[#1877F2] text-white hover:opacity-90 transition-opacity">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-            <!-- WhatsApp -->
-            <a href="https://api.whatsapp.com/send?text=<?php echo urlencode($app_name . ' ' . get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-[#25D366] text-white hover:opacity-90 transition-opacity">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-            </a>
-            <!-- X/Twitter -->
-            <a href="https://twitter.com/intent/tweet?text=<?php echo urlencode($app_name); ?>&url=<?php echo urlencode(get_permalink()); ?>" target="_blank" rel="noopener noreferrer" class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-black text-white hover:opacity-90 transition-opacity">
-               <svg class="w-6 h-6 p-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a>
+        <!-- Stats Col 2 -->
+        <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder">
+          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white">
+            <svg class="w-3.5 h-3.5 text-slate-500 mr-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span><?php echo esc_html($app_downloads); ?></span>
+          </div>
+          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center">Downloads</span>
         </div>
-        
-        <!-- Copy Link -->
-        <div class="p-5">
-            <div class="relative flex items-center">
-                <input type="text" readonly value="<?php echo get_permalink(); ?>" class="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600/50 rounded-lg py-3 px-4 text-sm text-gray-500 dark:text-gray-400 focus:outline-none select-all">
-                <button id="copy-link-btn" data-url="<?php echo get_permalink(); ?>" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-primary hover:bg-primary/10 rounded-md transition-colors group">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                    <span class="absolute right-0 -top-8 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Copy link</span>
-                </button>
-            </div>
+        <!-- Stats Col 3 -->
+        <div class="flex flex-col items-center justify-center">
+          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white">
+            <svg class="w-3.5 h-3.5 text-slate-500 mr-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+            <span><?php echo esc_html($app_size); ?></span>
+          </div>
+          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center">Size</span>
         </div>
+      </div>
     </div>
-</div>
+  </div>
+
+  <!-- Main Download Action button triggering inline progress indicator -->
+  <div class="pt-1 flex flex-col space-y-2.5">
+    <button id="downloadBtn" aria-label="Descargar <?php echo esc_attr($app_name); ?> APK (<?php echo esc_attr($app_size); ?>)"
+      class="relative overflow-hidden w-full bg-primary hover:opacity-95 active:scale-[0.99] text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-primary/15 flex items-center justify-center space-x-2.5 transition-all text-sm sm:text-base focus:ring-4 focus:ring-primary/20 cursor-pointer">
+      <div id="btnProgressBar" class="absolute inset-y-0 left-0 bg-black/10 w-0 transition-all duration-200"></div>
+      <div class="relative z-10 flex items-center justify-center space-x-2.5">
+        <svg id="btnIcon" class="w-5 h-5 shrink-0 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+        </svg>
+        <span id="btnText">Download APK (<?php echo esc_html($app_size); ?>)</span>
+      </div>
+    </button>
+    <div id="btnProgressDetails" class="hidden justify-between items-center px-1 text-xs font-semibold text-slate-400 dark:text-slate-500">
+      <span id="btnPercentage">0%</span>
+      <span id="btnSpeed">Descargando...</span>
+    </div>
+  </div>
+</section>
+
+<!-- Carousel Features Horizontal Grid -->
+<section class="relative mt-4">
+  <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1 snap-x snap-mandatory scroll-smooth md:grid md:grid-cols-6 md:gap-4 md:space-x-0 md:overflow-x-visible" id="specCarousel">
+
+    <!-- Info Card 1: Actualización -->
+    <div class="min-w-[100px] sm:min-w-[115px] md:min-w-0 snap-center bg-white dark:bg-brand-darkCard rounded-2xl p-2.5 flex flex-col items-center text-center shadow-sm border border-slate-100 dark:border-brand-darkBorder/80">
+      <div class="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center mb-1.5 text-slate-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+      </div>
+      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-none">Actualización</span>
+      <span class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1 whitespace-nowrap"><?php echo esc_html($post_updated_date); ?></span>
+    </div>
+
+    <!-- Info Card 2: Versión -->
+    <div class="min-w-[100px] sm:min-w-[115px] md:min-w-0 snap-center bg-white dark:bg-brand-darkCard rounded-2xl p-2.5 flex flex-col items-center text-center shadow-sm border border-slate-100 dark:border-brand-darkBorder/80">
+      <div class="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center mb-1.5 text-slate-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+      </div>
+      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-none">Versión</span>
+      <span class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1 truncate max-w-full"><?php echo esc_html($app_version); ?></span>
+    </div>
+
+    <!-- Info Card 3: Categoría -->
+    <div class="min-w-[100px] sm:min-w-[115px] md:min-w-0 snap-center bg-white dark:bg-brand-darkCard rounded-2xl p-2.5 flex flex-col items-center text-center shadow-sm border border-slate-100 dark:border-brand-darkBorder/80">
+      <div class="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center mb-1.5 text-slate-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+        </svg>
+      </div>
+      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-none">Categoría</span>
+      <?php if ($primary_cat) : ?>
+        <a href="<?php echo esc_url($primary_cat['url']); ?>" class="text-xs font-bold text-primary mt-1 truncate max-w-full hover:underline"><?php echo esc_html($primary_cat['name']); ?></a>
+      <?php else : ?>
+        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1">Apps</span>
+      <?php endif; ?>
+    </div>
+
+    <!-- Info Card 4: Requiere -->
+    <div class="min-w-[100px] sm:min-w-[115px] md:min-w-0 snap-center bg-white dark:bg-brand-darkCard rounded-2xl p-2.5 flex flex-col items-center text-center shadow-sm border border-slate-100 dark:border-brand-darkBorder/80">
+      <div class="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center mb-1.5 text-slate-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+        </svg>
+      </div>
+      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-none">Requiere</span>
+      <span class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1 whitespace-nowrap">Android <?php echo esc_html(function_exists('apkup_extract_number') ? (apkup_extract_number($app_requires) ?: '7.0') : $app_requires); ?>+</span>
+    </div>
+
+    <!-- Info Card 5: Tamaño -->
+    <div class="min-w-[100px] sm:min-w-[115px] md:min-w-0 snap-center bg-white dark:bg-brand-darkCard rounded-2xl p-2.5 flex flex-col items-center text-center shadow-sm border border-slate-100 dark:border-brand-darkBorder/80">
+      <div class="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center mb-1.5 text-slate-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+      </div>
+      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-none">Tamaño</span>
+      <span class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-1 truncate max-w-full"><?php echo esc_html($app_size); ?></span>
+    </div>
+
+    <!-- Info Card 6: Play Store -->
+    <div class="min-w-[100px] sm:min-w-[115px] md:min-w-0 snap-center bg-white dark:bg-brand-darkCard rounded-2xl p-2.5 flex flex-col items-center text-center shadow-sm border border-slate-100 dark:border-brand-darkBorder/80">
+      <div class="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center mb-1.5">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+          <path d="M3 20.37V3.63a1 1 0 011.53-.85l15.1 8.37a1 1 0 010 1.7l-15.1 8.37A1 1 0 013 20.37z" fill="#00e676"></path>
+          <path d="M3 3.63v16.74a1 1 0 001.53.85L12 12 3.53 2.78A1 1 0 003 3.63z" fill="#00b0ff"></path>
+          <path d="M12 12l6.63 3.67 1.5-1.5a1 1 0 000-1.7l-8.13-4.47" fill="#ffea00"></path>
+          <path d="M3.53 2.78l11.5 6.35 3.1-1.7-13.1-7.25a1 1 0 00-1.53.85c0 .35.13.7.43.85V2.78z" fill="#ff1744"></path>
+        </svg>
+      </div>
+      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium leading-none">Play Store</span>
+      <?php if (!empty($app_consiguelo)) : ?>
+        <a href="<?php echo esc_url($app_consiguelo); ?>" target="_blank" rel="noopener" class="text-xs font-bold text-blue-500 mt-1 hover:underline">Disponible</a>
+      <?php else : ?>
+        <span class="text-xs font-bold text-slate-400 dark:text-slate-500 mt-1">No disp.</span>
+      <?php endif; ?>
+    </div>
+
+  </div>
+
+  <!-- Custom progress navigation slider tracker (Desktop only - Hidden if no overflow) -->
+  <div class="hidden flex-col items-center justify-center mt-3 select-none" id="specTrackContainer">
+    <div id="specTrack" class="w-48 h-2.5 bg-slate-200 dark:bg-slate-800 rounded-full relative cursor-pointer group flex items-center">
+      <div class="absolute inset-x-0 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full group-hover:bg-slate-300 dark:group-hover:bg-slate-700 transition-colors"></div>
+      <div id="specThumb" class="absolute h-2.5 bg-primary rounded-full cursor-grab active:cursor-grabbing transition-transform duration-75 hover:opacity-90 shadow-sm" style="width: 50px; transform: translateX(0);"></div>
+    </div>
+    <span class="text-[9px] text-slate-400 dark:text-slate-500 font-bold tracking-widest uppercase mt-2 pointer-events-none">Deslizar para explorar</span>
+  </div>
+</section>
+
+<?php
+$custom_boxes = get_post_meta($post_id, 'custom_boxes', true);
+$mod_details = [];
+$app_mod_info = !empty($data['mod_info']) ? $data['mod_info'] : '';
+if (!empty($app_mod_info)) {
+    $mod_details[] = $app_mod_info;
+}
+if (is_array($custom_boxes) && !empty($custom_boxes[0]['content'])) {
+    $mod_details[] = wp_strip_all_tags($custom_boxes[0]['content']);
+}
+
+if (!empty($mod_details)) :
+    $mod_title = (is_array($custom_boxes) && !empty($custom_boxes[0]['title'])) ? $custom_boxes[0]['title'] : __('MOD INFO', 'apktemplates');
+?>
+<!-- MOD Info Accordion -->
+<section class="bg-white dark:bg-brand-darkCard rounded-3xl overflow-hidden shadow-sm border border-slate-100 dark:border-brand-darkBorder smooth-transition my-6">
+  <button id="modAccordionHeader" class="w-full p-5 flex items-center justify-between text-left focus:outline-none cursor-pointer" aria-expanded="false" aria-controls="modAccordionBody">
+    <div class="flex items-center space-x-3.5">
+      <div class="w-11 h-11 bg-purple-100 dark:bg-purple-500/15 rounded-2xl flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+      </div>
+      <div>
+        <span class="block text-sm font-bold text-purple-600 dark:text-purple-400 tracking-wider"><?php echo esc_html($mod_title); ?></span>
+        <span class="block text-xs text-slate-400 dark:text-slate-500 mt-0.5"><?php esc_html_e('Toca para ver las funciones modificadas', 'apktemplates'); ?></span>
+      </div>
+    </div>
+    <svg id="modAccordionChevron" class="w-5 h-5 text-slate-400 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+
+  <!-- Content Panel -->
+  <div id="modAccordionBody" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+    <div class="p-5 border-t border-slate-100 dark:border-brand-darkBorder bg-purple-50/20 dark:bg-purple-950/5 space-y-3.5 text-sm">
+      <p class="font-semibold text-slate-700 dark:text-slate-300"><?php esc_html_e('Este APK cuenta con los siguientes agregados especiales:', 'apktemplates'); ?></p>
+      <ul class="space-y-2.5">
+        <?php foreach ($mod_details as $detail) : 
+            $lines = array_filter(explode("\n", str_replace("\r", "", $detail)));
+            if (empty($lines)) $lines = [$detail];
+            foreach ($lines as $line) :
+        ?>
+          <li class="flex items-start space-x-2">
+            <span class="text-emerald-500 font-bold shrink-0">✔</span>
+            <span class="text-slate-600 dark:text-slate-400"><?php echo esc_html($line); ?></span>
+          </li>
+        <?php endforeach; endforeach; ?>
+      </ul>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
+<!-- Inline Javascript Controller for Download Animation & Specs Trackbar -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // MOD Accordion Toggle
+    const accordionHeader = document.getElementById("modAccordionHeader");
+    const accordionBody = document.getElementById("modAccordionBody");
+    const accordionChevron = document.getElementById("modAccordionChevron");
+
+    if (accordionHeader && accordionBody) {
+        accordionHeader.addEventListener("click", () => {
+            const expanded = accordionHeader.getAttribute("aria-expanded") === "true";
+            accordionHeader.setAttribute("aria-expanded", !expanded);
+            
+            if (!expanded) {
+                accordionBody.style.maxHeight = accordionBody.scrollHeight + "px";
+                if (accordionChevron) accordionChevron.classList.add("rotate-180");
+            } else {
+                accordionBody.style.maxHeight = "0";
+                if (accordionChevron) accordionChevron.classList.remove("rotate-180");
+            }
+        });
+    }
+
+    // 1. Download progress animation
+    const downloadBtn = document.getElementById("downloadBtn");
+    const progressBar = document.getElementById("btnProgressBar");
+    const progressDetails = document.getElementById("btnProgressDetails");
+    const percentageText = document.getElementById("btnPercentage");
+    const btnIcon = document.getElementById("btnIcon");
+    const btnText = document.getElementById("btnText");
+    const btnSpeed = document.getElementById("btnSpeed");
+
+    if (downloadBtn && progressBar && progressDetails) {
+        let isDownloading = false;
+        downloadBtn.addEventListener("click", (e) => {
+            if (isDownloading) return;
+            
+            // If already downloaded or done, just scroll down
+            if (downloadBtn.classList.contains("download-completed")) {
+                const target = document.getElementById("download-section") || document.getElementById("download-links");
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                return;
+            }
+
+            isDownloading = true;
+            downloadBtn.style.pointerEvents = "none";
+            progressDetails.classList.remove("hidden");
+            progressDetails.classList.add("flex");
+            
+            let progress = 0;
+            const size = "<?php echo esc_js($app_size); ?>";
+            btnText.innerText = "Preparando descarga...";
+            progressBar.style.width = "0%";
+            
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    progressBar.style.width = "100%";
+                    percentageText.innerText = "100%";
+                    btnText.innerText = "¡Descarga Lista!";
+                    btnSpeed.innerText = "Completado";
+                    downloadBtn.classList.add("download-completed");
+                    downloadBtn.style.pointerEvents = "auto";
+                    isDownloading = false;
+                    
+                    // Trigger scroll to download section
+                    setTimeout(() => {
+                        const target = document.getElementById("download-section") || document.getElementById("download-links");
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 500);
+                } else {
+                    progressBar.style.width = progress + "%";
+                    percentageText.innerText = progress + "%";
+                    btnText.innerText = "Descargando... (" + progress + "%)";
+                    
+                    // Simulated speeds
+                    const speeds = ["5.2 MB/s", "6.8 MB/s", "8.1 MB/s", "4.9 MB/s", "7.4 MB/s"];
+                    const randomSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+                    btnSpeed.innerText = randomSpeed + " • " + size;
+                }
+            }, 150);
+        });
+    }
+
+    // 2. Specifications Slider Trackbar (Desktop Only)
+    const carousel = document.getElementById("specCarousel");
+    const trackContainer = document.getElementById("specTrackContainer");
+    const track = document.getElementById("specTrack");
+    const thumb = document.getElementById("specThumb");
+
+    if (carousel && trackContainer && track && thumb) {
+        const updateSlider = () => {
+            const scrollWidth = carousel.scrollWidth;
+            const clientWidth = carousel.clientWidth;
+            const scrollLeft = carousel.scrollLeft;
+
+            if (scrollWidth > clientWidth && window.innerWidth >= 768) {
+                trackContainer.classList.remove("hidden");
+                trackContainer.classList.add("flex");
+
+                const trackWidth = track.clientWidth;
+                const thumbWidth = (clientWidth / scrollWidth) * trackWidth;
+                thumb.style.width = Math.max(thumbWidth, 30) + "px";
+
+                const maxScroll = scrollWidth - clientWidth;
+                const scrollPct = scrollLeft / maxScroll;
+                const maxTranslate = trackWidth - thumb.clientWidth;
+                thumb.style.transform = `translateX(${scrollPct * maxTranslate}px)`;
+            } else {
+                trackContainer.classList.add("hidden");
+                trackContainer.classList.remove("flex");
+            }
+        };
+
+        // Scroll event listener
+        carousel.addEventListener("scroll", updateSlider);
+        window.addEventListener("resize", updateSlider);
+        
+        // Let user drag the thumb
+        let isDragging = false;
+        let startX, startLeft;
+
+        thumb.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            const matrix = window.getComputedStyle(thumb).transform;
+            if (matrix && matrix !== 'none') {
+                startLeft = parseFloat(matrix.split(',')[4]);
+            } else {
+                startLeft = 0;
+            }
+            thumb.classList.add("grabbing");
+            document.body.style.userSelect = "none";
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - startX;
+            const trackWidth = track.clientWidth;
+            const maxTranslate = trackWidth - thumb.clientWidth;
+            
+            let newLeft = startLeft + deltaX;
+            newLeft = Math.max(0, Math.min(newLeft, maxTranslate));
+            thumb.style.transform = `translateX(${newLeft}px)`;
+
+            const pct = newLeft / maxTranslate;
+            carousel.scrollLeft = pct * (carousel.scrollWidth - carousel.clientWidth);
+        });
+
+        document.addEventListener("mouseup", () => {
+            if (isDragging) {
+                isDragging = false;
+                thumb.classList.remove("grabbing");
+                document.body.style.userSelect = "";
+            }
+        });
+
+        // Initialize view
+        setTimeout(updateSlider, 200);
+    }
+});
+</script>

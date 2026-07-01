@@ -1,231 +1,284 @@
 <?php
+$current_path = $_SERVER['REQUEST_URI'];
+
+$logo_fallback_light = 'https://apkgstore.co/wp-content/uploads/2026/03/apkgstore2.0-azul_Mesa-de-trabajo-1-scaled.png';
+$logo_fallback_dark = 'https://apkgstore.co/wp-content/uploads/2026/03/apkgstore2.0-scaled.png';
+
+$logo_light = get_theme_mod('au_header_logo');
+$logo_dark = get_theme_mod('au_header_logo_dark');
+
+if (empty($logo_light)) {
+    $logo_light = $logo_fallback_light;
+}
+if (empty($logo_dark)) {
+    $logo_dark = $logo_fallback_dark;
+}
+
 $menu_locations = get_nav_menu_locations();
 $header_menus = !empty($menu_locations['header_menu']) ? wp_get_nav_menu_items($menu_locations['header_menu']) : [];
-$au_header_logo = get_theme_mod('au_header_logo', get_template_directory_uri() . '/assets/img/logo.png');
-$au_header_logo_dark = get_theme_mod('au_header_logo_dark', get_template_directory_uri() . '/assets/img/logo.png');
+
+if (empty($header_menus)) {
+    $header_menus = [
+        (object)[ 'title' => 'Inicio', 'url' => home_url('/'), 'ID' => 0 ],
+        (object)[ 'title' => 'Juegos', 'url' => home_url('/games/'), 'ID' => 0 ],
+        (object)[ 'title' => 'Apps', 'url' => home_url('/apps/'), 'ID' => 0 ],
+        (object)[ 'title' => 'Blog', 'url' => home_url('/blog/'), 'ID' => 0 ],
+    ];
+}
+
 $au_home_hero_top_description = get_theme_mod('au_home_hero_top_description', 'GAMES & APPS FOR ANDROID - A LARGE SELECTION OF APPS FOR ANDROID DEVICES FREE AND WITH NO VIRUSES');
 $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 ?>
-<header class="sticky top-0 z-40 bg-white/70 dark:bg-[rgba(15,15,26,0.65)] backdrop-blur-[30px] backdrop-saturate-200 shadow-sm border-b border-gray-200/50 dark:border-white/10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<header class="sticky top-0 z-50 glass-header shadow-sm transition-all duration-300">
+    <!-- Main Header Container -->
+    <div id="header-main-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300">
         <div class="flex items-center justify-between h-16">
-            <a href="<?php echo get_site_url(); ?>" class="flex items-center">
-                <img src="<?php echo esc_url($au_header_logo); ?>"
-                    alt="<?php echo esc_attr(get_bloginfo('name')); ?> Logo"
-                    class="h-8 w-auto block dark:hidden">
-                <img src="<?php echo esc_url($au_header_logo_dark); ?>"
-                    alt="<?php echo esc_attr(get_bloginfo('name')); ?> Dark Logo"
-                    class="h-8 w-auto hidden dark:block">
-            </a>
+            <!-- Logotipo Oficial APKGSTORE -->
+            <div class="flex items-center gap-3">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center gap-2">
+                    <img src="<?php echo esc_url($logo_light); ?>"
+                        alt="<?php echo esc_attr(get_bloginfo('name')); ?> Logo" class="h-7 w-auto block dark:hidden">
+                    <img src="<?php echo esc_url($logo_dark); ?>"
+                        alt="<?php echo esc_attr(get_bloginfo('name')); ?> Dark Logo" class="h-7 w-auto hidden dark:block">
+                </a>
+            </div>
+
+            <!-- Enlaces de Navegación Refinados (Grosores delgados) -->
             <?php if (!empty($header_menus)) : ?>
-                <nav class="hidden md:flex space-x-3 lg:space-x-4">
+                <nav class="hidden md:flex space-x-6 text-sm font-medium">
                     <?php foreach ($header_menus as $menu) : 
+                        $menu_path = parse_url($menu->url, PHP_URL_PATH);
+                        $is_active = false;
+                        if ($menu_path) {
+                            if ($menu_path === '/' || $menu_path === '') {
+                                $is_active = (is_front_page() || is_home());
+                            } else {
+                                $is_active = (strpos($current_path, $menu_path) === 0);
+                            }
+                        }
                         $icon_type = get_post_meta($menu->ID, 'apkup_menu_icon_class', true);
-                        $icon_class = $icon_type ? esc_attr($icon_type) : 'fas fa-star';
+                        if (!$icon_type) {
+                            $title_lower = strtolower($menu->title);
+                            if (strpos($title_lower, 'inicio') !== false || strpos($title_lower, 'home') !== false) {
+                                $icon_class = 'home';
+                            } elseif (strpos($title_lower, 'juego') !== false || strpos($title_lower, 'game') !== false) {
+                                $icon_class = 'gamepad-2';
+                            } elseif (strpos($title_lower, 'app') !== false || strpos($title_lower, 'lay') !== false) {
+                                $icon_class = 'layers';
+                            } elseif (strpos($title_lower, 'blog') !== false || strpos($title_lower, 'news') !== false) {
+                                $icon_class = 'newspaper';
+                            } else {
+                                $icon_class = 'star';
+                            }
+                        } else {
+                            $icon_class = esc_attr($icon_type);
+                        }
+                        $is_fa = (strpos($icon_class, 'fa-') !== false || strpos($icon_class, 'fas') !== false || strpos($icon_class, 'fa-solid') !== false);
                     ?>
-                        <a href="<?php echo esc_url($menu->url); ?>" class="flex items-center gap-3 pr-4 pl-1.5 py-1.5 bg-transparent hover:bg-white dark:hover:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:shadow-[0_8px_20px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-300 font-bold text-sm tracking-wide group">
-                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors duration-300 shadow-sm">
-                                <i class="<?php echo $icon_class; ?> text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors duration-300 text-xs"></i>
-                            </span>
+                        <a href="<?php echo esc_url($menu->url); ?>"
+                            class="<?php echo $is_active ? 'flex items-center gap-2 px-4 py-1.5 rounded-full text-primary bg-primary/10 transition-all' : 'flex items-center gap-2 px-3 py-1.5 text-slate-600 dark:text-slate-300 hover:text-primary transition-all'; ?>">
+                            <?php if ($is_fa) : ?>
+                                <i class="<?php echo $icon_class; ?> w-4 h-4"></i>
+                            <?php else : ?>
+                                <i data-lucide="<?php echo $icon_class; ?>" class="w-4 h-4"></i>
+                            <?php endif; ?>
                             <?php echo esc_html($menu->title); ?>
                         </a>
                     <?php endforeach; ?>
                 </nav>
             <?php endif; ?>
-            <div class="flex items-center space-x-3">
-                <button type="button" id="searchButton" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100/60 hover:bg-primary/10 dark:bg-gray-700/60 dark:hover:bg-primary/20 text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-all duration-300 backdrop-blur-md shadow-sm border border-gray-200/50 dark:border-gray-600/50 focus:outline-none hover:cursor-pointer" aria-label="Open search">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+
+            <!-- Herramientas Rápidas -->
+            <div class="flex items-center gap-3">
+                <!-- Search Button -->
+                <button id="searchButton"
+                    class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 hover:bg-primary/10 dark:bg-slate-800 dark:hover:bg-primary/20 text-slate-600 dark:text-slate-300 hover:text-primary transition-all cursor-pointer"
+                    aria-label="Buscar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
                     </svg>
                 </button>
-                <button type="button" id="darkModeToggle" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100/60 hover:bg-primary/10 dark:bg-gray-700/60 dark:hover:bg-primary/20 text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-all duration-300 backdrop-blur-md shadow-sm border border-gray-200/50 dark:border-gray-600/50 relative overflow-hidden focus:outline-none hover:cursor-pointer" aria-label="Toggle dark mode">
-                    <svg id="moonIcon" class="h-5 w-5 absolute transition-all duration-300 transform scale-100 rotate-0 opacity-100" fill="currentColor" stroke="none" viewBox="0 0 24 24">
-                        <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+
+                <!-- Dark Mode Toggle Button -->
+                <button id="darkModeToggle"
+                    class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 hover:bg-primary/10 dark:bg-slate-800 dark:hover:bg-primary/20 text-slate-600 dark:text-slate-300 hover:text-primary transition-all cursor-pointer"
+                    aria-label="Cambiar tema">
+                    <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-sun block dark:hidden">
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2" />
+                        <path d="M12 20v2" />
+                        <path d="m4.93 4.93 1.41 1.41" />
+                        <path d="m17.66 17.66 1.41 1.41" />
+                        <path d="M2 12h2" />
+                        <path d="M20 12h2" />
+                        <path d="m6.34 17.66-1.41 1.41" />
+                        <path d="m19.07 4.93-1.41 1.41" />
                     </svg>
-                    <svg id="sunIcon" class="h-6 w-6 absolute transition-all duration-300 transform scale-0 rotate-90 opacity-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-moon hidden dark:block">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                    </svg>
+                </button>
+
+                <!-- Mobile Hamburger Button -->
+                <button id="hamburger-btn"
+                    class="flex md:hidden w-9 h-9 items-center justify-center rounded-full bg-slate-100 hover:bg-primary/10 dark:bg-slate-800 dark:hover:bg-primary/20 text-slate-600 dark:text-slate-300 hover:text-primary transition-all cursor-pointer"
+                    aria-label="Menú">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-menu">
+                        <line x1="4" x2="20" y1="12" y2="12" />
+                        <line x1="4" x2="20" y1="6" y2="6" />
+                        <line x1="4" x2="20" y1="18" y2="18" />
                     </svg>
                 </button>
             </div>
         </div>
     </div>
-    <!-- Search Shutter -->
-    <div id="searchModal" class="absolute left-0 w-full top-full bg-white/80 dark:bg-[rgba(15,15,26,0.85)] backdrop-blur-[30px] backdrop-saturate-200 border-b border-gray-200/50 dark:border-white/10 shadow-xl search-shutter -z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">búsqueda de Apps</h3>
-                <button type="button" id="closeSearchModal" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 cursor-pointer transition-colors">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+
+    <!-- Search Overlay Container -->
+    <div id="search-overlay-container"
+        class="absolute inset-0 bg-white dark:bg-slate-900 px-4 sm:px-6 lg:px-8 flex items-center justify-between opacity-0 pointer-events-none transition-all duration-300 z-50 transform -translate-y-2">
+        <div class="max-w-7xl mx-auto w-full flex items-center justify-between h-16 relative">
+            <form class="flex items-center flex-1 mr-4" method="GET" action="<?php echo esc_url(home_url('/')); ?>">
+                <span class="text-slate-400 dark:text-slate-500 mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
                     </svg>
-                </button>
-            </div>
-            <form class="relative" method="GET" action="<?php echo esc_url(home_url('/')); ?>">
-                <input type="search"
-                    name="s"
-                    id="searchInput"
-                    placeholder="Search for apps, games, and more..."
-                    minlength="3"
-                    required
-                    class="w-full px-4 py-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary dark:text-gray-300 text-lg shadow-inner">
-                <button type="submit" class="absolute right-3 top-3.5 p-1 text-gray-400 hover:text-primary focus:outline-none">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <span class="sr-only"><?php esc_html_e('Search', 'apktemplates'); ?></span>
-                </button>
+                </span>
+                <input type="text" name="s" id="searchInput" placeholder="Buscar juegos, aplicaciones..."
+                    class="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-400 text-sm">
                 
                 <?php if ($au_ajax_search_swt) : ?>
                     <div id="ajax-search-results" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden z-20 hidden border border-gray-100 dark:border-gray-700 max-h-[60vh] overflow-y-auto w-full"></div>
                 <?php endif; ?>
             </form>
-            <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-               Ejemplo: PUBG Mobile, Instagram, WhatsApp, TikTok
-            </div>
+            <button id="closeSearchButton"
+                class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all cursor-pointer"
+                aria-label="Cerrar búsqueda">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-x">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
         </div>
     </div>
-    
-    <!-- Full-screen Theme Transition Overlay -->
-    <div id="themeTransitionOverlay" class="fixed inset-x-0 top-0 h-[100dvh] z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 hidden backdrop-blur-2xl bg-white/60 dark:bg-black/60">
-        <svg id="centerMoonIcon" class="w-48 h-48 text-gray-800 dark:text-white hidden transform scale-0 transition-transform duration-500 ease-out drop-shadow-2xl" fill="currentColor" stroke="none" viewBox="0 0 24 24">
-            <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-        <svg id="centerSunIcon" class="w-48 h-48 text-yellow-400 hidden transform scale-0 transition-transform duration-500 ease-out drop-shadow-[0_0_40px_rgba(250,204,21,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-    </div>
 </header>
-<script>
-    // Dark mode toggle functionality
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const moonIcon = document.getElementById('moonIcon');
-    const sunIcon = document.getElementById('sunIcon');
-    const html = document.documentElement;
 
-    function updateIcons() {
-        if (html.classList.contains('dark')) {
-            moonIcon.classList.add('scale-0', '-rotate-90', 'opacity-0');
-            moonIcon.classList.remove('scale-100', 'rotate-0', 'opacity-100');
-            sunIcon.classList.remove('scale-0', 'rotate-90', 'opacity-0');
-            sunIcon.classList.add('scale-100', 'rotate-0', 'opacity-100');
-        } else {
-            sunIcon.classList.add('scale-0', 'rotate-90', 'opacity-0');
-            sunIcon.classList.remove('scale-100', 'rotate-0', 'opacity-100');
-            moonIcon.classList.remove('scale-0', '-rotate-90', 'opacity-0');
-            moonIcon.classList.add('scale-100', 'rotate-0', 'opacity-100');
-        }
-    }
+<!-- Mobile Navigation Drawer Overlay -->
+<div id="menu-overlay"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 z-50">
+</div>
 
-    // Check for saved dark mode preference natively
-    if (localStorage.getItem('darkMode') === 'true') {
-        html.classList.add('dark');
-        updateIcons(); // Force sun icon visibility on initial load if dark mode
-    }
+<!-- Mobile Navigation Drawer (Off-canvas Menu) -->
+<div id="off-canvas-menu"
+    class="fixed top-0 left-0 bottom-0 w-[70vw] sm:w-80 bg-white dark:bg-slate-900 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <!-- Drawer Header -->
+    <div class="flex items-center justify-between px-6 h-16 border-b border-slate-100 dark:border-slate-800">
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center gap-2">
+            <img src="<?php echo esc_url($logo_light); ?>"
+                alt="<?php echo esc_attr(get_bloginfo('name')); ?> Logo" class="h-6 w-auto block dark:hidden">
+            <img src="<?php echo esc_url($logo_dark); ?>"
+                alt="<?php echo esc_attr(get_bloginfo('name')); ?> Dark Logo" class="h-6 w-auto hidden dark:block">
+        </a>
+        <!-- Close Button -->
+        <button id="close-menu"
+            class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all cursor-pointer"
+            aria-label="Cerrar menú">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-x">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+            </svg>
+        </button>
+    </div>
 
-    darkModeToggle.addEventListener('click', (e) => {
-        const isDark = html.classList.contains('dark');
-        const overlay = document.getElementById('themeTransitionOverlay');
-        const cMoon = document.getElementById('centerMoonIcon');
-        const cSun = document.getElementById('centerSunIcon');
-        
-        // We are going to Light mode if we are currently Dark mode, so show Sun. Otherwise show Moon.
-        const iconToShow = isDark ? cSun : cMoon;
-        
-        // Prepare overlay
-        overlay.classList.remove('hidden');
-        cMoon.classList.add('hidden');
-        cSun.classList.add('hidden');
-        cMoon.classList.remove('scale-100');
-        cSun.classList.remove('scale-100');
-        
-        iconToShow.classList.remove('hidden');
-        
-        // Fade in overlay and scale up the center icon
-        setTimeout(() => {
-            overlay.classList.remove('opacity-0');
-            overlay.classList.add('opacity-100');
-            iconToShow.classList.remove('scale-0');
-            iconToShow.classList.add('scale-100');
-        }, 10);
-        
-        const toggleTheme = () => {
-            html.classList.toggle('dark');
-            localStorage.setItem('darkMode', html.classList.contains('dark'));
-            updateIcons();
-        };
-
-        // Wait for the icon to pop up, then trigger the ripple!
-        setTimeout(() => {
-            if (!document.startViewTransition) {
-                toggleTheme();
-                setTimeout(() => {
-                    overlay.classList.remove('opacity-100');
-                    overlay.classList.add('opacity-0');
-                    setTimeout(() => overlay.classList.add('hidden'), 300);
-                }, 300);
-                return;
-            }
-
-            // Expanding circle from the very center
-            const x = innerWidth / 2;
-            const y = innerHeight / 2;
-            const endRadius = Math.hypot(x, y);
-
-            const transition = document.startViewTransition(toggleTheme);
-
-            transition.ready.then(() => {
-                const anim = document.documentElement.animate(
-                    {
-                        clipPath: [
-                            `circle(0px at ${x}px ${y}px)`,
-                            `circle(${endRadius}px at ${x}px ${y}px)`
-                        ]
-                    },
-                    {
-                        duration: 600,
-                        easing: 'ease-in-out',
-                        pseudoElement: '::view-transition-new(root)'
+    <!-- Drawer Content (Navigation Links) -->
+    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <?php if (!empty($header_menus)) : ?>
+            <?php foreach ($header_menus as $menu) : 
+                $menu_path = parse_url($menu->url, PHP_URL_PATH);
+                $is_active = false;
+                if ($menu_path) {
+                    if ($menu_path === '/' || $menu_path === '') {
+                        $is_active = (is_front_page() || is_home());
+                    } else {
+                        $is_active = (strpos($current_path, $menu_path) === 0);
                     }
-                );
-                
-                anim.onfinish = () => {
-                    iconToShow.classList.remove('scale-100');
-                    iconToShow.classList.add('scale-0');
-                    overlay.classList.remove('opacity-100');
-                    overlay.classList.add('opacity-0');
-                    setTimeout(() => overlay.classList.add('hidden'), 300);
-                };
-            });
-        }, 400); // 400ms delay gives the giant sun/moon time to playfully jump into the screen before wiping!
-    });
+                }
+                $icon_type = get_post_meta($menu->ID, 'apkup_menu_icon_class', true);
+                if (!$icon_type) {
+                    $title_lower = strtolower($menu->title);
+                    if (strpos($title_lower, 'inicio') !== false || strpos($title_lower, 'home') !== false) {
+                        $icon_class = 'home';
+                    } elseif (strpos($title_lower, 'juego') !== false || strpos($title_lower, 'game') !== false) {
+                        $icon_class = 'gamepad-2';
+                    } elseif (strpos($title_lower, 'app') !== false || strpos($title_lower, 'lay') !== false) {
+                        $icon_class = 'layers';
+                    } elseif (strpos($title_lower, 'blog') !== false || strpos($title_lower, 'news') !== false) {
+                        $icon_class = 'newspaper';
+                    } else {
+                        $icon_class = 'star';
+                    }
+                } else {
+                    $icon_class = esc_attr($icon_type);
+                }
+                $is_fa = (strpos($icon_class, 'fa-') !== false || strpos($icon_class, 'fas') !== false || strpos($icon_class, 'fa-solid') !== false);
+            ?>
+                <a href="<?php echo esc_url($menu->url); ?>"
+                    class="<?php echo $is_active ? 'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-primary bg-primary/10 transition-all' : 'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-all'; ?>">
+                    <?php if ($is_fa) : ?>
+                        <i class="<?php echo $icon_class; ?> <?php echo $is_active ? 'text-primary w-5 h-5' : 'text-slate-400 w-5 h-5'; ?>"></i>
+                    <?php else : ?>
+                        <i data-lucide="<?php echo $icon_class; ?>" class="<?php echo $is_active ? 'text-primary w-5 h-5' : 'text-slate-400 w-5 h-5'; ?>"></i>
+                    <?php endif; ?>
+                    <?php echo esc_html($menu->title); ?>
+                </a>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </nav>
 
-    // Search modal functionality
-    const searchButton = document.getElementById('searchButton');
-    const searchModal = document.getElementById('searchModal');
-    const closeSearchModal = document.getElementById('closeSearchModal');
+    <!-- Drawer Footer -->
+    <div class="p-6 border-t border-slate-100 dark:border-slate-800">
+        <div class="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500 font-light">
+            <span>© 2026 APKGSTORE</span>
+        </div>
+    </div>
+</div>
 
-    searchButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        searchModal.classList.toggle('open');
-        if (searchModal.classList.contains('open')) {
-            setTimeout(() => document.getElementById('searchInput').focus(), 150);
-        }
-    });
-
-    closeSearchModal.addEventListener('click', () => {
-        searchModal.classList.remove('open');
-    });
-
-    // Close modal when clicking outside
-    document.addEventListener('click', (e) => {
-        if (searchModal.classList.contains('open') && !searchModal.contains(e.target) && !searchButton.contains(e.target)) {
-            searchModal.classList.remove('open');
-        }
-    });
-</script>
 <?php if (is_home() && !empty($au_home_hero_top_description)) : ?>
     <div class="bg-primary text-white py-2 px-4 text-center text-sm">
         <?php echo $au_home_hero_top_description; ?>
     </div>
 <?php endif; ?>
+
+<script>
+(function() {
+    function handleScroll() {
+        const header = document.querySelector('.glass-header');
+        if (header) {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        }
+    }
+    window.addEventListener('scroll', handleScroll);
+    document.addEventListener('pjax:complete', handleScroll);
+    document.addEventListener('DOMContentLoaded', handleScroll);
+    handleScroll();
+})();
+</script>

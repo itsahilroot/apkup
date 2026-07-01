@@ -41,6 +41,23 @@ $au_download_faqs = get_theme_mod('au_download_faqs', []);
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('MediaFire Direct Download', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Enable dynamic resolving of MediaFire URLs to direct download links during the countdown.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <label class="at-switch-btn">
+                            <?php $afp_mediafire_direct = get_theme_mod('afp_mediafire_direct', false); ?>
+                            <input type="checkbox" name="afp_mediafire_direct" <?php checked($afp_mediafire_direct, 1); ?>>
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
+                </td>
+            </tr>
 <!--             <tr>
                 <td>
                     <h3><?php esc_html_e('Related Posts', 'apktemplates'); ?></h3>

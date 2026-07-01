@@ -57,12 +57,21 @@ function at_admin_scripts()
 
         wp_enqueue_script('at-admin-panel', get_template_directory_uri() . '/assets/js/admin/panel.js', array(), APKT_THEME_VERSION, true);
 
+        $parent_categories = get_categories(array('parent' => 0, 'hide_empty' => false));
+        $parent_cats_options = array('all' => __('All', 'apktemplates'));
+        if (!is_wp_error($parent_categories) && !empty($parent_categories)) {
+            foreach ($parent_categories as $cat) {
+                $parent_cats_options[$cat->term_id] = $cat->name;
+            }
+        }
+
         wp_localize_script(
             'at-admin-panel',
             'apktemplates_ajax_vars',
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('panel_nonce')
+                'nonce' => wp_create_nonce('panel_nonce'),
+                'parent_cats' => $parent_cats_options
             )
         );
     }

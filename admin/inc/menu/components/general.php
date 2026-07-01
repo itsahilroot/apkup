@@ -7,6 +7,9 @@ $au_games_menu_url = get_theme_mod('au_games_menu_url', '');
 $au_apps_menu_url = get_theme_mod('au_apps_menu_url', '');
 $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 $au_head_code = get_theme_mod('au_head_code', '');
+$site_pjax_swt = get_theme_mod('site_pjax_swt', '1');
+$site_cache_swt = get_theme_mod('site_cache_swt', '1');
+$site_cache_time = get_theme_mod('site_cache_time', '24');
 ?>
 <div class="at-field-section active" data-section="general">
     <div class="at-form-header">
@@ -154,6 +157,43 @@ $au_head_code = get_theme_mod('au_head_code', '');
                         <input type="checkbox" name="au_ajax_search_swt" id="au_ajax_search_swt" <?php checked($au_ajax_search_swt, true); ?> />
                         <span class="at-switch"></span>
                     </label>
+                </td>
+            </tr>
+            <!-- Site Caching & Speed -->
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('Site Caching & Speed', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Configure SPA page transitions (PJAX) and global page caching to make your site load like a rocket.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Enable SPA Page Transitions (PJAX)', 'apktemplates'); ?></p>
+                        <p class="at-field-hint"><?php esc_html_e('Make page loading feel instant ("like React") by swapping layout elements without doing full browser reloads.', 'apktemplates'); ?></p>
+                        <label class="at-switch-btn">
+                            <input type="checkbox" name="site_pjax_swt" value="1" <?php checked($site_pjax_swt, 1); ?> />
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Enable Server-side Page Cache', 'apktemplates'); ?></p>
+                        <p class="at-field-hint"><?php esc_html_e('Cache homepage and category pages as static-like transients for guest users.', 'apktemplates'); ?></p>
+                        <label class="at-switch-btn">
+                            <input type="checkbox" name="site_cache_swt" value="1" <?php checked($site_cache_swt, 1); ?> />
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Cache Expiration (Hours)', 'apktemplates'); ?></p>
+                        <p class="at-field-hint"><?php esc_html_e('How many hours dynamic page cache will remain valid before rebuilding.', 'apktemplates'); ?></p>
+                        <input type="number" name="site_cache_time" class="at-number-ipt" min="1" max="720" value="<?php echo esc_attr($site_cache_time); ?>" />
+                    </div>
+                    <div class="at-pt-2">
+                        <button id="apkup-clear-cache-btn" type="button" class="add-button" style="background-color: #ef4444; border-color: #ef4444; margin-top: 10px;">
+                            <?php esc_html_e('Clear Site Cache', 'apktemplates'); ?>
+                        </button>
+                    </div>
                 </td>
             </tr>
         </tbody>

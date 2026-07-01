@@ -637,6 +637,29 @@ function apkt_export_settings()
         'reddit_url',
         'footer_copyright',
         'footer_code',
+        'archive_featured_swt',
+        'archive_featured_count',
+        'archive_recent_swt',
+        'archive_recent_limit',
+        'archive_recommended_swt',
+        'archive_recommended_limit',
+        'archive_premium_swt',
+        'archive_premium_limit',
+        'archive_sort',
+        'archive_posts_limit',
+        'archive_top_apps_swt',
+        'archive_top_apps_count',
+        'archive_numbered_subcats',
+        'archive_carousel_swt',
+        'archive_carousel_subcats',
+        'archive_carousel_sort',
+        'archive_carousel_posts',
+        'archive_dynamic_subcats',
+        'popular_page_items',
+        'recommended_page_items',
+        'site_pjax_swt',
+        'site_cache_swt',
+        'site_cache_time',
         'scrapedo_api_key',
         'zenrows_api_key'
     );
@@ -666,3 +689,21 @@ function apkt_export_settings()
     exit;
 }
 add_action('wp_ajax_apkt_export_settings', 'apkt_export_settings');
+
+function apkup_ajax_clear_archive_cache() {
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
+    if (!wp_verify_nonce($nonce, 'panel_nonce')) {
+        wp_send_json_error(['message' => 'Invalid nonce.']);
+        exit;
+    }
+
+    if (function_exists('apkup_clear_all_transients')) {
+        apkup_clear_all_transients();
+        wp_send_json_success('Site cache cleared!');
+    } else {
+        wp_send_json_error(['message' => 'Cache clearing function not found.']);
+    }
+    exit;
+}
+add_action('wp_ajax_apkup_clear_archive_cache', 'apkup_ajax_clear_archive_cache');
+

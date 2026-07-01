@@ -1,7 +1,7 @@
 <?php
 $au_home_footer_info_swt = get_theme_mod('au_home_footer_info_swt', false);
-$au_home_footer_info_title = get_theme_mod('au_home_footer_info_title', 'Best Android Apps & Games for free');
-$au_home_footer_info_description = get_theme_mod('au_home_footer_info_description', 'Hre is the best place to dwonload android premium apps and mod games for free.');
+$au_home_footer_info_title = get_theme_mod('au_home_footer_info_title', 'Las mejores aplicaciones y juegos de Android gratis 2026');
+$au_home_footer_info_description = get_theme_mod('au_home_footer_info_description', 'APKGSTORE es la plataforma líder y más segura para descargar juegos modificados, versiones pro y aplicaciones totalmente liberadas de forma gratuita para tu dispositivo Android. Nos enfocamos en ofrecer velocidad, seguridad total con análisis de malware riguroso y actualizaciones constantes para que disfrutes de tus títulos favoritos como <span class="italic font-normal text-primary">Subway Surfers</span>, <span class="italic font-normal text-primary">Mortal Kombat</span>, y <span class="italic font-normal text-primary">DEAD TRIGGER 2</span> sin publicidad y con ventajas increíbles.');
 
 $au_home_footer_tg_swt = get_theme_mod('au_home_footer_tg_swt', false);
 $au_home_footer_tg_title = get_theme_mod('au_home_footer_tg_title', 'Join our Telegram');

@@ -569,6 +569,46 @@ function apkup_format_views_count($number) {
     }
 }
 
+function apkup_format_downloads($value) {
+    $value = trim($value);
+    if (empty($value)) {
+        return '10M+';
+    }
+
+    // If it already contains format characters like K, M, B, etc., just return it
+    if (preg_match('/[kmb]/i', $value)) {
+        return $value;
+    }
+
+    // Check if there is a '+' symbol
+    $has_plus = (strpos($value, '+') !== false) ? '+' : '';
+
+    // Strip dots, commas, spaces
+    $clean = str_replace([',', '.', ' '], '', $value);
+
+    // Find the numeric prefix
+    if (preg_match('/^\d+/', $clean, $matches)) {
+        $num = (float) $matches[0];
+        
+        if ($num < 1000) {
+            $formatted = $num;
+        } elseif ($num < 1000000) {
+            $div = $num / 1000;
+            $formatted = ($div == (int)$div ? (int)$div : round($div, 1)) . 'K';
+        } elseif ($num < 1000000000) {
+            $div = $num / 1000000;
+            $formatted = ($div == (int)$div ? (int)$div : round($div, 1)) . 'M';
+        } else {
+            $div = $num / 1000000000;
+            $formatted = ($div == (int)$div ? (int)$div : round($div, 1)) . 'B';
+        }
+        
+        return $formatted . $has_plus;
+    }
+
+    return $value;
+}
+
 /**
  * Get the primary category for a post:
  * - If only subcategories exist, pick the first subcategory.
@@ -650,6 +690,35 @@ function apkup_download_page_template(){
 	}
 }
 add_action('template_redirect', 'apkup_download_page_template');
+
+/* Rewrite rules and redirect for /trending/ page */
+function apkup_trending_page_rewrite_rules() {
+    add_rewrite_rule('^trending/?$', 'index.php?trending=1', 'top');
+    add_rewrite_rule('^trending/page/([0-9]+)/?$', 'index.php?trending=1&paged=$matches[1]', 'top');
+    
+    if (!get_option('apkup_trending_rewrite_flushed')) {
+        flush_rewrite_rules(false);
+        update_option('apkup_trending_rewrite_flushed', 1);
+    }
+}
+add_action('init', 'apkup_trending_page_rewrite_rules');
+
+function apkup_trending_page_query_vars($vars) {
+    $vars[] = 'trending';
+    return $vars;
+}
+add_filter('query_vars', 'apkup_trending_page_query_vars');
+
+function apkup_trending_page_template_redirect() {
+    if (get_query_var('trending')) {
+        $template = get_template_directory() . '/page-trending.php';
+        if (file_exists($template)) {
+            include $template;
+            exit;
+        }
+    }
+}
+add_action('template_redirect', 'apkup_trending_page_template_redirect');
 
 /* Search result display only posts */
 function apkup_modify_search_results($query) {
@@ -828,3 +897,60 @@ function apkup_dynamic_styles() {
     </style>";
 }
 add_action('wp_head', 'apkup_dynamic_styles', 100);
+
+/* Modify main archive queries based on custom panel settings */
+function apkup_modify_archive_query($query) {
+    if (($query->is_category() || $query->is_tag() || $query->is_tax()) && $query->is_main_query() && !is_admin()) {
+        $posts_limit = get_theme_mod('archive_posts_limit', '12');
+        $query->set('posts_per_page', intval($posts_limit));
+
+        $sort = get_theme_mod('archive_sort', 'latest');
+        switch ($sort) {
+            case 'latest':
+                $query->set('orderby', 'date');
+                $query->set('order', 'DESC');
+                break;
+            case 'oldest':
+                $query->set('orderby', 'date');
+                $query->set('order', 'ASC');
+                break;
+            case 'popular':
+                $query->set('orderby', 'meta_value_num');
+                $query->set('meta_key', 'post_views_count');
+                $query->set('order', 'DESC');
+                break;
+            case 'modified':
+                $query->set('orderby', 'modified');
+                $query->set('order', 'DESC');
+                break;
+            case 'a_to_z':
+                $query->set('orderby', 'title');
+                $query->set('order', 'ASC');
+                break;
+            case 'z_to_a':
+                $query->set('orderby', 'title');
+                $query->set('order', 'DESC');
+                break;
+            case 'random':
+                $query->set('orderby', 'rand');
+                break;
+        }
+    }
+}
+add_action('pre_get_posts', 'apkup_modify_archive_query');
+
+/**
+ * Clear all site cache transients (archives and home)
+ */
+function apkup_clear_all_transients() {
+    global $wpdb;
+    $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_apkup_arc_%' OR option_name LIKE '_transient_timeout_apkup_arc_%' OR option_name LIKE '_transient_apkup_home_%' OR option_name LIKE '_transient_timeout_apkup_home_%'");
+}
+
+// Hook into post save, delete, and cache cleanup to clear transients
+add_action('save_post', 'apkup_clear_all_transients');
+add_action('delete_post', 'apkup_clear_all_transients');
+add_action('clean_post_cache', 'apkup_clear_all_transients');
+
+// Hook into theme options updates to clear transients
+add_action('update_option_theme_mods_apkup', 'apkup_clear_all_transients');

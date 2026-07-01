@@ -11,6 +11,14 @@
     <meta property="og:url" content="<?php echo esc_url(is_home() || is_front_page() ? home_url('/') : get_permalink()); ?>">
     <meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo('name')); ?>">
     <meta property="og:type" content="<?php echo is_single() ? 'article' : 'website'; ?>">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <?php wp_head();
     apkup_set_post_views(get_the_ID()); ?>
 </head>

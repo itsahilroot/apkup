@@ -102,3 +102,70 @@ function apkup_ajax_search() {
 }
 add_action('wp_ajax_apkup_ajax_search', 'apkup_ajax_search');
 add_action('wp_ajax_nopriv_apkup_ajax_search', 'apkup_ajax_search');
+
+add_action('wp_ajax_apkt_mediafire_direct_link', 'apkt_mediafire_direct_link_handler');
+add_action('wp_ajax_nopriv_apkt_mediafire_direct_link', 'apkt_mediafire_direct_link_handler');
+
+function apkt_mediafire_direct_link_handler() {
+    $url = esc_url_raw($_POST['url'] ?? '');
+
+    if (!$url) {
+        wp_send_json_error('No URL provided.');
+    }
+
+    if (!preg_match('/mediafire\.com/', $url)) {
+        wp_send_json_error('Not a MediaFire URL.');
+    }
+
+    $response = wp_remote_get($url, [
+        'timeout'   => 15,
+        'sslverify' => false,
+        'headers'   => [
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        ]
+    ]);
+
+    if (is_wp_error($response)) {
+        wp_send_json_error('Failed to fetch MediaFire page: ' . $response->get_error_message());
+    }
+
+    $html = wp_remote_retrieve_body($response);
+
+    if (empty($html)) {
+        wp_send_json_error('Empty response from MediaFire.');
+    }
+
+    libxml_use_internal_errors(true);
+    $dom = new DOMDocument();
+    $dom->loadHTML($html, LIBXML_NOWARNING | LIBXML_NOERROR);
+    $xpath = new DOMXPath($dom);
+
+    $direct_url = '';
+
+    $node = $xpath->query("//a[@id='downloadButton']");
+    if ($node->length > 0) {
+        $href = $node->item(0)->getAttribute('href');
+        if ($href) {
+            $direct_url = $href;
+        }
+    }
+
+    if (!$direct_url) {
+        $inputs = $xpath->query("//a[contains(@class, 'input')]");
+        foreach ($inputs as $input) {
+            $href = $input->getAttribute('href');
+            if ($href && preg_match('/download\.mediafire\.com/', $href)) {
+                $direct_url = $href;
+                break;
+            }
+        }
+    }
+
+    libxml_clear_errors();
+
+    if ($direct_url) {
+        wp_send_json_success(['direct_url' => $direct_url]);
+    } else {
+        wp_send_json_error('Could not extract direct download link from MediaFire.');
+    }
+}

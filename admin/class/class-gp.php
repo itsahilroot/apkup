@@ -741,6 +741,26 @@ class AT_Google_Play
         $response = $this->get_apk_data($gp_url);
                         
         if ($response['status'] === 'success') {
+            $package_id = '';
+            
+            // Method 1: parse_url & parse_str (extremely robust)
+            $url_parts = parse_url($gp_url);
+            if (isset($url_parts['query'])) {
+                parse_str($url_parts['query'], $query_params);
+                if (!empty($query_params['id'])) {
+                    $package_id = sanitize_text_field($query_params['id']);
+                }
+            }
+            
+            // Method 2: Regex fallback
+            if (empty($package_id) && preg_match('/id=([a-zA-Z0-9._\-]+)/', $gp_url, $matches)) {
+                $package_id = sanitize_text_field($matches[1]);
+            }
+            
+            if (!empty($package_id)) {
+                $response['data']['apk_id'] = $package_id;
+            }
+
             $apk_post_creator = new AT_Create_GP_Post($response);
             $response = $apk_post_creator->create_post();
 

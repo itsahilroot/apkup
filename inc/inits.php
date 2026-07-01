@@ -1,4 +1,6 @@
 <?php
+require_once get_template_directory() . '/inc/gp-fetcher.php';
+
 function apkup_get_datos_download($post_id = false)
 {
     if (!$post_id) {
@@ -263,50 +265,6 @@ function app_info_callback($post)
                 </td>
             </tr>
 
-            <tr>
-                <th scope="row">
-                    <label for="mod_info_2_title"><?php esc_html_e('MOD Info 2 Title (Permenant)', 'apktemplates'); ?></label>
-                </th>
-                <td>
-                    <?php
-                    $permanent_custom_boxes = get_option('permanent_custom_boxes');
-
-                    $mod_info_2_title = '';
-                    if (is_array($permanent_custom_boxes) && isset($permanent_custom_boxes[0]['title'])) {
-                        $mod_info_2_title = $permanent_custom_boxes[0]['title'];
-                    }
-                    ?>
-                    <input type="text"
-                        id="mod_info_2_title"
-                        name="permanent_custom_boxes[0][title]"
-                        value="<?php echo esc_attr($mod_info_2_title); ?>"
-                        class="regular-text"
-                        placeholder="E.g. Features of MOD" />
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">
-                    <label for="permanent_custom_boxes_0_content"><?php esc_html_e("MOD Info 2 Content (Permenant)", 'apktemplates'); ?></label>
-                </th>
-                <td>
-                    <?php
-                    $first_box_content_1 = '';
-                    if (is_array($permanent_custom_boxes) && isset($permanent_custom_boxes[0]['content'])) {
-                        $first_box_content_1 = $permanent_custom_boxes[0]['content'];
-                    }
-                    apkup_wp_editor_fix(
-                        $first_box_content_1,
-                        'permanent_custom_boxes_0_content',
-                        array(
-                            'textarea_name' => 'permanent_custom_boxes[0][content]',
-                            'textarea_rows' => 5,
-                            'tinymce'       => true,
-                            'quicktags'     => true,
-                        )
-                    );
-                    ?>
-                </td>
-            </tr>
         </tbody>
     </table>
 <?php
@@ -360,20 +318,6 @@ function save_app_info($post_id)
         update_post_meta($post_id, 'datos_video', ['id' => sanitize_text_field($_POST['datos_video']['id'])]);
     } */
 
-    // Save permanent_custom_boxes
-    if (isset($_POST['permanent_custom_boxes'])) {
-        $permanent_custom_boxes = array();
-
-        if (isset($_POST['permanent_custom_boxes'][0]['title'])) {
-            $permanent_custom_boxes[0]['title'] = sanitize_text_field($_POST['permanent_custom_boxes'][0]['title']);
-        }
-
-        if (isset($_POST['permanent_custom_boxes'][0]['content'])) {
-            $permanent_custom_boxes[0]['content'] = wp_kses_post($_POST['permanent_custom_boxes'][0]['content']);
-        }
-
-        update_option('permanent_custom_boxes', $permanent_custom_boxes);
-    }
 
     // Save custom_boxes
     if (isset($_POST['custom_boxes'])) {

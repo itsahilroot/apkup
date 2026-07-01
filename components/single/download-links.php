@@ -2,29 +2,13 @@
 $post_id = get_the_ID();
 $download_links = apkup_get_datos_download($post_id);
 
-$custom_boxes = get_post_meta($post_id, 'custom_boxes', true);
-$permanent_custom_boxes = get_option('permanent_custom_boxes');
-?>
-<div id="download-links" class="dl-section bg-primary/10 dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
-    <div class="dl-tab-container group" data-open="false">
-        <div class="flex mb-8 justify-center lg:justify-start">
-            <button class="dl-tab-toggle relative grid grid-cols-2 h-10 bg-[hsla(157,2%,25%,0.05)] dark:bg-gray-700 rounded-full p-1 cursor-pointer text-sm leading-5 shadow-inner outline-none">
-                <span class="absolute top-1 left-1 h-8 w-[calc(50%-4px)] bg-white rounded-full shadow transition-transform duration-200 ease-in-out dark:bg-gray-600"></span>
-                <span class="relative bottom-[1px] z-10 flex items-center justify-center px-2 py-2 min-w-32 text-center transition-opacity duration-200 ease-in-out text-gray-800 dark:text-gray-200">
-                    Links
-                </span>
-                <span class="relative bottom-[1px] z-10 flex items-center justify-center px-3 py-2 min-w-32 text-center transition-opacity duration-200 ease-in-out opacity-60 text-gray-800 dark:text-gray-200">
-                    MOD Info
-                </span>
-            </button>
-        </div>
-    </div>
-    <div id="dl-links" class="tab-content">
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">
-            Descargar <?php the_title(); ?>
-        </h2>
-        <?php single_bottom_ad('div', 'mt-8'); ?>
-        <?php $links = [];
+$app_name = get_the_title();
+$data = get_post_meta($post_id, 'datos_informacion', true);
+$data = is_array($data) ? $data : [];
+$app_version = !empty($data['version']) ? $data['version'] : '1.0';
+$app_size = !empty($data['tamano']) ? $data['tamano'] : '100 MB';
+
+$links = [];
 if (!empty($download_links['links_options'])) {
     $links = $download_links['links_options'];
 } else {
@@ -34,75 +18,69 @@ if (!empty($download_links['links_options'])) {
         }
     }
 }
-
-if (!empty($links)) :
-    foreach ($links as $index => $dl) :
-        $download_url = get_permalink() . 'download/' . $index;
-        if (!empty($download_url)) : ?>
-            <?php if (!empty($dl['type'])) : ?>
-                <div class="mb-6">
-                    <span class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm font-medium uppercase">
-                        <?php echo esc_html($dl['type']); ?>
-                    </span>
-                </div>
-            <?php endif; ?>
-
-            <a href="<?php echo esc_url($download_url); ?>"
-                   class="btn-primary-action mb-6 w-full md:w-[70%] lg:w-1/2 mx-auto">
-                    <?php echo !empty($dl['texto']) ? esc_html($dl['texto']) : 'DOWNLOAD'; ?>
-                    <?php if (!empty($dl['type'])) : ?>
-                        <span class="ml-1 rounded bg-black/10 px-2 py-0.5 text-xs dark:bg-white/10">
-                            <?php echo esc_html($dl['type']); ?>
-                        </span>
-                    <?php endif; ?>
-                </a>
-<?php
-        endif;
-    endforeach;
-endif;
 ?>
-        <div class="space-y-2">
-            <h3 class="font-bold text-gray-800 dark:text-gray-300">Descarga rápida - ¡libre de virus!</h3>
-            <p class="text-gray-800 dark:text-gray-300">
-                En nuestro sitio web, puedes descargar la última versión…
-            </p>
-            <p class="text-gray-800 dark:text-gray-300">
-                No es necesario registrarse ni enviar SMS; ¡enlace directo y archivos verificados!
-            </p>
+<!-- Secure Multi-Server Download Enlaces -->
+<section id="download-section" class="p-6 sm:p-8 bg-white dark:bg-brand-darkCard rounded-[32px] border border-slate-200/50 dark:border-white/5 space-y-6">
+  <div class="text-center sm:text-left space-y-2">
+    <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center justify-center sm:justify-start gap-2">
+      <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
+      </svg>
+      Enlaces de Descarga Seguros
+    </h2>
+    <p class="text-xs text-slate-400 dark:text-slate-500 font-semibold">
+      Seleccione el servidor de su preferencia para descargar <?php echo esc_html($app_name); ?>. Todos nuestros archivos han sido validados con VirusTotal.
+    </p>
+  </div>
+
+  <?php if (!empty($links)) : ?>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <?php foreach ($links as $index => $dl) : 
+          $download_url = get_permalink() . 'download/' . $index;
+          $text = !empty($dl['texto']) ? $dl['texto'] : (!empty($dl['type']) ? $dl['type'] : 'APK');
+          $type = !empty($dl['type']) ? $dl['type'] : 'Server';
+          
+          // Detect Server Type for custom styling
+          $is_mediafire = (stripos($text, 'mediafire') !== false || stripos($type, 'mediafire') !== false);
+          $is_mega = (stripos($text, 'mega') !== false || stripos($type, 'mega') !== false);
+          
+          $icon_color = 'bg-primary/10 text-primary';
+          $btn_color = 'bg-primary hover:opacity-95';
+          $icon_svg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>'; // Zap Icon
+          
+          if ($is_mediafire) {
+              $icon_color = 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-500';
+              $btn_color = 'bg-emerald-600 hover:bg-emerald-700';
+              $icon_svg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>';
+          } elseif ($is_mega) {
+              $icon_color = 'bg-blue-100 dark:bg-blue-500/10 text-blue-500';
+              $btn_color = 'bg-blue-600 hover:bg-blue-700';
+              $icon_svg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>';
+          }
+      ?>
+        <!-- Enlace Card -->
+        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div class="flex items-center gap-4 w-full sm:w-auto">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 <?php echo $icon_color; ?>">
+              <?php echo $icon_svg; ?>
+            </div>
+            <div class="text-center sm:text-left min-w-0">
+              <h4 class="font-bold text-sm text-slate-800 dark:text-white truncate"><?php echo esc_html($text); ?> (<?php echo esc_html($type); ?>)</h4>
+              <p class="text-xs text-slate-400 mt-1">Servidor Rápido • v<?php echo esc_html($app_version); ?> • <?php echo esc_html($app_size); ?></p>
+            </div>
+          </div>
+          <a href="<?php echo esc_url($download_url); ?>" class="w-full sm:w-auto px-5 py-2.5 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 <?php echo $btn_color; ?>">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            Descargar
+          </a>
         </div>
+      <?php endforeach; ?>
     </div>
-    <div id="dl-mod-info" class="tab-content">
-        <?php if (!empty($custom_boxes) || !empty($permanent_custom_boxes)) : ?>
-            <?php if (!empty($custom_boxes[0]['title']) || !empty($custom_boxes[0]['content'])) : ?>
-                <div class="mb-4">
-                    <?php if (!empty($custom_boxes[0]['title'])) : ?>
-                        <h2 class="text-xl font-bold dark:text-gray-200 mb-2">
-                            <?php echo esc_html($custom_boxes[0]['title']); ?>
-                        </h2>
-                    <?php endif; ?>
-
-                    <?php if (!empty($custom_boxes[0]['content'])) : ?>
-                        <div class="dark:text-gray-200">
-                            <?php echo wp_kses_post($custom_boxes[0]['content']); ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-            <?php if (!empty($permanent_custom_boxes[0]['title']) || !empty($permanent_custom_boxes[0]['content'])) : ?>
-                <div class="mt-4">
-                    <?php if (!empty($permanent_custom_boxes[0]['title'])) : ?>
-                        <h2 class="text-xl font-bold dark:text-gray-200 mb-2">
-                            <?php echo esc_html($permanent_custom_boxes[0]['title']); ?>
-                        </h2>
-                    <?php endif; ?>
-
-                    <?php if (!empty($permanent_custom_boxes[0]['content'])) : ?>
-                        <div class="dark:text-gray-200">
-                            <?php echo wp_kses_post($permanent_custom_boxes[0]['content']); ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-        <?php endif; ?>
+  <?php else : ?>
+    <div class="text-center p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+      <p class="text-sm text-slate-400 font-semibold">No hay enlaces de descarga disponibles en este momento.</p>
     </div>
-</div>
+  <?php endif; ?>
+</section>
