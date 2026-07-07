@@ -140,8 +140,7 @@ jQuery(document).ready(function ($) {
                             <input type="text" name="${field.name_prefix}[${index_placeholder}][${field.key}]" 
                                 id="${field.name_prefix}_${index_placeholder}_${field.key}" class="at-text-ipt" 
                                 data-field-key="${field.key}" />
-                            <input type="button" class="at-upload-img-ipt" value="" 
-                               data-title="${field.label}" data-target="#${field.name_prefix}_${index_placeholder}_${field.key}" />
+                            <button type="button" class="at-upload-img-ipt" data-title="${field.label}" data-target="#${field.name_prefix}_${index_placeholder}_${field.key}"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button>
                         </div>
                         ${field.description ? `<p class="${descriptionClass}">${field.description}</p>` : ''}
                     </div>`;
@@ -197,7 +196,7 @@ jQuery(document).ready(function ($) {
                 <div class="at-coll-header">
                     <div class="at-coll-title">${item_name} 1</div>
                     <div class="at-coll-action">
-                        <span class="at-action-move"><i class="fa fa-bars"></i></span>
+                        <span class="at-action-move"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu inline-block"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></span>
                         <a href="javascript:void(0);" class="remove-at-coll delete">Remove</a>
                         <a href="javascript:void(0);" class="edit-at-coll edit">Edit</a>
                     </div>

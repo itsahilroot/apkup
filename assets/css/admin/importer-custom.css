@@ -1,24 +1,17 @@
 :root {
-    --at-primary: #10b981;
-    /* Emerald 500 */
-    --at-primary-dark: #059669;
-    /* Emerald 600 */
-    --at-primary-light: #d1fae5;
-    /* Emerald 100 */
-    --at-bg: #f3f4f6;
-    /* Gray 100 */
+    --at-primary: #0052e0;
+    --at-primary-dark: #0043b8;
+    --at-primary-light: #eff6ff;
+    --at-bg: #f1f5f9;
     --at-card-bg: #ffffff;
-    --at-text-main: #111827;
-    /* Gray 900 */
-    --at-text-muted: #6b7280;
-    /* Gray 500 */
-    --at-border: #e5e7eb;
-    /* Gray 200 */
+    --at-text-main: #0f172a;
+    --at-text-muted: #475569;
+    --at-border: #cbd5e1;
     --at-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --at-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --at-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --at-radius: 1rem;
-    --at-radius-sm: 0.5rem;
+    --at-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --at-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --at-radius: 6px;
+    --at-radius-sm: 4px;
 }
 
 #at-importer {
@@ -205,24 +198,22 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0 2.5rem;
+    padding: 0 1.5rem;
     border: none;
-    font-size: 1.125rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    border-radius: 1rem;
+    border-radius: var(--at-radius-sm);
     color: #fff;
-    background: linear-gradient(135deg, var(--at-primary) 0%, var(--at-primary-dark) 100%);
+    background: var(--at-primary);
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 82, 224, 0.2);
     white-space: nowrap;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 #at-importer .at-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
-    filter: brightness(1.1);
+    box-shadow: 0 4px 8px rgba(0, 82, 224, 0.3);
+    filter: brightness(1.05);
 }
 
 #at-importer .at-btn:active {

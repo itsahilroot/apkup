@@ -1,25 +1,18 @@
 /** Inits **/
 :root {
-    --at-primary: #10b981;
-    /* Emerald 500 */
-    --at-primary-dark: #059669;
-    /* Emerald 600 */
-    --at-primary-light: #d1fae5;
-    /* Emerald 100 */
-    --at-bg: #f3f4f6;
-    /* Gray 100 */
+    --at-primary: #0052e0;
+    --at-primary-dark: #0043b8;
+    --at-primary-light: #eff6ff;
+    --at-bg: #f1f5f9;
     --at-card-bg: #ffffff;
-    --at-text-main: #111827;
-    /* Gray 900 */
-    --at-text-muted: #6b7280;
-    /* Gray 500 */
-    --at-border: #e5e7eb;
-    /* Gray 200 */
+    --at-text-main: #0f172a;
+    --at-text-muted: #475569;
+    --at-border: #cbd5e1;
     --at-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --at-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --at-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --at-radius: 1rem;
-    --at-radius-sm: 0.5rem;
+    --at-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --at-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --at-radius: 6px;
+    --at-radius-sm: 4px;
     --at-spacing-1: 0.5rem;
     --at-spacing-2: 1rem;
 }
@@ -480,7 +473,7 @@ p {
 .at-panel-header {
     border-bottom: 1px solid var(--at-border);
     padding: 1.5rem;
-    background: linear-gradient(135deg, var(--at-primary) 0%, var(--at-primary-dark) 100%);
+    background: var(--at-primary);
 }
 
 .at-panel-header h2 {
@@ -666,7 +659,7 @@ p {
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: var(--at-radius-sm);
-    background: linear-gradient(135deg, var(--at-primary) 0%, var(--at-primary-dark) 100%);
+    background: var(--at-primary);
     color: #fff;
     cursor: pointer;
     transition: all 0.3s ease;

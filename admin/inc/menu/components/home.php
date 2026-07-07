@@ -182,8 +182,7 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                         <div class="at-img-upload">
                             <input type="text" name="au_hero_banner_img" id="au_hero_banner_img" class="at-text-ipt"
                                 value="<?php echo esc_html($au_hero_banner_img); ?>" />
-                            <input type="button" class="at-upload-img-ipt" value="&#xf093;" data-title="Intro Banner Image"
-                                data-target="#au_hero_banner_img" />
+                            <button type="button" class="at-upload-img-ipt" data-title="Intro Banner Image" data-target="#au_hero_banner_img"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button>
                         </div>
                     </div>
                     <p class="at-field-hint at-mb-2">
@@ -194,8 +193,7 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                         <div class="at-img-upload">
                             <input type="text" name="au_hero_banner_icon_1" id="au_hero_banner_icon_1" class="at-text-ipt"
                                 value="<?php echo esc_html($au_hero_banner_icon_1); ?>" />
-                            <input type="button" class="at-upload-img-ipt" value="&#xf093;" data-title="Intro Banner Icon 1"
-                                data-target="#au_hero_banner_icon_1" />
+                            <button type="button" class="at-upload-img-ipt" data-title="Intro Banner Icon 1" data-target="#au_hero_banner_icon_1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button>
                         </div>
                     </div>
                     <p class="at-field-hint at-mb-2">
@@ -206,8 +204,7 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                         <div class="at-img-upload">
                             <input type="text" name="au_hero_banner_icon_2" id="au_hero_banner_icon_2" class="at-text-ipt"
                                 value="<?php echo esc_html($au_hero_banner_icon_2); ?>" />
-                            <input type="button" class="at-upload-img-ipt" value="&#xf093;" data-title="Intro Banner Icon 2"
-                                data-target="#au_hero_banner_icon_2" />
+                            <button type="button" class="at-upload-img-ipt" data-title="Intro Banner Icon 2" data-target="#au_hero_banner_icon_2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button>
                         </div>
                     </div>
                     <p class="at-field-hint at-mb-2">

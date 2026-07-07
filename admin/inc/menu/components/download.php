@@ -96,7 +96,7 @@ $au_download_faqs = get_theme_mod('au_download_faqs', []);
                                     </div>
                                     <div class="at-coll-action">
                                         <span class="at-action-move" aria-label="<?php esc_attr_e('Move section', 'apktemplates'); ?>">
-                                            <i class="fa fa-bars"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu inline-block"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
                                         </span>
                                         <a href="javascript:void(0);" class="remove-at-coll delete"
                                             aria-label="<?php esc_attr_e('Remove Section', 'apktemplates'); ?>">
