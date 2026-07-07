@@ -166,21 +166,21 @@ function apkt_gp_fetcher_callback($post) {
                                 
                                 // Sync Block Editor (Gutenberg) taxonomy state
                                 if (window.wp && wp.data && wp.data.dispatch && wp.data.select && wp.data.select('core/editor')) {
-                                    var selectedPublishers = wp.data.select('core/editor').getEditedPostAttribute('publisher') || [];
-                                    if (selectedPublishers.indexOf(termId) === -1) {
-                                        var newPublishers = selectedPublishers.concat(termId);
-                                        wp.data.dispatch('core/editor').editPost({ publisher: newPublishers });
+                                    var selectedDevelopers = wp.data.select('core/editor').getEditedPostAttribute('developer') || [];
+                                    if (selectedDevelopers.indexOf(termId) === -1) {
+                                        var newDevelopers = selectedDevelopers.concat(termId);
+                                        wp.data.dispatch('core/editor').editPost({ developer: newDevelopers });
                                     }
                                 }
                                 
                                 // Sync Classic Editor taxonomy checkbox checklist
-                                var checkbox = $('#in-publisher-' + termId);
+                                var checkbox = $('#in-developer-' + termId);
                                 if (checkbox.length) {
                                     checkbox.prop('checked', true);
                                 } else {
-                                    var checklist = $('#publisherchecklist');
+                                    var checklist = $('#developerchecklist');
                                     if (checklist.length) {
-                                        var newLi = $('<li id="publisher-' + termId + '"><label class="selectit"><input value="' + termId + '" type="checkbox" name="tax_input[publisher][]" id="in-publisher-' + termId + '" checked="checked" /> ' + app.developer + '</label></li>');
+                                        var newLi = $('<li id="developer-' + termId + '"><label class="selectit"><input value="' + termId + '" type="checkbox" name="tax_input[developer][]" id="in-developer-' + termId + '" checked="checked" /> ' + app.developer + '</label></li>');
                                         checklist.append(newLi);
                                     }
                                 }
@@ -337,18 +337,18 @@ function apkt_fetch_gplay_data_handler() {
     if ($post_id && !empty($developer)) {
         update_post_meta($post_id, 'wp_developers_GP', sanitize_text_field($developer));
         
-        $term = get_term_by('name', $developer, 'publisher');
+        $term = get_term_by('name', $developer, 'developer');
         if ($term) {
             $term_id = $term->term_id;
         } else {
-            $inserted = wp_insert_term($developer, 'publisher');
+            $inserted = wp_insert_term($developer, 'developer');
             if (!is_wp_error($inserted)) {
                 $term_id = $inserted['term_id'];
             }
         }
         
         if ($term_id) {
-            wp_set_object_terms($post_id, intval($term_id), 'publisher', false);
+            wp_set_object_terms($post_id, intval($term_id), 'developer', false);
         }
     }
     

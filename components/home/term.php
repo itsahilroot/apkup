@@ -37,6 +37,9 @@ foreach ($au_home_posts as $index => $posts) :
             $posts_args['orderby'] = 'title';
             $posts_args['order'] = 'DESC';
             break;
+        case 'random':
+            $posts_args['orderby'] = 'rand';
+            break;
         default:
             $posts_args['orderby'] = 'modified';
             $posts_args['order'] = 'DESC';
@@ -67,8 +70,8 @@ foreach ($au_home_posts as $index => $posts) :
 
     $posts_query = new WP_Query($posts_args);
 ?>
-    <section class="mt-8">
-      <div class="flex items-center justify-between mb-4">
+    <section class="mt-4">
+      <div class="flex items-center justify-between mb-2">
         <h2 class="text-lg font-bold dark:text-white"><?php echo esc_html($section_title ?: 'Unknown'); ?></h2>
         <?php
         $category_link = '#';
@@ -118,8 +121,8 @@ foreach ($au_home_posts as $index => $posts) :
                       }
                   ?>
                       <!-- Game Card -->
-                      <div class="flex-shrink-0 w-44 md:w-72 mr-6 post-card">
-                        <div class="relative rounded-xl overflow-hidden aspect-[16/9] mb-2">
+                      <div class="flex-shrink-0 w-44 md:w-72 mr-6 post-card group">
+                        <div class="relative rounded-xl overflow-hidden aspect-[16/9] mb-2 shadow-md hover:shadow-lg transition-shadow duration-300 border border-slate-100 dark:border-white/5">
                           <a href="<?php echo esc_url($app_url); ?>">
                             <img alt="<?php echo esc_attr($app_name); ?>" class="w-full h-full object-cover"
                               src="<?php echo esc_url($app_banner); ?>">
@@ -127,16 +130,21 @@ foreach ($au_home_posts as $index => $posts) :
                         </div>
                         <div class="flex items-start gap-3">
                           <a href="<?php echo esc_url($app_url); ?>" class="shrink-0">
-                            <img class="w-12 h-12 rounded-xl object-cover"
+                            <img class="w-12 h-12 rounded-xl object-cover border border-slate-100 dark:border-white/5"
                               src="<?php echo esc_url($app_logo); ?>"
                               alt="<?php echo esc_attr($app_name); ?> Icon">
                           </a>
-                          <div class="min-w-0">
+                          <div class="min-w-0 flex-1">
                             <a href="<?php echo esc_url($app_url); ?>">
                               <h3 class="text-sm font-bold truncate dark:text-white hover:text-primary dark:hover:text-primary transition-colors"><?php echo esc_html($app_name); ?></h3>
                             </a>
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 truncate"><?php echo esc_html($meta_desc); ?></p>
-                            <p class="text-[10px] text-gray-400 dark:text-gray-500"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★ <?php echo esc_html($app_size); ?></p>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500">
+                              <span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
+                              <?php if (!empty($app_size)) : ?>
+                                <span class="ml-1"><?php echo esc_html($app_size); ?></span>
+                              <?php endif; ?>
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -175,16 +183,19 @@ foreach ($au_home_posts as $index => $posts) :
                   ?>
                       <!-- Landscape Post Card -->
                       <div class="flex flex-col w-72 mr-6 shrink-0 post-card group">
-                        <a href="<?php echo esc_url($app_url); ?>" class="overflow-hidden rounded-xl mb-2">
-                          <img class="w-full aspect-video object-cover hover:scale-105 transition-transform duration-200"
+                        <a href="<?php echo esc_url($app_url); ?>" class="overflow-hidden rounded-xl mb-2 block shadow-md hover:shadow-lg transition-shadow duration-300 border border-slate-100 dark:border-white/5">
+                          <img class="w-full aspect-video object-cover"
                             src="<?php echo esc_url($app_banner); ?>"
                             alt="<?php echo esc_attr($app_name); ?>">
                         </a>
                         <a href="<?php echo esc_url($app_url); ?>" class="hover:text-primary dark:hover:text-primary transition-colors">
-                          <h3 class="text-[11px] font-bold leading-tight dark:text-white"><?php echo esc_html($app_name); ?></h3>
+                          <h3 class="text-sm font-bold leading-tight dark:text-white"><?php echo esc_html($app_name); ?></h3>
                         </a>
-                        <p class="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5"><?php echo esc_html($meta_desc); ?></p>
-                        <p class="text-[9px] text-gray-400 dark:text-gray-500"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</p>
+                        <div class="flex items-center gap-1.5 mt-0.5 text-[9px]">
+                          <span class="text-gray-400 dark:text-gray-500"><?php echo esc_html($meta_desc); ?></span>
+                          <span class="text-gray-300 dark:text-gray-700">•</span>
+                          <span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
+                        </div>
                       </div>
                   <?php
                   endwhile;
@@ -209,10 +220,10 @@ foreach ($au_home_posts as $index => $posts) :
                       $badge_text = ($is_app_mod == '1') ? 'MOD' : get_the_modified_date('Y');
                   ?>
                       <!-- App Card Style 2 (Icon Layout) -->
-                      <div class="flex-shrink-0 w-16 md:w-20 mr-6 text-center flex flex-col gap-1 items-center post-card">
+                      <div class="flex-shrink-0 w-16 md:w-20 mr-6 text-center flex flex-col gap-1 items-center post-card group">
                         <div class="relative shrink-0 pt-1.5 pr-1.5">
                           <a href="<?php echo esc_url($app_url); ?>">
-                            <img alt="<?php echo esc_attr($app_name); ?>" class="w-16 h-16 rounded-2xl shadow-sm mb-1 object-cover hover:scale-105 transition-transform duration-200" src="<?php echo esc_url($app_logo); ?>">
+                            <img alt="<?php echo esc_attr($app_name); ?>" class="w-16 h-16 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 mb-1 object-cover border border-slate-100 dark:border-white/5" src="<?php echo esc_url($app_logo); ?>">
                           </a>
                           <?php if (!empty($badge_text)) : ?>
                             <span class="absolute top-0.5 right-0.5 bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold select-none pointer-events-none"><?php echo esc_html($badge_text); ?></span>
@@ -221,7 +232,9 @@ foreach ($au_home_posts as $index => $posts) :
                         <a href="<?php echo esc_url($app_url); ?>" class="hover:text-primary dark:hover:text-primary transition-colors">
                           <h3 class="text-[10px] font-medium leading-tight mb-1 min-h-[24px] line-clamp-2 dark:text-white"><?php echo esc_html($app_name); ?></h3>
                         </a>
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-none"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</p>
+                        <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-none">
+                          <span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
+                        </p>
                       </div>
                   <?php
                   endwhile;

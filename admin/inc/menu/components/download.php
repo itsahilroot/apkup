@@ -129,6 +129,29 @@ $au_download_faqs = get_theme_mod('au_download_faqs', []);
                     </button>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('Top Downloaded Apps & Games', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Show or hide the top downloaded apps and games under the FAQs on the download page.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <label class="at-switch-btn">
+                            <?php $au_dl_top_downloaded_swt = get_theme_mod('au_dl_top_downloaded_swt', false); ?>
+                            <input type="checkbox" name="au_dl_top_downloaded_swt" <?php checked($au_dl_top_downloaded_swt, 1); ?>>
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
+                    <div>
+                        <p class="at-mini-title at-mb-1"><?php esc_html_e('Limit', 'apktemplates'); ?></p>
+                        <?php $au_dl_top_downloaded_limit = get_theme_mod('au_dl_top_downloaded_limit', '5'); ?>
+                        <input type="number" name="au_dl_top_downloaded_limit" class="at-number-ipt" min="1" max="20"
+                            value="<?php echo esc_attr($au_dl_top_downloaded_limit); ?>" />
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

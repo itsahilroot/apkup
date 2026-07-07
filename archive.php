@@ -35,18 +35,23 @@ $current_cat = get_queried_object();
 
     <!-- Breadcrumbs Section -->
     <nav class="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-6 font-light" aria-label="Breadcrumb">
-      <?php if (function_exists('apkup_breadcrumb')) {
-          // Let's modify apkup_breadcrumb output dynamically if we can or just use standard.
-          // Since the user request has a custom breadcrumb structure:
-          // <a href="https://apkgstore.co" class="hover:text-primary transition-colors">Inicio</a>
-          // <span class="text-slate-300 dark:text-slate-700">/</span>
-          // <span class="text-slate-600 dark:text-slate-300 font-normal">Archivo</span>
-          // We can use a simpler custom layout or customize apkup_breadcrumb. Let's output it exactly like the user's HTML.
-          ?>
-          <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-primary transition-colors">Inicio</a>
-          <span class="text-slate-300 dark:text-slate-700">/</span>
-          <span class="text-slate-600 dark:text-slate-300 font-normal"><?php echo single_term_title('', false); ?></span>
-      <?php } ?>
+      <a href="<?php echo esc_url(home_url('/')); ?>" class="hover:text-primary transition-colors">Inicio</a>
+      <span class="text-slate-300 dark:text-slate-700">/</span>
+      <?php
+      if (is_category()) {
+          $cat_obj = get_queried_object();
+          if ($cat_obj && $cat_obj->category_parent != 0) {
+              $parent_cat = get_term($cat_obj->category_parent, 'category');
+              if ($parent_cat && !is_wp_error($parent_cat)) {
+                  ?>
+                  <a href="<?php echo esc_url(get_term_link($parent_cat)); ?>" class="hover:text-primary transition-colors"><?php echo esc_html($parent_cat->name); ?></a>
+                  <span class="text-slate-300 dark:text-slate-700">/</span>
+                  <?php
+              }
+          }
+      }
+      ?>
+      <span class="text-slate-600 dark:text-slate-300 font-normal"><?php echo single_term_title('', false); ?></span>
     </nav>
 
     <!-- Page Intro Header Banner -->
@@ -70,6 +75,31 @@ $current_cat = get_queried_object();
         <?php endif; ?>
       </div>
     </header>
+
+    <?php
+    if (is_category()) {
+        $current_term = get_queried_object();
+        if ($current_term && $current_term->category_parent == 0) {
+            $subcats = get_categories([
+                'parent'     => $current_term->term_id,
+                'hide_empty' => false,
+            ]);
+            if (!empty($subcats)) : ?>
+                <div class="mb-8">
+                    <div class="carousel -mx-4 px-4 sm:mx-0 sm:px-0" data-flickity='{"freeScroll": true, "contain": true, "prevNextButtons": false, "pageDots": false, "cellAlign": "left"}'>
+                        <?php foreach ($subcats as $subcat) : 
+                            $subcat_link = get_term_link($subcat);
+                            ?>
+                            <a href="<?php echo esc_url($subcat_link); ?>" class="inline-flex items-center px-4 py-2.5 rounded-2xl text-xs font-semibold bg-white dark:bg-brand-darkCard text-slate-700 dark:text-slate-200 border border-slate-200/60 dark:border-brand-darkBorder hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all duration-200 shadow-sm shrink-0 snap-center hover:scale-102 mr-3">
+                                <span><?php echo esc_html($subcat->name); ?></span>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif;
+        }
+    }
+    ?>
 
     <!-- Main Content Layout Section: Grid/Sections + Sidebar -->
     <div class="flex flex-col lg:flex-row gap-8">
@@ -122,11 +152,11 @@ $current_cat = get_queried_object();
 
         <?php
         // Check if the current term is a parent category (parent == 0) or if there's no queried object
-        $is_parent_category = true;
+        $is_parent_category = false;
         if (is_category()) {
             $cat_obj = get_queried_object();
-            if ($cat_obj && $cat_obj->category_parent != 0) {
-                $is_parent_category = false;
+            if ($cat_obj && $cat_obj->category_parent == 0) {
+                $is_parent_category = true;
             }
         }
         ?>
@@ -137,7 +167,7 @@ $current_cat = get_queried_object();
           <!-- LAYOUT STYLE 1: Destacados de la Semana (Landscape Cover Cards) -->
           <?php if ($archive_featured_swt == '1') : ?>
           <section>
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-2">
               <h2 class="text-md font-bold text-slate-800 dark:text-white flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 text-amber-500"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"></path><circle cx="12" cy="8" r="6"></circle></svg> Lanzamientos Destacados
               </h2>
@@ -168,18 +198,18 @@ $current_cat = get_queried_object();
                       $h_cats = get_the_category();
                       $h_primary_cat = !empty($h_cats) ? $h_cats[0]->name : 'Apps';
                       ?>
-                      <article class="shrink-0 w-72 mr-6 flex flex-col group">
-                        <div class="relative rounded-2xl overflow-hidden aspect-[16/9] mb-3 border border-slate-200/40 dark:border-white/5 shadow-sm bg-slate-900">
+                      <article class="shrink-0 w-72 mr-6 flex flex-col">
+                        <div class="relative rounded-2xl overflow-hidden aspect-[16/9] mb-3 border border-slate-200/30 dark:border-white/5 shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_15px_40px_rgba(0,0,0,0.3)] transition-all duration-300">
                           <img alt="<?php the_title_attribute(); ?>" class="w-full h-full object-cover" src="<?php echo esc_url($h_cover); ?>">
-                          <span class="absolute top-2 right-2 <?php echo esc_attr($h_tag_bg); ?> font-bold text-[9px] px-2 py-0.5 rounded shadow-md"><?php echo esc_html($h_tag); ?></span>
+                          <span class="absolute top-2.5 right-2.5 <?php echo esc_attr($h_tag_bg); ?> font-extrabold text-[9px] px-2.5 py-0.5 rounded-full shadow-md uppercase tracking-wider"><?php echo esc_html($h_tag); ?></span>
                         </div>
-                        <div class="flex items-start gap-3">
-                          <img class="w-11 h-11 rounded-xl shrink-0 object-cover shadow-sm" src="<?php echo esc_url($h_logo); ?>" alt="<?php the_title_attribute(); ?>">
+                        <div class="flex items-start gap-3 px-1">
+                          <img class="w-11 h-11 rounded-xl shrink-0 object-cover shadow-md border border-slate-100 dark:border-slate-800" src="<?php echo esc_url($h_logo); ?>" alt="<?php the_title_attribute(); ?>">
                           <div class="min-w-0 flex-1">
-                            <h3 class="text-xs font-bold truncate text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors">
+                            <h3 class="text-xs font-bold truncate text-slate-800 dark:text-slate-200 transition-colors">
                               <?php the_title(); ?></h3>
                             <p class="text-[10px] text-slate-400"><?php echo esc_html($h_primary_cat); ?> • <?php echo esc_html($h_size); ?></p>
-                            <p class="text-[10px] text-slate-400"><?php echo esc_html($h_rating); ?> ★ • v<?php echo esc_html($h_version); ?></p>
+                            <p class="text-[10px] text-slate-400"><span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html($h_rating); ?> ★</span> • v<?php echo esc_html($h_version); ?></p>
                           </div>
                           <a class="px-3 py-1 bg-slate-100 hover:bg-primary hover:text-white dark:bg-slate-800 dark:hover:bg-primary text-slate-700 dark:text-slate-350 transition-all text-[10px] font-semibold rounded-full" href="<?php the_permalink(); ?>">Ver</a>
                         </div>
@@ -196,7 +226,7 @@ $current_cat = get_queried_object();
           <!-- LAYOUT STYLE 2: Nuevas Incorporaciones (Store Grid Layout) -->
           <?php if ($archive_recent_swt == '1') : ?>
           <section>
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-2">
               <h2 class="text-md font-bold text-slate-800 dark:text-white flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 text-primary animate-pulse"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg> Agregados Recientemente
               </h2>
@@ -224,16 +254,16 @@ $current_cat = get_queried_object();
                       $r_cats = get_the_category();
                       $r_primary_cat = !empty($r_cats) ? $r_cats[0]->name : 'Apps';
                       ?>
-                      <article class="glass-card p-4 rounded-[24px] flex flex-col justify-between group border border-slate-200/50 dark:border-white/5 shrink-0 w-36 mr-6">
+                      <article class="glass-card p-4 rounded-[24px] flex flex-col justify-between border border-slate-200/50 dark:border-white/5 shrink-0 w-36 mr-6">
                         <div class="flex items-center justify-between mb-2">
                           <span class="text-[9px] font-bold px-1.5 py-0.5 <?php echo esc_attr($r_tag_bg); ?> rounded"><?php echo esc_html($r_tag); ?></span>
                           <span class="text-[9px] text-slate-400 dark:text-slate-500 font-light">v<?php echo esc_html($r_version); ?></span>
                         </div>
                         <div class="flex flex-col items-center text-center flex-grow">
-                          <div class="w-14 h-14 squircle-icon-medium bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-sm mb-3">
+                          <div class="w-14 h-14 squircle-icon-medium bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-md mb-3">
                             <img src="<?php echo esc_url($r_logo); ?>" alt="<?php the_title_attribute(); ?>" class="w-full h-full object-cover">
                           </div>
-                          <h4 class="font-bold text-xs text-slate-800 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">
+                          <h4 class="font-bold text-xs text-slate-800 dark:text-white line-clamp-1 transition-colors">
                             <?php the_title(); ?></h4>
                           <p class="text-[9px] text-slate-400 mt-0.5"><?php echo esc_html($r_primary_cat); ?> • <?php echo esc_html($r_size); ?></p>
                         </div>
@@ -251,13 +281,13 @@ $current_cat = get_queried_object();
           <!-- LAYOUT STYLE 3: Recomendados (Compact Row List) -->
           <?php if ($archive_recommended_swt == '1') : ?>
           <section>
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-2">
               <h2 class="text-md font-bold text-slate-800 dark:text-white flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 text-emerald-500"><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"></path></svg> Recomendadas para ti
               </h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex overflow-x-auto md:grid md:grid-cols-2 gap-4 no-scrollbar pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
               <?php
               $recommended_args = [
                   'post_type'      => 'post',
@@ -281,11 +311,11 @@ $current_cat = get_queried_object();
                       $rec_cats = get_the_category();
                       $rec_primary_cat = !empty($rec_cats) ? $rec_cats[0]->name : 'Apps';
                       ?>
-                      <article class="glass-card p-4 rounded-2xl border border-slate-200/40 dark:border-white/5 flex items-center justify-between gap-4 group">
+                      <article class="glass-card p-4 rounded-2xl border border-slate-200/40 dark:border-white/5 flex items-center justify-between gap-4 shrink-0 w-[290px] md:w-auto snap-center">
                         <div class="flex items-center gap-3.5 min-w-0">
-                          <img class="w-12 h-12 rounded-xl shrink-0 object-cover shadow-sm" src="<?php echo esc_url($rec_logo); ?>" alt="<?php the_title_attribute(); ?>">
+                          <img class="w-12 h-12 rounded-xl shrink-0 object-cover shadow-md" src="<?php echo esc_url($rec_logo); ?>" alt="<?php the_title_attribute(); ?>">
                           <div class="min-w-0">
-                            <h4 class="font-bold text-xs text-slate-800 dark:text-white truncate group-hover:text-primary transition-colors">
+                            <h4 class="font-bold text-xs text-slate-800 dark:text-white truncate transition-colors">
                               <?php the_title(); ?></h4>
                             <p class="text-[10px] text-slate-400"><?php echo esc_html($rec_primary_cat); ?> • Android App</p>
                             <span class="text-[9px] font-bold <?php echo esc_attr($rec_tag_color); ?>"><?php echo esc_html($rec_tag); ?> • v<?php echo esc_html($rec_version); ?></span>
@@ -305,7 +335,7 @@ $current_cat = get_queried_object();
           <!-- LAYOUT STYLE 4: Colecciones Populares Gratis (Horizontal Scroll) -->
           <?php if ($archive_premium_swt == '1') : ?>
           <section>
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-2">
               <h2 class="text-md font-bold text-slate-800 dark:text-white flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4.5 h-4.5 text-emerald-500"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"></circle></svg> Joyas Premium Gratis
               </h2>
@@ -330,11 +360,11 @@ $current_cat = get_queried_object();
                       $p_id = get_the_ID();
                       $p_logo = get_the_post_thumbnail_url($p_id, 'thumbnail') ?: 'https://placehold.co/150x150/0052e0/ffffff?text=App';
                       ?>
-                      <a href="<?php the_permalink(); ?>" class="w-32 mr-6 shrink-0 text-center group block">
-                        <div class="w-24 h-24 squircle-icon-extreme bg-white dark:bg-slate-850 mx-auto overflow-hidden shadow border border-slate-200/40 dark:border-white/5 ">
+                      <a href="<?php the_permalink(); ?>" class="w-32 mr-6 shrink-0 text-center block">
+                        <div class="w-24 h-24 squircle-icon-extreme bg-white dark:bg-slate-850 mx-auto overflow-hidden shadow-md border border-slate-200/40 dark:border-white/5 ">
                           <img class="w-full h-full object-cover" src="<?php echo esc_url($p_logo); ?>" alt="<?php the_title_attribute(); ?>">
                         </div>
-                        <h4 class="font-semibold text-[11px] text-slate-855 dark:text-slate-200 mt-2 truncate group-hover:text-primary transition-colors">
+                        <h4 class="font-semibold text-[11px] text-slate-855 dark:text-slate-200 mt-2 truncate transition-colors">
                           <?php the_title(); ?></h4>
                         <div class="mt-0.5 flex justify-center gap-1 items-center">
                           <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 px-1 bg-emerald-100/70 dark:bg-emerald-950/40 rounded">GRATIS</span>
@@ -434,8 +464,8 @@ $current_cat = get_queried_object();
                       }
                   }
                   ?>
-                  <section class="mt-8">
-                    <div class="flex items-center justify-between mb-4">
+                  <section class="mt-4">
+                    <div class="flex items-center justify-between mb-2">
                       <h2 class="text-md font-bold text-slate-800 dark:text-white flex items-center gap-2">
                           <?php echo esc_html($section_title ?: 'Unknown'); ?>
                       </h2>
@@ -478,7 +508,7 @@ $current_cat = get_queried_object();
                                 ?>
                                     <!-- Game Card -->
                                     <div class="flex-shrink-0 w-44 md:w-72 mr-6 post-card">
-                                      <div class="relative rounded-xl overflow-hidden aspect-[16/9] mb-2 border border-slate-200/40 dark:border-white/5 shadow-sm bg-slate-900">
+                                      <div class="relative rounded-xl overflow-hidden aspect-[16/9] mb-2 border border-slate-200/40 dark:border-white/5 shadow-md transition-shadow duration-300">
                                         <a href="<?php echo esc_url($app_url); ?>">
                                           <img alt="<?php echo esc_attr($app_name); ?>" class="w-full h-full object-cover"
                                             src="<?php echo esc_url($app_banner); ?>">
@@ -486,16 +516,21 @@ $current_cat = get_queried_object();
                                       </div>
                                       <div class="flex items-start gap-3">
                                         <a href="<?php echo esc_url($app_url); ?>" class="shrink-0">
-                                          <img class="w-12 h-12 rounded-xl object-cover shadow-sm"
+                                          <img class="w-12 h-12 rounded-xl object-cover border border-slate-100 dark:border-white/5 shadow-md"
                                             src="<?php echo esc_url($app_logo); ?>"
                                             alt="<?php echo esc_attr($app_name); ?> Icon">
                                         </a>
                                         <div class="min-w-0 flex-1">
                                           <a href="<?php echo esc_url($app_url); ?>">
-                                            <h3 class="text-sm font-bold truncate dark:text-white hover:text-primary dark:hover:text-primary transition-colors"><?php echo esc_html($app_name); ?></h3>
+                                            <h3 class="text-sm font-bold truncate dark:text-white transition-colors"><?php echo esc_html($app_name); ?></h3>
                                           </a>
                                           <p class="text-[10px] text-gray-400 dark:text-gray-500 truncate"><?php echo esc_html($meta_desc); ?></p>
-                                          <p class="text-[10px] text-gray-400 dark:text-gray-500"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★ <?php echo esc_html($app_size); ?></p>
+                                          <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+                                            <span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
+                                            <?php if (!empty($app_size)) : ?>
+                                              <span class="ml-1"><?php echo esc_html($app_size); ?></span>
+                                            <?php endif; ?>
+                                          </p>
                                         </div>
                                       </div>
                                     </div>
@@ -533,17 +568,19 @@ $current_cat = get_queried_object();
                                     }
                                 ?>
                                     <!-- Landscape Post Card -->
-                                    <div class="flex flex-col w-72 mr-6 shrink-0 post-card group">
-                                      <a href="<?php echo esc_url($app_url); ?>" class="overflow-hidden rounded-xl mb-2 border border-slate-200/40 dark:border-white/5 shadow-sm bg-slate-900">
-                                        <img class="w-full aspect-video object-cover hover:scale-105 transition-transform duration-200"
+                                    <div class="flex flex-col w-72 mr-6 shrink-0 post-card">
+                                      <a href="<?php echo esc_url($app_url); ?>" class="overflow-hidden rounded-xl mb-2 block shadow-md transition-shadow duration-300 border border-slate-100 dark:border-white/5">
+                                        <img class="w-full aspect-video object-cover"
                                           src="<?php echo esc_url($app_banner); ?>"
                                           alt="<?php echo esc_attr($app_name); ?>">
                                       </a>
-                                      <a href="<?php echo esc_url($app_url); ?>" class="hover:text-primary dark:hover:text-primary transition-colors">
+                                      <a href="<?php echo esc_url($app_url); ?>" class="transition-colors">
                                         <h3 class="text-[11px] font-bold leading-tight dark:text-white"><?php echo esc_html($app_name); ?></h3>
                                       </a>
                                       <p class="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5"><?php echo esc_html($meta_desc); ?></p>
-                                      <p class="text-[9px] text-gray-400 dark:text-gray-500"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</p>
+                                      <p class="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5">
+                                        <span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
+                                      </p>
                                     </div>
                                 <?php
                                 endwhile;
@@ -571,16 +608,18 @@ $current_cat = get_queried_object();
                                     <div class="flex-shrink-0 w-16 md:w-20 mr-6 text-center flex flex-col gap-1 items-center post-card">
                                       <div class="relative shrink-0 pt-1.5 pr-1.5">
                                         <a href="<?php echo esc_url($app_url); ?>">
-                                          <img alt="<?php echo esc_attr($app_name); ?>" class="w-16 h-16 rounded-2xl shadow-sm mb-1 object-cover hover:scale-105 transition-transform duration-200" src="<?php echo esc_url($app_logo); ?>">
+                                          <img alt="<?php echo esc_attr($app_name); ?>" class="w-16 h-16 rounded-2xl shadow-md transition-shadow duration-300 mb-1 object-cover border border-slate-100 dark:border-white/5" src="<?php echo esc_url($app_logo); ?>">
                                         </a>
                                         <?php if (!empty($badge_text)) : ?>
                                           <span class="absolute top-0.5 right-0.5 bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold select-none pointer-events-none"><?php echo esc_html($badge_text); ?></span>
                                         <?php endif; ?>
                                       </div>
-                                      <a href="<?php echo esc_url($app_url); ?>" class="hover:text-primary dark:hover:text-primary transition-colors">
+                                      <a href="<?php echo esc_url($app_url); ?>" class="transition-colors">
                                         <h3 class="text-[10px] font-medium leading-tight mb-1 min-h-[24px] line-clamp-2 dark:text-white"><?php echo esc_html($app_name); ?></h3>
                                       </a>
-                                      <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-none"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</p>
+                                      <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-none">
+                                        <span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
+                                      </p>
                                     </div>
                                 <?php
                                 endwhile;
@@ -644,7 +683,7 @@ $current_cat = get_queried_object();
                     }
                     $primary_cat_name = !empty($post_categories) ? $post_categories[0]->name : 'Apps';
                     ?>
-                    <article data-item-type="<?php echo esc_attr($item_type); ?>" data-item-category="<?php echo esc_attr($item_cat_slug); ?>" class="glass-card p-4 rounded-[24px] flex flex-col justify-between group relative border border-slate-200/50 dark:border-white/5">
+                    <article data-item-type="<?php echo esc_attr($item_type); ?>" data-item-category="<?php echo esc_attr($item_cat_slug); ?>" class="glass-card p-4 rounded-[24px] flex flex-col justify-between relative border border-slate-200/50 dark:border-white/5">
                       <div class="flex items-center justify-between mb-3">
                         <span class="text-[9px] font-bold px-2 py-0.5 rounded-md <?php echo esc_attr($tag_bg); ?>"><?php echo esc_html($app_tag); ?></span>
                         <span class="text-[10px] text-slate-400 dark:text-slate-500 font-light">v<?php echo esc_html($app_version); ?></span>
@@ -653,7 +692,7 @@ $current_cat = get_queried_object();
                         <div class="w-18 h-18 squircle-icon-medium bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-md mb-3 relative">
                           <img src="<?php echo esc_url($app_logo); ?>" alt="<?php echo esc_attr($app_name); ?>" class="w-full h-full object-cover">
                         </div>
-                        <h3 class="font-bold text-xs text-slate-800 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">
+                        <h3 class="font-bold text-xs text-slate-800 dark:text-white line-clamp-1 transition-colors">
                           <?php echo esc_html($app_name); ?>
                         </h3>
                         <p class="text-[10px] text-slate-400 mt-1"><?php echo esc_html($primary_cat_name); ?> • <?php echo esc_html($app_size); ?></p>
@@ -677,7 +716,7 @@ $current_cat = get_queried_object();
           </div>
 
           <!-- Pagination -->
-          <div class="mt-8 flex justify-center">
+          <div class="mt-4 flex justify-center">
             <?php
             global $wp_query;
             if ($wp_query->max_num_pages > 1 && function_exists('apkup_pagination')) {
@@ -701,6 +740,9 @@ $current_cat = get_queried_object();
           
           <div class="flex flex-col gap-4">
             <?php
+            $current_cat_id = get_queried_object_id();
+            $queried_obj = get_queried_object();
+            
             $sidebar_args = [
                 'post_type'      => 'post',
                 'posts_per_page' => 5,
@@ -708,6 +750,17 @@ $current_cat = get_queried_object();
                 'orderby'        => 'meta_value_num',
                 'order'          => 'DESC',
             ];
+
+            if ($queried_obj && isset($queried_obj->taxonomy)) {
+                $sidebar_args['tax_query'] = [
+                    [
+                        'taxonomy' => $queried_obj->taxonomy,
+                        'field'    => 'term_id',
+                        'terms'    => $current_cat_id,
+                    ]
+                ];
+            }
+
             $sidebar_query = new WP_Query($sidebar_args);
             $rank = 1;
             if ($sidebar_query->have_posts()) :
@@ -721,15 +774,15 @@ $current_cat = get_queried_object();
                     $s_data = get_post_meta($s_id, 'datos_informacion', true);
                     $s_size = !empty($s_data['tamano']) ? $s_data['tamano'] : '45 MB';
                     ?>
-                    <article class="flex items-center gap-3 group relative">
-                      <div class="w-11 h-11 squircle-icon-medium bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-sm shrink-0">
-                        <img src="<?php echo esc_url($s_logo); ?>" alt="<?php the_title_attribute(); ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-200">
+                    <article class="flex items-center gap-3 relative">
+                      <div class="w-11 h-11 squircle-icon-medium bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-md shrink-0">
+                        <img src="<?php echo esc_url($s_logo); ?>" alt="<?php the_title_attribute(); ?>" class="w-full h-full object-cover">
                       </div>
                       <div class="min-w-0 flex-1">
-                        <h4 class="text-xs font-bold text-slate-855 dark:text-slate-200 truncate group-hover:text-primary transition-colors">
+                        <h4 class="text-xs font-bold text-slate-855 dark:text-slate-200 truncate transition-colors">
                           <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
                         </h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5"><?php echo esc_html($s_size); ?> • <?php echo esc_html($s_rating); ?> ★</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5"><?php echo esc_html($s_size); ?> • <span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html($s_rating); ?> ★</span></p>
                       </div>
                       <span class="text-xs font-bold text-slate-350 dark:text-slate-650">#<?php echo $rank; ?></span>
                     </article>
@@ -749,7 +802,35 @@ $current_cat = get_queried_object();
           </h3>
           <ul class="flex flex-col gap-2.5 text-xs font-semibold text-slate-600 dark:text-slate-400 list-none pl-0">
             <?php
-            $sidebar_cats = get_categories(['hide_empty' => true, 'number' => 8]);
+            $current_cat_id = get_queried_object_id();
+            $queried_obj = get_queried_object();
+            $taxonomy = ($queried_obj && isset($queried_obj->taxonomy)) ? $queried_obj->taxonomy : 'category';
+            
+            $sidebar_cats = get_categories([
+                'taxonomy'   => $taxonomy,
+                'parent'     => $current_cat_id,
+                'hide_empty' => true
+            ]);
+            
+            // Fallback: If the current term is a child with no subcategories of its own, show siblings
+            if (empty($sidebar_cats) && $queried_obj && isset($queried_obj->parent) && $queried_obj->parent != 0) {
+                $sidebar_cats = get_categories([
+                    'taxonomy'   => $taxonomy,
+                    'parent'     => $queried_obj->parent,
+                    'hide_empty' => true
+                ]);
+            }
+            
+            // Final fallback: show top-level categories
+            if (empty($sidebar_cats)) {
+                $sidebar_cats = get_categories([
+                    'taxonomy'   => $taxonomy,
+                    'parent'     => 0,
+                    'hide_empty' => true,
+                    'number'     => 8
+                ]);
+            }
+
             foreach ($sidebar_cats as $scat) :
                 ?>
                 <li class="flex items-center justify-between">

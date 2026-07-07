@@ -88,11 +88,16 @@ function apkup_ajax_search() {
             }
             // If still no thumbnail, you might want a default icon
 
+            $data = get_post_meta($post_id, 'datos_informacion', true);
+            $data = is_array($data) ? $data : [];
+            $version = !empty($data['version']) ? $data['version'] : '1.0';
+
             $results[] = [
                 'title'     => get_the_title(),
                 'permalink' => get_permalink(),
                 'thumbnail' => $thumbnail,
-                'rating'    => number_format((float)(get_post_meta($post_id, 'new_rating_average', true) ?: 0), 1)
+                'rating'    => number_format((float)(get_post_meta($post_id, 'new_rating_average', true) ?: 0), 1),
+                'version'   => $version
             ];
         }
         wp_reset_postdata();

@@ -12,7 +12,7 @@
         The page you’re looking for doesn’t exist or has been moved.
         Try heading back to the homepage or using the menu above.
     </p>
-    <div class="mt-8 flex gap-4">
+    <div class="mt-4 flex gap-4">
         <a href="<?php echo esc_url(home_url('/')); ?>"
             class="px-6 py-3 text-white bg-primary hover:bg-primary rounded-2xl shadow-lg transition transform hover:scale-105">
             Go Home

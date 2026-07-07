@@ -21,14 +21,14 @@ $app_consiguelo = !empty($data['consiguelo']) ? $data['consiguelo'] : '';
 $new_rating_average = get_post_meta($post_id, 'new_rating_average', true) ?: '4.2';
 $new_rating_users = get_post_meta($post_id, 'new_rating_users', true) ?: '2500000';
 $formatted_reviews = function_exists('apkup_format_views_count') ? apkup_format_views_count($new_rating_users) : $new_rating_users;
-$publisher_terms = get_the_terms($post_id, 'publisher');
+$developer_terms = get_the_terms($post_id, 'developer');
 $developer_name = 'Supercell';
 $developer_search_url = '';
 
-if (!empty($publisher_terms) && !is_wp_error($publisher_terms)) {
-    $first_publisher = array_shift($publisher_terms);
-    $developer_name = $first_publisher->name;
-    $term_link = get_term_link($first_publisher);
+if (!empty($developer_terms) && !is_wp_error($developer_terms)) {
+    $first_developer = array_shift($developer_terms);
+    $developer_name = $first_developer->name;
+    $term_link = get_term_link($first_developer);
     $developer_search_url = !is_wp_error($term_link) ? $term_link : esc_url(add_query_arg('s', $developer_name, home_url('/')));
 } else {
     $developer_name = get_post_meta($post_id, 'wp_developers_GP', true) ?: 'Supercell';
@@ -217,10 +217,6 @@ $primary_cat = apkup_get_primary_post_category($post_id);
 <?php
 $custom_boxes = get_post_meta($post_id, 'custom_boxes', true);
 $mod_details = [];
-$app_mod_info = !empty($data['mod_info']) ? $data['mod_info'] : '';
-if (!empty($app_mod_info)) {
-    $mod_details[] = $app_mod_info;
-}
 if (is_array($custom_boxes) && !empty($custom_boxes[0]['content'])) {
     $mod_details[] = wp_strip_all_tags($custom_boxes[0]['content']);
 }

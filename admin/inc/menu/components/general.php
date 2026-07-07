@@ -5,6 +5,7 @@ $au_header_logo_dark = get_theme_mod('au_header_logo_dark', get_template_directo
 $appyn_apikey = get_option('appyn_apikey', '');
 $au_games_menu_url = get_theme_mod('au_games_menu_url', '');
 $au_apps_menu_url = get_theme_mod('au_apps_menu_url', '');
+$au_telegram_menu_url = get_theme_mod('au_telegram_menu_url', '');
 $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 $au_head_code = get_theme_mod('au_head_code', '');
 $site_pjax_swt = get_theme_mod('site_pjax_swt', '1');
@@ -115,13 +116,29 @@ $site_cache_time = get_theme_mod('site_cache_time', '24');
                         <?php esc_html_e('Apps Menu URL (Mobile)', 'apktemplates'); ?>
                     </h3>
                     <div class="at-field-descr">
-                        <?php esc_html_e('Add Games page url for bottom menu for mobile view.', 'apktemplates'); ?>
+                        <?php esc_html_e('Add Apps page url for bottom menu for mobile view.', 'apktemplates'); ?>
                     </div>
                 </td>
                 <td>
                     <div>
                         <input type="text" name="au_apps_menu_url" id="au_apps_menu_url" class="at-text-ipt"
                             value="<?php echo esc_html($au_apps_menu_url); ?>" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3>
+                        <?php esc_html_e('Telegram Menu URL (Mobile)', 'apktemplates'); ?>
+                    </h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Add Telegram channel/group url for bottom menu for mobile view.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <input type="text" name="au_telegram_menu_url" id="au_telegram_menu_url" class="at-text-ipt"
+                            value="<?php echo esc_html($au_telegram_menu_url); ?>" />
                     </div>
                 </td>
             </tr>

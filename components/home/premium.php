@@ -42,6 +42,9 @@ switch ($sort) {
         $args['orderby'] = 'modified';
         $args['order'] = 'DESC';
         break;
+    case 'random':
+        $args['orderby'] = 'rand';
+        break;
     default:
         $args['orderby'] = 'modified';
         $args['order'] = 'DESC';
@@ -66,8 +69,8 @@ $premium_query = new WP_Query($args);
 ?>
 
 <?php if ($premium_query->have_posts()) : ?>
-    <section class="mt-8">
-      <div class="flex items-center justify-between mb-4">
+    <section class="mt-4">
+      <div class="flex items-center justify-between mb-2">
         <h2 class="text-lg font-bold dark:text-white"><?php echo esc_html($title); ?></h2>
         <?php 
             $view_all_link = '#';

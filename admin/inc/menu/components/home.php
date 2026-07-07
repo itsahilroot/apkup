@@ -43,7 +43,8 @@ $posts_sortby = [
     'modified' => __('Modified', 'apktemplates'),
     'popular' => __('Popular', 'apktemplates'),
     'a_to_z' => __('A to Z ↓', 'apktemplates'),
-    'z_to_a' => __('A to Z ↑', 'apktemplates')
+    'z_to_a' => __('A to Z ↑', 'apktemplates'),
+    'random' => __('Random', 'apktemplates')
 ];
 $au_home_categories = get_theme_mod('au_home_categories', []);
 $au_home_categories_swt = get_theme_mod('au_home_categories_swt', true);
@@ -381,6 +382,15 @@ $au_home_blogs_limit = get_theme_mod('au_home_blogs_limit', '5');
                                                 <?php endif; ?>
                                             </ul>
                                         </div>
+                                    </div>
+                                    <div class="at-mt-2">
+                                        <p class="at-mini-title"><?php esc_html_e('Badge Text', 'apktemplates'); ?></p>
+                                        <p><?php esc_html_e('Add custom badge text (e.g. Patrocinado, Destacado). Leave blank for default.', 'apktemplates'); ?></p>
+                                        <input type="text" 
+                                            name="au_home_recommended[<?php echo esc_attr($index); ?>][badge_text]" 
+                                            class="at-text-ipt" 
+                                            value="<?php echo esc_attr($recommended['badge_text'] ?? ''); ?>" 
+                                            data-field-key="badge_text" />
                                     </div>
                                 </div>
                             </div>

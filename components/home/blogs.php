@@ -13,8 +13,8 @@ $blog_args = array(
 $blogs = new WP_Query($blog_args);
 
 if ($au_home_blogs_swt) : ?>
-    <section class="mt-8">
-        <div class="flex items-center justify-between mb-4">
+    <section class="mt-4">
+        <div class="flex items-center justify-between mb-2">
             <h2 class="text-lg font-bold text-slate-800 dark:text-white"><?php echo esc_html($au_home_blogs_title); ?></h2>
             <a class="right-arrow-btn" href="<?php echo esc_url(get_post_type_archive_link('blog')); ?>">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

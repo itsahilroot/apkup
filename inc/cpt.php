@@ -100,20 +100,20 @@ function apkup_blog_taxonomy() {
 }
 add_action( 'init', 'apkup_blog_taxonomy' );
 
-/* Register Publisher Taxonomy */
-function apkup_publisher_taxonomy() {
+/* Register Developer Taxonomy */
+function apkup_developer_taxonomy() {
     $labels = array(
-        'name'              => _x( 'Publishers', 'taxonomy general name', 'apktemplates' ),
-        'singular_name'     => _x( 'Publisher', 'taxonomy singular name', 'apktemplates' ),
-        'search_items'      => __( 'Search Publishers', 'apktemplates' ),
-        'all_items'         => __( 'All Publishers', 'apktemplates' ),
-        'parent_item'       => __( 'Parent Publisher', 'apktemplates' ),
-        'parent_item_colon' => __( 'Parent Publisher:', 'apktemplates' ),
-        'edit_item'         => __( 'Edit Publisher', 'apktemplates' ),
-        'update_item'       => __( 'Update Publisher', 'apktemplates' ),
-        'add_new_item'      => __( 'Add New Publisher', 'apktemplates' ),
-        'new_item_name'     => __( 'New Publisher Name', 'apktemplates' ),
-        'menu_name'         => __( 'Publishers', 'apktemplates' ),
+        'name'              => _x( 'Developers', 'taxonomy general name', 'apktemplates' ),
+        'singular_name'     => _x( 'Developer', 'taxonomy singular name', 'apktemplates' ),
+        'search_items'      => __( 'Search Developers', 'apktemplates' ),
+        'all_items'         => __( 'All Developers', 'apktemplates' ),
+        'parent_item'       => __( 'Parent Developer', 'apktemplates' ),
+        'parent_item_colon' => __( 'Parent Developer:', 'apktemplates' ),
+        'edit_item'         => __( 'Edit Developer', 'apktemplates' ),
+        'update_item'       => __( 'Update Developer', 'apktemplates' ),
+        'add_new_item'      => __( 'Add New Developer', 'apktemplates' ),
+        'new_item_name'     => __( 'New Developer Name', 'apktemplates' ),
+        'menu_name'         => __( 'Developers', 'apktemplates' ),
     );
 
     $args = array(
@@ -125,15 +125,15 @@ function apkup_publisher_taxonomy() {
         'show_admin_column' => true,
         'show_in_nav_menus' => true,
         'query_var'         => true,
-        'rewrite'           => array( 'slug' => 'publisher' ),
+        'rewrite'           => array( 'slug' => 'developer' ),
     );
 
-    register_taxonomy( 'publisher', 'post', $args );
+    register_taxonomy( 'developer', 'post', $args );
 }
-add_action( 'init', 'apkup_publisher_taxonomy' );
+add_action( 'init', 'apkup_developer_taxonomy' );
 
-/* Auto-sync wp_developers_GP meta to publisher taxonomy on save */
-function apkup_sync_developer_to_publisher_taxonomy($post_id, $post) {
+/* Auto-sync wp_developers_GP meta to developer taxonomy on save */
+function apkup_sync_developer_to_developer_taxonomy($post_id, $post) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return;
     }
@@ -143,7 +143,36 @@ function apkup_sync_developer_to_publisher_taxonomy($post_id, $post) {
     
     $developer = get_post_meta($post_id, 'wp_developers_GP', true);
     if (!empty($developer)) {
-        wp_set_object_terms($post_id, $developer, 'publisher', false);
+        wp_set_object_terms($post_id, $developer, 'developer', false);
     }
 }
-add_action('save_post', 'apkup_sync_developer_to_publisher_taxonomy', 10, 2);
+add_action('save_post', 'apkup_sync_developer_to_developer_taxonomy', 10, 2);
+
+/* One-time migration to automatically copy terms from old publisher taxonomy to new developer taxonomy */
+function apkup_migrate_publisher_to_developer_taxonomy() {
+    if (get_option('apkup_publisher_to_developer_migrated')) {
+        return;
+    }
+
+    // Temporarily register 'publisher' taxonomy so we can retrieve existing term relations
+    register_taxonomy('publisher', 'post', array('public' => false, 'hierarchical' => true));
+
+    $posts = get_posts([
+        'post_type'      => 'post',
+        'posts_per_page' => -1,
+        'post_status'    => 'any',
+    ]);
+
+    if (!empty($posts)) {
+        foreach ($posts as $p) {
+            $publisher_terms = wp_get_post_terms($p->ID, 'publisher', array('fields' => 'names'));
+            if (!empty($publisher_terms) && !is_wp_error($publisher_terms)) {
+                wp_set_object_terms($p->ID, $publisher_terms, 'developer', false);
+            }
+        }
+    }
+
+    update_option('apkup_publisher_to_developer_migrated', true);
+    flush_rewrite_rules();
+}
+add_action('init', 'apkup_migrate_publisher_to_developer_taxonomy', 20);

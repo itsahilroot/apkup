@@ -42,6 +42,9 @@ switch ($sort) {
         $args['orderby'] = 'modified';
         $args['order'] = 'DESC';
         break;
+    case 'random':
+        $args['orderby'] = 'rand';
+        break;
     default:
         $args['orderby'] = 'meta_value_num';
         $args['meta_key'] = 'px_views';
@@ -69,25 +72,34 @@ if (!function_exists('apkup_get_relative_time_spanish')) {
     function apkup_get_relative_time_spanish($post_time) {
         $current_time = current_time('timestamp');
         $diff = $current_time - $post_time;
-
-        if ($diff < 86400 && date('Ymd', $post_time) === date('Ymd', $current_time)) {
-            return 'Hoy';
-        } elseif ($diff < 172800 && date('Ymd', $post_time) === date('Ymd', strtotime('yesterday', $current_time))) {
+        
+        $today_start = strtotime('today', $current_time);
+        $yesterday_start = strtotime('yesterday', $current_time);
+        
+        if ($post_time >= $today_start) {
+            return 'Actualizado hoy';
+        } elseif ($post_time >= $yesterday_start) {
             return 'Ayer';
-        } else {
-            $days = round($diff / 86400);
-            if ($days <= 0) {
-                $days = 1;
-            }
+        }
+        
+        $days = floor($diff / 86400);
+        if ($days < 7) {
+            $days = max(1, $days);
             return 'Hace ' . $days . ' ' . _n('día', 'días', $days, 'apktemplates');
+        } elseif ($days < 30) {
+            $weeks = floor($days / 7);
+            return 'Hace ' . $weeks . ' ' . _n('semana', 'semanas', $weeks, 'apktemplates');
+        } else {
+            $months = floor($days / 30);
+            return 'Hace ' . $months . ' ' . _n('mes', 'meses', $months, 'apktemplates');
         }
     }
 }
 ?>
 
 <?php if ($trending_query->have_posts()) : ?>
-<section class="mt-8" data-purpose="actualizaciones-list">
-  <div class="flex items-center justify-between mb-4">
+<section class="mt-4" data-purpose="actualizaciones-list">
+  <div class="flex items-center justify-between mb-2">
     <h2 class="text-lg font-bold dark:text-white"><?php echo esc_html($title); ?></h2>
     <a class="right-arrow-btn" href="<?php echo esc_url(home_url('/trending/')); ?>">
       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -115,7 +127,7 @@ if (!function_exists('apkup_get_relative_time_spanish')) {
         $app_desc = apkup_get_post_short_description($post_id);
         $app_mod_info = $data['mod_info'] ?? '';
         
-        $time_pretty = apkup_get_relative_time_spanish(get_the_time('U'));
+        $time_pretty = apkup_get_relative_time_spanish(get_post_modified_time('U', false, $post_id));
     ?>
         <!-- Item: <?php echo esc_html($app_name); ?> -->
         <div class="flex items-start gap-3 py-2 rounded-2xl post-card">
@@ -127,7 +139,7 @@ if (!function_exists('apkup_get_relative_time_spanish')) {
             </a>
             <p class="text-gray-500 dark:text-gray-400 text-xs mt-0.5 line-clamp-2"><?php echo esc_html($app_desc); ?></p>
             <div class="flex items-center gap-2 mt-1">
-              <span class="text-[10px] text-gray-400 dark:text-gray-500"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
+              <span class="text-[10px] text-amber-500 font-semibold"><?php echo esc_html(number_format((float)$app_rating, 1)); ?> ★</span>
               <?php if (!empty($app_size)) : ?>
                 <span class="text-[10px] text-gray-400 dark:text-gray-500"><?php echo esc_html($app_size); ?></span>
               <?php endif; ?>

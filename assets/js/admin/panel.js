@@ -761,6 +761,13 @@ jQuery(document).ready(function ($) {
                     results_class: 'coll-results',
                     save_key: 'post'
                 },
+                {
+                    type: 'text',
+                    label: 'Badge Text',
+                    description: 'Add custom badge text (e.g. Patrocinado, Destacado). Leave blank for default.',
+                    name_prefix: 'au_home_recommended',
+                    key: 'badge_text'
+                }
             ],
             search_config: {
                 search_class: 'coll-search',

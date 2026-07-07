@@ -34,7 +34,7 @@ if (!empty($download_links['links_options'])) {
   </div>
 
   <?php if (!empty($links)) : ?>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex overflow-x-auto md:grid md:grid-cols-2 gap-4 no-scrollbar pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
       <?php foreach ($links as $index => $dl) : 
           $download_url = get_permalink() . 'download/' . $index;
           $text = !empty($dl['texto']) ? $dl['texto'] : (!empty($dl['type']) ? $dl['type'] : 'APK');
@@ -59,15 +59,25 @@ if (!empty($download_links['links_options'])) {
           }
       ?>
         <!-- Enlace Card -->
-        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 shrink-0 w-[290px] md:w-auto snap-center">
           <div class="flex items-center gap-4 w-full sm:w-auto">
             <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 <?php echo $icon_color; ?>">
               <?php echo $icon_svg; ?>
             </div>
-            <div class="text-center sm:text-left min-w-0">
+          <?php
+          $link_version = !empty($dl['version']) ? $dl['version'] : $app_version;
+          $link_size = !empty($dl['size']) ? $dl['size'] : $app_size;
+          $link_mod = !empty($dl['mod_info']) ? $dl['mod_info'] : '';
+          ?>
+          <div class="text-center sm:text-left min-w-0">
               <h4 class="font-bold text-sm text-slate-800 dark:text-white truncate"><?php echo esc_html($text); ?> (<?php echo esc_html($type); ?>)</h4>
-              <p class="text-xs text-slate-400 mt-1">Servidor Rápido • v<?php echo esc_html($app_version); ?> • <?php echo esc_html($app_size); ?></p>
-            </div>
+              <p class="text-xs text-slate-400 mt-1">
+                  Servidor Rápido 
+                  <?php if (!empty($link_version)) : ?>• v<?php echo esc_html($link_version); ?><?php endif; ?>
+                  <?php if (!empty($link_size)) : ?>• <?php echo esc_html($link_size); ?><?php endif; ?>
+                  <?php if (!empty($link_mod)) : ?>• <?php echo esc_html($link_mod); ?><?php endif; ?>
+              </p>
+          </div>
           </div>
           <a href="<?php echo esc_url($download_url); ?>" class="w-full sm:w-auto px-5 py-2.5 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 <?php echo $btn_color; ?>">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">

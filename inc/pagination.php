@@ -43,7 +43,7 @@ function apkup_comments_pagination($current_page, $total_pages) {
     $end_page   = min($total_pages, $start_page + $max_num_pages - 1);
     $start_page = max(1, $end_page - $max_num_pages + 1);
 
-    $html  = '<div class="pagination mt-8 mb-8 flex space-x-1 justify-center">';
+    $html  = '<div class="pagination mt-4 mb-8 flex space-x-1 justify-center">';
 
     // Prev
     if ($current_page > 1) {

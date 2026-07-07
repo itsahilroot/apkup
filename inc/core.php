@@ -805,83 +805,10 @@ add_action('template_redirect', 'apkup_check_hide_desktop');
 
 function apkup_dynamic_styles() {
     $au_theme_color = get_theme_mod('au_theme_color', '#22c55e');
-    $au_font_family = get_theme_mod('au_font_family', 'Inter');
-    $au_base_font_size = get_theme_mod('au_base_font_size', '16px');
-    $au_base_font_weight = get_theme_mod('au_base_font_weight', '400');
-    $au_heading_font_family = get_theme_mod('au_heading_font_family', 'Inter');
-    $au_heading_size = get_theme_mod('au_heading_size', '1.875rem');
-    $au_heading_weight = get_theme_mod('au_heading_weight', '600');
-    $au_button_font_family = get_theme_mod('au_button_font_family', 'Nunito');
-    $au_button_font_weight = get_theme_mod('au_button_font_weight', '700');
-
-    $families = array();
-
-    if (!empty($au_font_family)) {
-        $families[$au_font_family][] = '0,300';
-        $families[$au_font_family][] = '0,400';
-        $families[$au_font_family][] = '0,500';
-        $families[$au_font_family][] = '0,600';
-        $families[$au_font_family][] = '0,700';
-        $families[$au_font_family][] = '1,400';
-    }
-
-    if (!empty($au_heading_font_family)) {
-        $families[$au_heading_font_family][] = '0,' . $au_heading_weight;
-    }
-
-    if (!empty($au_button_font_family)) {
-        $families[$au_button_font_family][] = '0,400';
-        $families[$au_button_font_family][] = '0,500';
-        $families[$au_button_font_family][] = '0,600';
-        $families[$au_button_font_family][] = '0,700';
-        $families[$au_button_font_family][] = '0,800';
-        $families[$au_button_font_family][] = '0,900';
-    }
-
-    $fonts = array();
-    foreach ($families as $family => $weights) {
-        $unique_weights = array_unique($weights);
-        sort($unique_weights);
-        $weight_string = implode(';', $unique_weights);
-        $fonts[] = $family . ':ital,wght@' . $weight_string;
-    }
-
-    if (!empty($fonts)) {
-        $fonts_url = 'https://fonts.googleapis.com/css2?family=' . implode('&family=', array_map('urlencode', str_replace(' ', '+', $fonts))) . '&display=swap';
-        echo '<link rel="preconnect" href="https://fonts.googleapis.com">';
-        echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
-        // Using replace correctly: family=Inter:wght@400
-        $fonts_url = str_replace('%3A', ':', $fonts_url);
-        $fonts_url = str_replace('%40', '@', $fonts_url);
-        $fonts_url = str_replace('%2C', ',', $fonts_url);
-        $fonts_url = str_replace('%3B', ';', $fonts_url);
-        echo '<link href="' . esc_url_raw($fonts_url) . '" rel="stylesheet">';
-    }
-
-    $body_font = !empty($au_font_family) ? "'{$au_font_family}', sans-serif" : "Inter, sans-serif";
-    $heading_font = !empty($au_heading_font_family) ? "'{$au_heading_font_family}', sans-serif" : "Inter, sans-serif";
-    $button_font = !empty($au_button_font_family) ? "'{$au_button_font_family}', sans-serif" : "Nunito, sans-serif";
 
     echo "<style>
         :root {
             --app-primary: {$au_theme_color};
-            --app-btn-font: {$button_font};
-        }
-        body {
-            font-family: {$body_font};
-            font-size: {$au_base_font_size};
-            font-weight: {$au_base_font_weight};
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: {$heading_font} !important;
-            font-weight: {$au_heading_weight} !important;
-        }
-        button, .btn-primary-action, .btn-download, .btn-join, .btn-telegram, .btn-back, input[type='submit'], input[type='button'], .btn-icon {
-            font-family: var(--app-btn-font) !important;
-            font-weight: {$au_button_font_weight} !important;
-        }
-        main section header h2, section header h2, .section-heading {
-            font-size: {$au_heading_size} !important;
         }
         .text-primary { color: var(--app-primary) !important; }
         .bg-primary { background-color: var(--app-primary) !important; }
