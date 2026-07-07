@@ -138,40 +138,41 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
                         <line x1="4" x2="20" y1="18" y2="18" />
                     </svg>
                 </button>
-            </div>
         </div>
     </div>
-
     <!-- Search Overlay Container -->
     <div id="search-overlay-container"
-        class="absolute inset-0 bg-white dark:bg-slate-900 px-4 sm:px-6 lg:px-8 flex items-center justify-between opacity-0 pointer-events-none transition-all duration-300 z-50 transform -translate-y-2">
-        <div class="max-w-7xl mx-auto w-full flex items-center justify-between h-16 relative">
-            <form class="flex items-center flex-1 mr-4" method="GET" action="<?php echo esc_url(home_url('/')); ?>">
-                <span class="text-slate-400 dark:text-slate-500 mr-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="fixed inset-0 bg-slate-950/70 backdrop-blur-md px-4 flex items-start justify-center pt-20 sm:pt-28 opacity-0 pointer-events-none transition-all duration-300 z-[99999]">
+        <!-- Search Card Box -->
+        <div class="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-100 dark:border-slate-800 relative transform transition-all duration-300 -translate-y-4" id="search-card-box">
+            <!-- Close Button -->
+            <button id="closeSearchButton"
+                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-all cursor-pointer"
+                aria-label="Cerrar búsqueda">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+
+            <!-- Search Form -->
+            <form class="flex items-center w-full" method="GET" action="<?php echo esc_url(home_url('/')); ?>">
+                <span class="text-primary mr-3 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search">
                         <circle cx="11" cy="11" r="8" />
                         <path d="m21 21-4.3-4.3" />
                     </svg>
                 </span>
                 <input type="text" name="s" id="searchInput" placeholder="Buscar juegos, aplicaciones..."
-                    class="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-400 text-sm">
+                    class="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-slate-850 dark:text-slate-100 placeholder-slate-400 text-base sm:text-lg font-medium pr-10">
                 
                 <?php if ($au_ajax_search_swt) : ?>
-                    <div id="ajax-search-results" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden z-20 hidden border border-gray-100 dark:border-gray-700 max-h-[60vh] overflow-y-auto w-full"></div>
+                    <div id="ajax-search-results" class="absolute left-0 right-0 top-full mt-3 bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden z-20 hidden border border-slate-100 dark:border-slate-800 max-h-[60vh] overflow-y-auto w-full"></div>
                 <?php endif; ?>
             </form>
-            <button id="closeSearchButton"
-                class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all cursor-pointer"
-                aria-label="Cerrar búsqueda">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-x">
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                </svg>
-            </button>
         </div>
     </div>
 </header>

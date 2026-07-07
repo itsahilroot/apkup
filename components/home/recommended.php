@@ -177,8 +177,8 @@ $rec_title = get_theme_mod('au_home_recommended_title', 'Top Charts: Los Más De
             <!-- Metadata & Badge Row -->
             <div class="flex items-center gap-1.5 flex-wrap">
               <!-- Rating pill -->
-              <span class="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">
-                <i data-lucide="star" class="w-2.5 h-2.5"></i> <?php echo esc_html(number_format((float)$app_rating, 1)); ?>
+              <span class="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 dark:bg-amber-500/15 dark:text-amber-500">
+                <i data-lucide="star" class="w-2.5 h-2.5 fill-amber-500 text-amber-500"></i> <?php echo esc_html(number_format((float)$app_rating, 1)); ?>
               </span>
               
               <!-- Size pill -->

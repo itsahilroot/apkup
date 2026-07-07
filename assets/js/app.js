@@ -76,10 +76,15 @@ function initializeApp() {
         if (searchBtn) {
             e.preventDefault();
             const searchOverlay = document.getElementById('search-overlay-container');
-            const searchInputField = document.getElementById('searchInputField');
+            const searchInputField = document.getElementById('searchInput');
+            const searchBox = document.getElementById('search-card-box');
             if (searchOverlay) {
-                searchOverlay.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
-                searchOverlay.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                searchOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                searchOverlay.classList.add('opacity-100', 'pointer-events-auto');
+                if (searchBox) {
+                    searchBox.classList.remove('-translate-y-4');
+                    searchBox.classList.add('translate-y-0');
+                }
                 if (searchInputField) {
                     setTimeout(() => searchInputField.focus(), 150);
                 }
@@ -88,13 +93,19 @@ function initializeApp() {
         }
 
         const closeSearchBtn = e.target.closest("#closeSearchButton");
-        if (closeSearchBtn) {
+        const isBackdropClick = e.target.id === 'search-overlay-container';
+        if (closeSearchBtn || isBackdropClick) {
             e.preventDefault();
             const searchOverlay = document.getElementById('search-overlay-container');
-            const searchInputField = document.getElementById('searchInputField');
+            const searchInputField = document.getElementById('searchInput');
+            const searchBox = document.getElementById('search-card-box');
             if (searchOverlay) {
-                searchOverlay.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                searchOverlay.classList.add('opacity-0', 'pointer-events-none', '-translate-y-2');
+                searchOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                searchOverlay.classList.add('opacity-0', 'pointer-events-none');
+                if (searchBox) {
+                    searchBox.classList.remove('translate-y-0');
+                    searchBox.classList.add('-translate-y-4');
+                }
                 if (searchInputField) {
                     searchInputField.value = '';
                 }
