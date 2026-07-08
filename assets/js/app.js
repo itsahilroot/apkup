@@ -71,46 +71,51 @@ function initializeApp() {
             return;
         }
 
-        // --- Search Overlay Triggers ---
-        const searchBtn = e.target.closest("#searchButton");
-        if (searchBtn) {
-            e.preventDefault();
-            const searchOverlay = document.getElementById('search-overlay-container');
-            const searchInputField = document.getElementById('searchInput');
-            const searchBox = document.getElementById('search-card-box');
-            if (searchOverlay) {
-                searchOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                searchOverlay.classList.add('opacity-100', 'pointer-events-auto');
-                if (searchBox) {
-                    searchBox.classList.remove('-translate-y-4');
-                    searchBox.classList.add('translate-y-0');
-                }
+        // --- Inline Expanding Search Bar ---
+        const headerFlex = document.getElementById('header-flex-container');
+        const inlineSearchForm = document.getElementById('inline-search-form');
+        const searchInputField = document.getElementById('searchInput');
+
+        const clickedSearchForm = e.target.closest("#inline-search-form");
+        const clickedCloseSearch = e.target.closest("#closeSearchButton");
+
+        if (clickedSearchForm && !clickedCloseSearch) {
+            if (headerFlex && !headerFlex.classList.contains('search-active')) {
+                headerFlex.classList.add('search-active');
                 if (searchInputField) {
-                    setTimeout(() => searchInputField.focus(), 150);
+                    setTimeout(() => searchInputField.focus(), 50);
                 }
+            }
+        }
+
+        if (clickedCloseSearch) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (headerFlex) {
+                headerFlex.classList.remove('search-active');
+            }
+            if (searchInputField) {
+                searchInputField.value = '';
+                searchInputField.blur();
+            }
+            const searchResults = document.getElementById('ajax-search-results');
+            if (searchResults) {
+                searchResults.innerHTML = '';
+                searchResults.classList.add('hidden');
             }
             return;
         }
 
-        const closeSearchBtn = e.target.closest("#closeSearchButton");
-        const isBackdropClick = e.target.id === 'search-overlay-container';
-        if (closeSearchBtn || isBackdropClick) {
-            e.preventDefault();
-            const searchOverlay = document.getElementById('search-overlay-container');
-            const searchInputField = document.getElementById('searchInput');
-            const searchBox = document.getElementById('search-card-box');
-            if (searchOverlay) {
-                searchOverlay.classList.remove('opacity-100', 'pointer-events-auto');
-                searchOverlay.classList.add('opacity-0', 'pointer-events-none');
-                if (searchBox) {
-                    searchBox.classList.remove('translate-y-0');
-                    searchBox.classList.add('-translate-y-4');
-                }
-                if (searchInputField) {
-                    searchInputField.value = '';
+        // Close search when clicking outside
+        if (headerFlex && headerFlex.classList.contains('search-active')) {
+            if (!clickedSearchForm) {
+                headerFlex.classList.remove('search-active');
+                const searchResults = document.getElementById('ajax-search-results');
+                if (searchResults) {
+                    searchResults.innerHTML = '';
+                    searchResults.classList.add('hidden');
                 }
             }
-            return;
         }
 
         // --- Smooth Scroll to Top ---
@@ -122,6 +127,25 @@ function initializeApp() {
                 behavior: 'smooth'
             });
             return;
+        }
+    });
+
+    // --- Escape key to close Search ---
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            const headerFlex = document.getElementById('header-flex-container');
+            const searchInputField = document.getElementById('searchInput');
+            if (headerFlex && headerFlex.classList.contains('search-active')) {
+                headerFlex.classList.remove('search-active');
+                if (searchInputField) {
+                    searchInputField.blur();
+                }
+                const searchResults = document.getElementById('ajax-search-results');
+                if (searchResults) {
+                    searchResults.innerHTML = '';
+                    searchResults.classList.add('hidden');
+                }
+            }
         }
     });
 
@@ -172,7 +196,7 @@ function initializeApp() {
     if (progressSection) {
         const duration = parseInt(progressSection.getAttribute('data-duration') || '5000', 10);
         const isMediafire = progressSection.getAttribute('data-is-mediafire') === 'true';
-        
+
         const fill = document.getElementById('progress-fill');
         const secondsEl = document.getElementById('seconds-left');
         const buttonGroup = document.getElementById('button-group');
@@ -195,7 +219,7 @@ function initializeApp() {
                 const now = Date.now();
                 const elapsed = now - startAt;
                 const msLeft = Math.max(0, duration - elapsed);
-                
+
                 currentSecondsEl.textContent = Math.ceil(msLeft / 1000);
 
                 if (elapsed < duration) {
@@ -231,13 +255,13 @@ function initializeApp() {
                             url: mfUrl
                         })
                     })
-                    .then(response => response.json())
-                    .then(res => {
-                        if (res.success && res.data.direct_url) {
-                            downloadBtnEl.setAttribute('href', res.data.direct_url);
-                        }
-                    })
-                    .catch(err => console.error('Error resolving MediaFire URL:', err));
+                        .then(response => response.json())
+                        .then(res => {
+                            if (res.success && res.data.direct_url) {
+                                downloadBtnEl.setAttribute('href', res.data.direct_url);
+                            }
+                        })
+                        .catch(err => console.error('Error resolving MediaFire URL:', err));
                 }
             }
         }

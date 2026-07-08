@@ -29,12 +29,90 @@ if (empty($header_menus)) {
 $au_home_hero_top_description = get_theme_mod('au_home_hero_top_description', 'GAMES & APPS FOR ANDROID - A LARGE SELECTION OF APPS FOR ANDROID DEVICES FREE AND WITH NO VIRUSES');
 $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 ?>
+<style>
+/* Inline Search Bar Styling */
+#inline-search-form {
+    width: 120px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (min-width: 480px) {
+    #inline-search-form {
+        width: 150px;
+    }
+}
+@media (min-width: 640px) {
+    #inline-search-form {
+        width: 180px;
+    }
+}
+@media (min-width: 1024px) {
+    #inline-search-form {
+        width: 220px;
+    }
+}
+
+/* Active State layout changes */
+#header-flex-container.search-active #inline-search-form {
+    position: absolute;
+    left: 1rem;
+    right: 4.5rem; /* leave space for hamburger on mobile */
+    width: auto;
+    height: 42px;
+    background-color: #ffffff;
+    border-color: #3b82f6; /* Blue outline */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+    z-index: 50;
+}
+.dark #header-flex-container.search-active #inline-search-form {
+    background-color: #0f172a;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+#header-flex-container.search-active #inline-search-form .search-icon-span {
+    color: #3b82f6; /* blue search icon */
+}
+
+/* On desktop when search is active, cover the full width */
+@media (min-width: 768px) {
+    #header-flex-container.search-active #inline-search-form {
+        left: 1.5rem;
+        right: 1.5rem;
+    }
+}
+@media (min-width: 1024px) {
+    #header-flex-container.search-active #inline-search-form {
+        left: 2rem;
+        right: 2rem;
+    }
+}
+
+/* Close button animations/transitions */
+#header-flex-container.search-active #closeSearchButton {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Transition to hide other header elements */
+#header-logo-wrapper, #header-nav-wrapper, #darkModeToggle {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#header-flex-container.search-active #header-logo-wrapper,
+#header-flex-container.search-active #header-nav-wrapper,
+#header-flex-container.search-active #darkModeToggle {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+</style>
+
 <header class="sticky top-0 z-50 glass-header shadow-sm transition-all duration-300">
     <!-- Main Header Container -->
     <div id="header-main-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300">
-        <div class="flex items-center justify-between h-16">
+        <div class="flex items-center justify-between h-16 relative" id="header-flex-container">
             <!-- Logotipo Oficial APKGSTORE -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 shrink-0 mr-4 sm:mr-6" id="header-logo-wrapper">
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center gap-2">
                     <img src="<?php echo esc_url($logo_light); ?>"
                         alt="<?php echo esc_attr(get_bloginfo('name')); ?> Logo" class="h-7 w-auto block dark:hidden">
@@ -45,7 +123,7 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 
             <!-- Enlaces de Navegación Refinados (Grosores delgados) -->
             <?php if (!empty($header_menus)) : ?>
-                <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                <nav class="hidden md:flex space-x-6 text-sm font-medium mx-4" id="header-nav-wrapper">
                     <?php foreach ($header_menus as $menu) : 
                         $menu_path = parse_url($menu->url, PHP_URL_PATH);
                         $is_active = false;
@@ -89,18 +167,35 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
             <?php endif; ?>
 
             <!-- Herramientas Rápidas -->
-            <div class="flex items-center gap-3">
-                <!-- Search Button -->
-                <button id="searchButton"
-                    class="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 hover:bg-primary/10 dark:bg-slate-800 dark:hover:bg-primary/20 text-slate-600 dark:text-slate-300 hover:text-primary transition-all cursor-pointer"
-                    aria-label="Buscar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-search">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.3-4.3" />
-                    </svg>
-                </button>
+            <div class="flex items-center gap-3 sm:gap-4 md:gap-5" id="header-tools-wrapper">
+                <!-- Inline Pill Search Bar -->
+                <form id="inline-search-form" class="relative flex items-center rounded-full bg-slate-100 dark:bg-slate-800 border border-transparent h-9 px-3 cursor-pointer select-none" method="GET" action="<?php echo esc_url(home_url('/')); ?>">
+                    <span class="text-slate-400 dark:text-slate-500 mr-2 shrink-0 search-icon-span">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-search">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                    </span>
+                    <input type="text" name="s" id="searchInput" placeholder="Buscar..." autocomplete="off"
+                        class="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-slate-850 dark:text-slate-100 placeholder-slate-400 text-sm font-medium p-0 pr-6 cursor-pointer">
+                    
+                    <!-- Close button inside the pill -->
+                    <button type="button" id="closeSearchButton"
+                        class="absolute right-2.5 w-5 h-5 flex items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 dark:text-slate-500 hover:text-slate-600 transition-all cursor-pointer opacity-0 pointer-events-none"
+                        aria-label="Cerrar búsqueda">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+
+                    <?php if ($au_ajax_search_swt) : ?>
+                        <div id="ajax-search-results" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden z-20 hidden border border-slate-100 dark:border-slate-800 max-h-[60vh] overflow-y-auto w-full"></div>
+                    <?php endif; ?>
+                </form>
 
                 <!-- Dark Mode Toggle Button -->
                 <button id="darkModeToggle"
@@ -138,41 +233,7 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
                         <line x1="4" x2="20" y1="18" y2="18" />
                     </svg>
                 </button>
-        </div>
-    </div>
-    <!-- Search Overlay Container -->
-    <div id="search-overlay-container"
-        class="fixed inset-0 bg-slate-950/70 backdrop-blur-md px-4 flex items-start justify-center pt-20 sm:pt-28 opacity-0 pointer-events-none transition-all duration-300 z-[99999]">
-        <!-- Search Card Box -->
-        <div class="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-100 dark:border-slate-800 relative transform transition-all duration-300 -translate-y-4" id="search-card-box">
-            <!-- Close Button -->
-            <button id="closeSearchButton"
-                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-all cursor-pointer"
-                aria-label="Cerrar búsqueda">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                </svg>
-            </button>
-
-            <!-- Search Form -->
-            <form class="flex items-center w-full" method="GET" action="<?php echo esc_url(home_url('/')); ?>">
-                <span class="text-primary mr-3 shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-search">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.3-4.3" />
-                    </svg>
-                </span>
-                <input type="text" name="s" id="searchInput" placeholder="Buscar juegos, aplicaciones..."
-                    class="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-slate-850 dark:text-slate-100 placeholder-slate-400 text-base sm:text-lg font-medium pr-10">
-                
-                <?php if ($au_ajax_search_swt) : ?>
-                    <div id="ajax-search-results" class="absolute left-0 right-0 top-full mt-3 bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden z-20 hidden border border-slate-100 dark:border-slate-800 max-h-[60vh] overflow-y-auto w-full"></div>
-                <?php endif; ?>
-            </form>
+            </div>
         </div>
     </div>
 </header>

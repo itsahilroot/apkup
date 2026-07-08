@@ -105,7 +105,7 @@ if (is_front_page() || is_home()) {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 20%;
+    width: 25%;
     height: 100%;
     display: flex;
     align-items: center;
@@ -117,48 +117,48 @@ if (is_front_page() || is_home()) {
 
 /* The active item glass pill capsule background */
 .mobile-nav-indicator-pill, .mobile-bottom-nav .active-item {
-    width: 58px;
-    height: 52px; /* Minimal gap from top and bottom */
+    width: calc(100% - 4px); /* Reduced horizontal margin/padding of background color */
+    height: 48px; /* Balanced height within 60px bar */
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.38);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(26, 115, 232, 0.16) 100%); /* Deeper blue gradient for visibility */
     backdrop-filter: blur(18px) saturate(180%);
     -webkit-backdrop-filter: blur(18px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.55);
-    box-shadow:
-        0 6px 18px rgba(26, 115, 232, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    border: none; /* Removed border */
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.05);
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    transform: translateY(-4px); /* Floating slightly above the navigation bar */
     transition: all 0.3s ease;
 }
 
 .dark .mobile-nav-indicator-pill, .dark .mobile-bottom-nav .active-item {
-    background: rgba(30, 41, 59, 0.62);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    box-shadow:
-        0 6px 20px rgba(26, 115, 232, 0.18),
-        inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(26, 115, 232, 0.26) 100%);
+    border: none;
+    box-shadow: 0 4px 14px rgba(26, 115, 232, 0.1);
 }
 
-/* Centered blue active dot inside capsule below icon, overlapping neither icon nor label */
-.mobile-nav-indicator-dot {
-    position: absolute;
-    bottom: 18px; /* Centered between icon and label */
+/* Centered dot between icon and label */
+.mobile-nav-item .nav-dot {
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background-color: #1A73E8;
-    box-shadow: 0 1px 2px rgba(26, 115, 232, 0.3);
-    left: 50%;
-    transform: translateX(-50%);
+    background-color: #94A3B8; /* Slate 400 for light mode inactive dot */
+    margin: 5px 0; /* Clear balanced gap between icon and label */
+    transition: background-color 280ms ease, transform 280ms ease;
+}
+
+.dark .mobile-nav-item .nav-dot {
+    background-color: #475569; /* Slate 600 for dark mode inactive dot */
+}
+
+.mobile-nav-item.active .nav-dot {
+    background-color: #1A73E8; /* Active blue matching the branding */
 }
 
 /* Nav item design */
 .mobile-nav-item {
-    width: 20%;
+    width: 25%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -192,10 +192,7 @@ if (is_front_page() || is_home()) {
     height: 20px !important;
 }
 
-.mobile-nav-item .nav-dot-spacer {
-    height: 8px; /* Empty spacer to prevent dot overlap */
-    width: 100%;
-}
+
 
 .mobile-nav-item .nav-label {
     font-size: 10px;
@@ -292,9 +289,8 @@ body {
     </div>
 
     <!-- Sliding active indicator -->
-    <div class="mobile-nav-indicator-wrapper" id="mobile-nav-indicator" style="left: <?php echo $active_index * 20; ?>%;">
+    <div class="mobile-nav-indicator-wrapper" id="mobile-nav-indicator" style="left: <?php echo $active_index * 25; ?>%;">
         <div class="mobile-nav-indicator-pill active-item">
-            <div class="mobile-nav-indicator-dot"></div>
         </div>
     </div>
 
@@ -305,7 +301,7 @@ body {
                 <path d="M3 10a1 1 0 0 1 .5-.8l8-5.3a1 1 0 0 1 1 0l8 5.3a1 1 0 0 1 .5.8v9.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 19.5Z" />
             </svg>
         </div>
-        <div class="nav-dot-spacer"></div>
+        <div class="nav-dot"></div>
         <span class="nav-label">Inicio</span>
     </a>
 
@@ -314,7 +310,7 @@ body {
         <div class="nav-icon-container">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gamepad2-icon lucide-gamepad-2 w-6 h-6"><line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/></svg>
         </div>
-        <div class="nav-dot-spacer"></div>
+        <div class="nav-dot"></div>
         <span class="nav-label">Juegos</span>
     </a>
 
@@ -328,7 +324,7 @@ body {
                 <rect x="3" y="14" width="7" height="7" rx="1.5" />
             </svg>
         </div>
-        <div class="nav-dot-spacer"></div>
+        <div class="nav-dot"></div>
         <span class="nav-label">Apps</span>
     </a>
 
@@ -337,22 +333,11 @@ body {
         <div class="nav-icon-container">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send-icon lucide-send w-6 h-6"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
         </div>
-        <div class="nav-dot-spacer"></div>
+        <div class="nav-dot"></div>
         <span class="nav-label">Telegram</span>
     </a>
 
-    <!-- 5. Menú -->
-    <button type="button" id="mobile-nav-menu-btn" class="mobile-nav-item" data-index="4">
-        <div class="nav-icon-container">
-            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="4" x2="20" y1="12" y2="12" />
-                <line x1="4" x2="20" y1="6" y2="6" />
-                <line x1="4" x2="20" y1="18" y2="18" />
-            </svg>
-        </div>
-        <div class="nav-dot-spacer"></div>
-        <span class="nav-label">Menú</span>
-    </button>
+
 </nav>
 
 <script>
@@ -422,58 +407,12 @@ function initMobileNav() {
         });
 
         if (indicator) {
-            indicator.style.left = (activeIdx * 20) + '%';
+            indicator.style.left = (activeIdx * 25) + '%';
         }
     }
 
     updateActiveStateByPath();
 
-    // Menu toggle event listener (toggles mobile menu off-canvas)
-    const menuBtn = document.getElementById('mobile-nav-menu-btn');
-    if (menuBtn) {
-        // Remove existing listener if re-initialized
-        const newMenuBtn = menuBtn.cloneNode(true);
-        menuBtn.parentNode.replaceChild(newMenuBtn, menuBtn);
 
-        newMenuBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const menu = document.getElementById('off-canvas-menu');
-            const overlay = document.getElementById('menu-overlay');
-            if (menu) {
-                const isOpen = menu.classList.contains('translate-x-0');
-                if (isOpen) {
-                    // Close the menu
-                    const closeBtn = document.getElementById('close-menu');
-                    if (closeBtn) {
-                        closeBtn.click();
-                    } else if (overlay) {
-                        overlay.click();
-                    } else {
-                        // Direct close fallback
-                        menu.classList.remove('translate-x-0');
-                        menu.classList.add('-translate-x-full');
-                        if (overlay) {
-                            overlay.classList.remove('opacity-100');
-                            overlay.classList.add('opacity-0', 'pointer-events-none');
-                        }
-                    }
-                } else {
-                    // Open the menu
-                    const headerHamburger = document.getElementById('hamburger-btn');
-                    if (headerHamburger) {
-                        headerHamburger.click();
-                    } else {
-                        // Direct open fallback
-                        menu.classList.remove('-translate-x-full');
-                        menu.classList.add('translate-x-0');
-                        if (overlay) {
-                            overlay.classList.remove('opacity-0', 'pointer-events-none');
-                            overlay.classList.add('opacity-100');
-                        }
-                    }
-                }
-            }
-        });
-    }
 }
 </script>

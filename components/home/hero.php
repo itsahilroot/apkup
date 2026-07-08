@@ -127,7 +127,7 @@ $hero_title = get_theme_mod('au_home_hero_title', 'Últimas actualizaciones');
                 <div class="flex items-center gap-1.5 mt-0.5">
                   <span class="text-gray-500 dark:text-gray-400 text-xs"><?php echo esc_html($app_category); ?></span>
                   <?php if ($is_mod) : ?>
-                    <span class="bg-emerald-500/90 dark:bg-emerald-600/95 text-white px-1.5 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 uppercase tracking-wider leading-none">
+                    <span class="bg-green-500 text-white px-1.5 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 uppercase tracking-wider leading-none">
                         <span class="w-1 h-1 rounded-full bg-white relative flex">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-1 w-1 bg-white"></span>

@@ -805,10 +805,39 @@ add_action('template_redirect', 'apkup_check_hide_desktop');
 
 function apkup_dynamic_styles() {
     $au_theme_color = get_theme_mod('au_theme_color', '#22c55e');
+    $au_star_rating_theme_color_swt = get_theme_mod('au_star_rating_theme_color_swt', true);
+
+    $star_color = $au_star_rating_theme_color_swt ? 'var(--app-primary)' : '#94a3b8';
+    $star_color_dark = $au_star_rating_theme_color_swt ? 'var(--app-primary)' : '#4b5563';
 
     echo "<style>
         :root {
             --app-primary: {$au_theme_color};
+            --star-color: {$star_color};
+        }
+        .dark {
+            --star-color: {$star_color_dark};
+        }
+        .text-amber-500, .text-amber-500 svg, .text-amber-500 svg path, .text-amber-500 path {
+            color: var(--star-color) !important;
+            fill: var(--star-color) !important;
+        }
+        .jq-ry-container .jq-ry-rated-group svg {
+            fill: var(--star-color) !important;
+        }
+        /* Override primary colored star icons inside components */
+        .apps-items svg.text-primary, 
+        .recommended-items svg.text-primary,
+        .trending-items svg.text-primary,
+        .hero-items svg.text-primary,
+        .download-items svg.text-primary,
+        figure svg.text-primary {
+            color: var(--star-color) !important;
+            fill: var(--star-color) !important;
+        }
+        .star-icon, svg.star-rating, span.text-amber-500 {
+            color: var(--star-color) !important;
+            fill: var(--star-color) !important;
         }
         .text-primary { color: var(--app-primary) !important; }
         .bg-primary { background-color: var(--app-primary) !important; }
@@ -817,7 +846,6 @@ function apkup_dynamic_styles() {
         .hover\:bg-primary:hover { background-color: var(--app-primary) !important; }
         .hover\:border-primary:hover { border-color: var(--app-primary) !important; }
         .group:hover .group-hover\:text-primary { color: var(--app-primary) !important; }
-        .jq-ry-container .jq-ry-rated-group svg { fill: var(--app-primary) !important; }
         .bg-primary\/10, .bg-green-50 { background-color: color-mix(in srgb, var(--app-primary) 10%, transparent) !important; }
         .bg-primary\/20, .bg-green-100 { background-color: color-mix(in srgb, var(--app-primary) 20%, transparent) !important; }
         .border-primary\/20, .border-green-200 { border-color: color-mix(in srgb, var(--app-primary) 20%, transparent) !important; }
