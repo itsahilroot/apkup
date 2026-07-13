@@ -7,9 +7,15 @@ if ($au_home_footer_info_swt) : ?>
 <section class="mt-4">
     <div class="glass-card p-6 sm:p-8 rounded-2xl text-center md:text-left">
         <?php if (!empty($au_home_footer_info_title)) : ?>
-            <h2 class="text-sm font-semibold text-slate-800 dark:text-white mb-2.5">
-                <?php echo esc_html($au_home_footer_info_title); ?>
-            </h2>
+            <?php if (is_home() || is_front_page()) : ?>
+                <h1 class="text-sm font-semibold text-slate-800 dark:text-white mb-2.5">
+                    <?php echo esc_html($au_home_footer_info_title); ?>
+                </h1>
+            <?php else : ?>
+                <h2 class="text-sm font-semibold text-slate-800 dark:text-white mb-2.5">
+                    <?php echo esc_html($au_home_footer_info_title); ?>
+                </h2>
+            <?php endif; ?>
         <?php endif; ?>
         <?php if (!empty($au_home_footer_info_description)) : ?>
             <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-300 font-light">

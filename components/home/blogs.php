@@ -58,9 +58,9 @@ if ($au_home_blogs_swt) : ?>
                                 <?php echo esc_html($post_date); ?> • <?php echo esc_html($primary_cat); ?> • Por <?php echo esc_html($author_name); ?>
                             </span>
                             <a href="<?php the_permalink(); ?>" class="block">
-                                <h4 class="font-normal text-sm text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-snug">
+                                <h3 class="font-normal text-sm text-slate-800 dark:text-slate-200 group-hover:text-primary transition-colors leading-snug">
                                     <?php the_title(); ?>
-                                </h4>
+                                </h3>
                             </a>
                         </div>
                     </article>

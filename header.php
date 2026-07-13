@@ -4,13 +4,15 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="<?php echo esc_attr(get_bloginfo('description')); ?>">
-    <link rel="canonical" href="<?php echo esc_url(is_home() || is_front_page() ? home_url('/') : get_permalink()); ?>">
-    <meta property="og:title" content="<?php echo is_home() || is_front_page() ? esc_attr(get_bloginfo('name') . ' - ' . get_bloginfo('description')) : esc_attr(get_the_title()); ?>">
-    <meta property="og:description" content="<?php echo esc_attr(get_bloginfo('description')); ?>">
-    <meta property="og:url" content="<?php echo esc_url(is_home() || is_front_page() ? home_url('/') : get_permalink()); ?>">
-    <meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo('name')); ?>">
-    <meta property="og:type" content="<?php echo is_single() ? 'article' : 'website'; ?>">
+    <?php if (!defined('RANK_MATH_VERSION') && !defined('WPSEO_VERSION')) : ?>
+        <meta name="description" content="<?php echo esc_attr(get_bloginfo('description')); ?>">
+        <link rel="canonical" href="<?php echo esc_url(is_home() || is_front_page() ? home_url('/') : get_permalink()); ?>">
+        <meta property="og:title" content="<?php echo is_home() || is_front_page() ? esc_attr(get_bloginfo('name') . ' - ' . get_bloginfo('description')) : esc_attr(get_the_title()); ?>">
+        <meta property="og:description" content="<?php echo esc_attr(get_bloginfo('description')); ?>">
+        <meta property="og:url" content="<?php echo esc_url(is_home() || is_front_page() ? home_url('/') : get_permalink()); ?>">
+        <meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo('name')); ?>">
+        <meta property="og:type" content="<?php echo is_single() ? 'article' : 'website'; ?>">
+    <?php endif; ?>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {

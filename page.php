@@ -24,7 +24,7 @@ get_header(); ?>
             <div class="text-sm text-gray-500 flex items-center gap-4 dark:text-gray-300 dark:border-gray-400 mb-4">
                 <span>Updated on: <?php echo $page_last_update_date; ?></span>
             </div>
-            <div class="entry-content wp-block-styles text-gray-700 dark:text-gray-300">
+            <div class="entry-content wp-block-styles prose prose-slate dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed">
                 <?php the_content(); ?>
             </div>
         </section>

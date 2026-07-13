@@ -59,7 +59,7 @@ if ($au_single_related_swt) :
                       <div class="w-20 h-20 rounded-[24%] overflow-hidden bg-slate-100 dark:bg-slate-800 mx-auto shadow-sm">
                         <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'></svg>" data-src="<?php echo esc_url($rel_logo); ?>" alt="<?php echo esc_attr($rel_name); ?> App Icon" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 lazyload">
                       </div>
-                      <h4 class="font-bold text-xs text-slate-800 dark:text-white truncate w-full"><?php echo esc_html($rel_name); ?></h4>
+                      <h3 class="font-bold text-xs text-slate-800 dark:text-white truncate w-full"><?php echo esc_html($rel_name); ?></h3>
                       <?php if ($rel_is_mod == '1') : ?>
                         <span class="inline-block px-2 py-0.5 bg-primary/10 text-primary rounded text-[9px] font-bold">MOD</span>
                       <?php else : ?>

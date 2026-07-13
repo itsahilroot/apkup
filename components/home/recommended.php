@@ -171,13 +171,13 @@ $rec_title = get_theme_mod('au_home_recommended_title', 'Top Charts: Los Más De
 
           <!-- Text block -->
           <div class="flex-grow min-w-0">
-            <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate group-hover:text-primary dark:group-hover:text-blue-400 transition-colors duration-200"><?php echo esc_html($app_name); ?></h4>
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white truncate group-hover:text-primary dark:group-hover:text-blue-400 transition-colors duration-200"><?php echo esc_html($app_name); ?></h3>
             <p class="text-[11px] text-slate-450 dark:text-slate-400 truncate mt-0.5 mb-1.5 font-normal"><?php echo esc_html($meta_desc); ?></p>
             
             <!-- Metadata & Badge Row -->
             <div class="flex items-center gap-1.5 flex-wrap">
               <!-- Rating pill -->
-              <span class="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 dark:bg-amber-500/15 dark:text-amber-500">
+              <span class="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded bg-gray-500/10 text-amber-500 dark:bg-gray-500/15 dark:text-amber-500">
                 <i data-lucide="star" class="w-2.5 h-2.5 fill-amber-500 text-amber-500"></i> <?php echo esc_html(number_format((float)$app_rating, 1)); ?>
               </span>
               

@@ -123,7 +123,7 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 
             <!-- Enlaces de Navegación Refinados (Grosores delgados) -->
             <?php if (!empty($header_menus)) : ?>
-                <nav class="hidden md:flex space-x-6 text-sm font-medium mx-4" id="header-nav-wrapper">
+                <nav class="hidden md:flex space-x-6 text-sm font-medium mx-4" id="header-nav-wrapper" aria-label="Navegación principal">
                     <?php foreach ($header_menus as $menu) : 
                         $menu_path = parse_url($menu->url, PHP_URL_PATH);
                         $is_active = false;
@@ -178,7 +178,7 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
                             <path d="m21 21-4.3-4.3" />
                         </svg>
                     </span>
-                    <input type="text" name="s" id="searchInput" placeholder="Buscar..." autocomplete="off"
+                    <input type="text" name="s" id="searchInput" placeholder="Buscar..." autocomplete="off" aria-label="Buscar"
                         class="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-slate-850 dark:text-slate-100 placeholder-slate-400 text-sm font-medium p-0 pr-6 cursor-pointer">
                     
                     <!-- Close button inside the pill -->
@@ -268,7 +268,7 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
     </div>
 
     <!-- Drawer Content (Navigation Links) -->
-    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto" aria-label="Navegación móvil">
         <?php if (!empty($header_menus)) : ?>
             <?php foreach ($header_menus as $menu) : 
                 $menu_path = parse_url($menu->url, PHP_URL_PATH);

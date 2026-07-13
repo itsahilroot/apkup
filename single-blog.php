@@ -43,7 +43,7 @@ get_header(); ?>
             <div class="w-full rounded-2xl overflow-hidden mb-6 bg-slate-100 dark:bg-slate-850">
                 <img src="<?php echo esc_url($blog_thumbnail); ?>" alt="<?php echo $blog_title; ?>" class="w-full h-auto object-cover">
             </div>
-            <div class="entry-content wp-block-styles text-slate-700 dark:text-slate-300 leading-relaxed space-y-4">
+            <div class="entry-content wp-block-styles prose prose-slate dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed">
                 <?php the_content(); ?>
             </div>
         </section>

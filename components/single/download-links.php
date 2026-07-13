@@ -70,7 +70,7 @@ if (!empty($download_links['links_options'])) {
           $link_mod = !empty($dl['mod_info']) ? $dl['mod_info'] : '';
           ?>
           <div class="text-center sm:text-left min-w-0">
-              <h4 class="font-bold text-sm text-slate-800 dark:text-white truncate"><?php echo esc_html($text); ?> (<?php echo esc_html($type); ?>)</h4>
+              <h3 class="font-bold text-sm text-slate-800 dark:text-white truncate"><?php echo esc_html($text); ?> (<?php echo esc_html($type); ?>)</h3>
               <p class="text-xs text-slate-400 mt-1">
                   Servidor Rápido 
                   <?php if (!empty($link_version)) : ?>• v<?php echo esc_html($link_version); ?><?php endif; ?>

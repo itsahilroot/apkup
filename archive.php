@@ -263,8 +263,8 @@ $current_cat = get_queried_object();
                           <div class="w-14 h-14 squircle-icon-medium bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-md mb-3">
                             <img src="<?php echo esc_url($r_logo); ?>" alt="<?php the_title_attribute(); ?>" class="w-full h-full object-cover">
                           </div>
-                          <h4 class="font-bold text-xs text-slate-800 dark:text-white line-clamp-1 transition-colors">
-                            <?php the_title(); ?></h4>
+                          <h3 class="font-bold text-xs text-slate-800 dark:text-white line-clamp-1 transition-colors">
+                            <?php the_title(); ?></h3>
                           <p class="text-[9px] text-slate-400 mt-0.5"><?php echo esc_html($r_primary_cat); ?> • <?php echo esc_html($r_size); ?></p>
                         </div>
                         <a href="<?php the_permalink(); ?>" class="mt-3 w-full py-1 bg-slate-150/70 hover:bg-primary hover:text-white dark:bg-slate-800/80 dark:hover:bg-primary text-slate-600 dark:text-slate-350 transition-all text-[10px] font-semibold rounded-full block text-center">Instalar</a>
@@ -315,8 +315,8 @@ $current_cat = get_queried_object();
                         <div class="flex items-center gap-3.5 min-w-0">
                           <img class="w-12 h-12 rounded-xl shrink-0 object-cover shadow-md" src="<?php echo esc_url($rec_logo); ?>" alt="<?php the_title_attribute(); ?>">
                           <div class="min-w-0">
-                            <h4 class="font-bold text-xs text-slate-800 dark:text-white truncate transition-colors">
-                              <?php the_title(); ?></h4>
+                            <h3 class="font-bold text-xs text-slate-800 dark:text-white truncate transition-colors">
+                              <?php the_title(); ?></h3>
                             <p class="text-[10px] text-slate-400"><?php echo esc_html($rec_primary_cat); ?> • Android App</p>
                             <span class="text-[9px] font-bold <?php echo esc_attr($rec_tag_color); ?>"><?php echo esc_html($rec_tag); ?> • v<?php echo esc_html($rec_version); ?></span>
                           </div>
@@ -364,8 +364,8 @@ $current_cat = get_queried_object();
                         <div class="w-24 h-24 squircle-icon-extreme bg-white dark:bg-slate-850 mx-auto overflow-hidden shadow-md border border-slate-200/40 dark:border-white/5 ">
                           <img class="w-full h-full object-cover" src="<?php echo esc_url($p_logo); ?>" alt="<?php the_title_attribute(); ?>">
                         </div>
-                        <h4 class="font-semibold text-[11px] text-slate-855 dark:text-slate-200 mt-2 truncate transition-colors">
-                          <?php the_title(); ?></h4>
+                        <h3 class="font-semibold text-[11px] text-slate-855 dark:text-slate-200 mt-2 truncate transition-colors">
+                          <?php the_title(); ?></h3>
                         <div class="mt-0.5 flex justify-center gap-1 items-center">
                           <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 px-1 bg-emerald-100/70 dark:bg-emerald-950/40 rounded">GRATIS</span>
                         </div>
