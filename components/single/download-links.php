@@ -128,7 +128,7 @@ if (empty($app_logo_url)) {
           const mainBtnText = document.getElementById('mainDownloadBtnText');
           if (mainBtn && mainBtnText) {
             mainBtn.setAttribute('href', activeObj.url);
-            mainBtnText.textContent = `Descargar v${activeObj.version} (${activeObj.text})`;
+            mainBtnText.textContent = `Descargar v${activeObj.version}`;
           }
 
           // Update badges
