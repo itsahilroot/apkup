@@ -330,7 +330,7 @@ function download_links_callback($post)
         <div id="download-items" class="ui-sortable">
             <?php if (!empty($links)) : ?>
                 <?php foreach ($links as $dl) : 
-                    $type = $dl['type'] ?? 'apk';
+                    $type = $dl['type'] ?? '';
                     $version = $dl['version'] ?? '';
                     $mod_info = $dl['mod_info'] ?? '';
                     $size = $dl['size'] ?? '';
@@ -351,7 +351,7 @@ function download_links_callback($post)
             <?php else : ?>
                 <div class="apkt-repeater-item">
                     <div class="apkt-drag-handle">⋮⋮</div>
-                    <input type="text" name="download_type[]" value="apk" class="apkt-field-input" placeholder="Type">
+                    <input type="text" name="download_type[]" value="" class="apkt-field-input" placeholder="Type">
                     <input type="text" name="download_version[]" value="" class="apkt-field-input" placeholder="Version">
                     <input type="text" name="download_mod_info[]" value="" class="apkt-field-input" placeholder="MOD Info">
                     <input type="text" name="download_size[]" value="" class="apkt-field-input" placeholder="Size">
@@ -366,7 +366,7 @@ function download_links_callback($post)
         <div id="download-item-template" style="display:none;">
             <div class="apkt-repeater-item">
                 <div class="apkt-drag-handle">⋮⋮</div>
-                <input type="text" name="download_type[]" value="apk" class="apkt-field-input" placeholder="Type">
+                <input type="text" name="download_type[]" value="" class="apkt-field-input" placeholder="Type">
                 <input type="text" name="download_version[]" value="" class="apkt-field-input" placeholder="Version">
                 <input type="text" name="download_mod_info[]" value="" class="apkt-field-input" placeholder="MOD Info">
                 <input type="text" name="download_size[]" value="" class="apkt-field-input" placeholder="Size">
@@ -409,13 +409,13 @@ function save_download_links($post_id)
 
     $new_data = [
         'option'        => $old_data['option'] ?? 'links',
-        'type'          => $old_data['type'] ?? 'apk',
+        'type'          => $old_data['type'] ?? '',
         'links_options' => [],
     ];
 
     if (!empty($_POST['download_url'])) {
         foreach ($_POST['download_url'] as $i => $url) {
-            $type          = $_POST['download_type'][$i] ?? 'apk';
+            $type          = $_POST['download_type'][$i] ?? '';
             $version       = $_POST['download_version'][$i] ?? '';
             $mod_info      = $_POST['download_mod_info'][$i] ?? '';
             $size          = $_POST['download_size'][$i] ?? '';

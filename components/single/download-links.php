@@ -18,76 +18,226 @@ if (!empty($download_links['links_options'])) {
         }
     }
 }
-?>
-<!-- Secure Multi-Server Download Enlaces -->
-<section id="download-section" class="p-6 sm:p-8 bg-white dark:bg-brand-darkCard rounded-[32px] border border-slate-200/50 dark:border-white/5 space-y-6">
-  <div class="text-center sm:text-left space-y-2">
-    <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center justify-center sm:justify-start gap-2">
-      <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
-      </svg>
-      Enlaces de Descarga Seguros
-    </h2>
-    <p class="text-xs text-slate-400 dark:text-slate-500 font-semibold">
-      Seleccione el servidor de su preferencia para descargar <?php echo esc_html($app_name); ?>. Todos nuestros archivos han sido validados con VirusTotal.
-    </p>
-  </div>
 
-  <?php if (!empty($links)) : ?>
-    <div class="flex overflow-x-auto md:grid md:grid-cols-2 gap-4 no-scrollbar pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
-      <?php foreach ($links as $index => $dl) : 
-          $download_url = get_permalink() . 'download/' . $index;
-          $text = !empty($dl['texto']) ? $dl['texto'] : (!empty($dl['type']) ? $dl['type'] : 'APK');
-          $type = !empty($dl['type']) ? $dl['type'] : 'Server';
-          
-          // Detect Server Type for custom styling
-          $is_mediafire = (stripos($text, 'mediafire') !== false || stripos($type, 'mediafire') !== false);
-          $is_mega = (stripos($text, 'mega') !== false || stripos($type, 'mega') !== false);
-          
-          $icon_color = 'bg-primary/10 text-primary';
-          $btn_color = 'bg-primary hover:opacity-95';
-          $icon_svg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>'; // Zap Icon
-          
-          if ($is_mediafire) {
-              $icon_color = 'bg-emerald-100 dark:bg-emerald-500/10 text-emerald-500';
-              $btn_color = 'bg-emerald-600 hover:bg-emerald-700';
-              $icon_svg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>';
-          } elseif ($is_mega) {
-              $icon_color = 'bg-blue-100 dark:bg-blue-500/10 text-blue-500';
-              $btn_color = 'bg-blue-600 hover:bg-blue-700';
-              $icon_svg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>';
-          }
-      ?>
-        <!-- Enlace Card -->
-        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 shrink-0 w-[290px] md:w-auto snap-center">
-          <div class="flex items-center gap-4 w-full sm:w-auto">
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 <?php echo $icon_color; ?>">
-              <?php echo $icon_svg; ?>
-            </div>
-          <?php
-          $link_version = !empty($dl['version']) ? $dl['version'] : $app_version;
-          $link_size = !empty($dl['size']) ? $dl['size'] : $app_size;
-          $link_mod = !empty($dl['mod_info']) ? $dl['mod_info'] : '';
-          ?>
-          <div class="text-center sm:text-left min-w-0">
-              <h3 class="font-bold text-sm text-slate-800 dark:text-white truncate"><?php echo esc_html($text); ?> (<?php echo esc_html($type); ?>)</h3>
-              <p class="text-xs text-slate-400 mt-1">
-                  Servidor Rápido 
-                  <?php if (!empty($link_version)) : ?>• v<?php echo esc_html($link_version); ?><?php endif; ?>
-                  <?php if (!empty($link_size)) : ?>• <?php echo esc_html($link_size); ?><?php endif; ?>
-                  <?php if (!empty($link_mod)) : ?>• <?php echo esc_html($link_mod); ?><?php endif; ?>
-              </p>
-          </div>
-          </div>
-          <a href="<?php echo esc_url($download_url); ?>" class="w-full sm:w-auto px-5 py-2.5 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 <?php echo $btn_color; ?>">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-            </svg>
-            Descargar
-          </a>
+$formatted_links = [];
+foreach ($links as $index => $dl) {
+    $text = !empty($dl['texto']) ? $dl['texto'] : (!empty($dl['type']) ? $dl['type'] : 'APK');
+    $type = !empty($dl['type']) ? $dl['type'] : 'Server';
+    $link_version = !empty($dl['version']) ? $dl['version'] : $app_version;
+    $link_size = !empty($dl['size']) ? $dl['size'] : $app_size;
+    $link_mod = !empty($dl['mod_info']) ? $dl['mod_info'] : '';
+    $download_url = get_permalink() . 'download/' . $index;
+    
+    $formatted_links[] = [
+        'id' => 'ver-' . $index,
+        'index' => $index,
+        'text' => $text,
+        'type' => $type,
+        'version' => $link_version,
+        'size' => $link_size,
+        'mod' => $link_mod,
+        'url' => esc_url($download_url),
+        'isPro' => (stripos($link_mod, 'pro') !== false || stripos($text, 'pro') !== false || stripos($type, 'pro') !== false || get_post_meta($post_id, 'app_type', true) == 1)
+    ];
+}
+
+$app_logo_url = get_the_post_thumbnail_url($post_id, 'thumbnail');
+if (empty($app_logo_url)) {
+    $app_logo_url = 'https://placehold.co/150x150/0052e0/ffffff?text=App';
+}
+?>
+
+<!-- Secure Multi-Server Download Enlaces -->
+<section id="download-section" class="space-y-6">
+  <style>
+    .dropdown-transition {
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .chevron-rotate {
+      transition: transform 0.3s ease;
+    }
+  </style>
+
+  <?php if (!empty($formatted_links)) : ?>
+    <div class="border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5 bg-[#fafcff] dark:bg-slate-900/40 space-y-4">
+      <!-- Header with Cloud Secure Icon -->
+      <div class="flex items-start space-x-3.5 text-left">
+        <div class="bg-[#edf5ff] dark:bg-blue-950/60 text-[#0066fe] dark:text-blue-400 p-3 rounded-xl shadow-inner shrink-0 flex items-center justify-center">
+          <i data-lucide="download-cloud" class="w-6 h-6"></i>
         </div>
-      <?php endforeach; ?>
+        <div class="space-y-1">
+          <span class="font-bold text-slate-900 dark:text-white text-base">Enlaces de Descarga Seguros</span>
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+            Seleccione el servidor de su preferencia para descargar <strong class="text-slate-700 dark:text-slate-200"><?php echo esc_html($app_name); ?></strong>. Todos nuestros archivos han sido validados con VirusTotal.
+          </p>
+        </div>
+      </div>
+
+      <!-- Mini App Icon Card -->
+      <div class="bg-white dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/50 rounded-xl p-4 flex items-center space-x-4 shadow-sm text-left">
+        <div class="bg-blue-50 text-blue-600 h-12 w-12 rounded-xl flex items-center justify-center font-bold text-xl shadow-sm border border-blue-100 shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" aria-hidden="true" class="lucide lucide-zap w-6 h-6 text-blue-600 fill-blue-600"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
+        </div>
+        <div class="space-y-1.5 flex-grow">
+          <h5 class="font-bold text-slate-800 dark:text-white text-sm leading-none" id="activeAppName"><?php echo esc_html($app_name); ?></h5>
+          <div class="flex flex-wrap gap-1.5 items-center">
+            <span id="activeBadge" class="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/40 text-blue-600 dark:text-blue-400 font-bold text-[10px] px-2 py-0.5 rounded-full">v<?php echo esc_html($app_version); ?></span>
+            <span id="activeSize" class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 text-slate-600 dark:text-slate-400 font-semibold text-[10px] px-2 py-0.5 rounded-full"><?php echo esc_html($app_size); ?></span>
+            <span id="activeModBadge" class="border border-purple-200 dark:border-purple-900/40 text-purple-600 dark:text-purple-400 font-bold text-[10px] px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/40 hidden">Pro</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Interactive Download Button -->
+      <a href="#" id="mainDownloadBtn" class="w-full bg-[#0066fe] hover:bg-[#0053cf] text-white py-3.5 px-4 rounded-xl font-bold text-sm tracking-wide flex items-center justify-center space-x-2 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/35 transition-all duration-150 transform active:scale-[0.98] no-underline hover:no-underline">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span id="mainDownloadBtnText">Descargar v<?php echo esc_html($app_version); ?></span>
+      </a>
+
+      <!-- Dynamic Dropdown and Other Versions -->
+      <div id="dropdownWrapper" class="space-y-2 hidden">
+        <!-- Toggle Button -->
+        <button onclick="toggleDownloadDropdown()" class="w-full py-2.5 flex items-center justify-center space-x-1.5 text-[#0066fe] dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold text-xs transition duration-150">
+          <span id="dropdownToggleText">Otras versiones</span>
+          <i id="downloadChevronIcon" data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-300"></i>
+        </button>
+
+        <!-- Collapsible Versions Wrapper -->
+        <div id="downloadDropdownContainer" class="grid dropdown-transition grid-rows-[0fr] opacity-0 overflow-hidden">
+          <div class="min-h-0 space-y-2 pt-1 pb-2" id="downloadDropdownList">
+            <!-- Dynamic Version Rows Will Inject Here -->
+          </div>
+        </div>
+      </div>
     </div>
+
+    <script>
+      (function() {
+        const downloadVersions = <?php echo json_encode($formatted_links); ?>;
+        if (!downloadVersions || downloadVersions.length === 0) return;
+
+        let activeVersionId = downloadVersions[0].id;
+        let isDropdownOpen = false;
+
+        function renderComponent() {
+          const activeObj = downloadVersions.find(v => v.id === activeVersionId);
+          if (!activeObj) return;
+
+          // Update Main Download Link & Text
+          const mainBtn = document.getElementById('mainDownloadBtn');
+          const mainBtnText = document.getElementById('mainDownloadBtnText');
+          if (mainBtn && mainBtnText) {
+            mainBtn.setAttribute('href', activeObj.url);
+            mainBtnText.textContent = `Descargar v${activeObj.version} (${activeObj.text})`;
+          }
+
+          // Update badges
+          const activeBadge = document.getElementById('activeBadge');
+          const activeSize = document.getElementById('activeSize');
+          const activeModBadge = document.getElementById('activeModBadge');
+
+          if (activeBadge) activeBadge.textContent = 'v' + activeObj.version;
+          if (activeSize) activeSize.textContent = activeObj.size;
+          
+          if (activeModBadge) {
+            if (activeObj.mod) {
+              activeModBadge.textContent = activeObj.mod;
+              activeModBadge.classList.remove('hidden');
+            } else if (activeObj.isPro) {
+              activeModBadge.textContent = 'Pro';
+              activeModBadge.classList.remove('hidden');
+            } else {
+              activeModBadge.classList.add('hidden');
+            }
+          }
+
+          // Filter options for dropdown (exclude current)
+          const otherVersions = downloadVersions.filter(v => v.id !== activeVersionId);
+          const dropdownWrapper = document.getElementById('dropdownWrapper');
+
+          if (dropdownWrapper) {
+            if (otherVersions.length > 0) {
+              dropdownWrapper.classList.remove('hidden');
+              const toggleText = document.getElementById('dropdownToggleText');
+              if (toggleText) {
+                toggleText.textContent = `Otras versiones (${otherVersions.length})`;
+              }
+            } else {
+              dropdownWrapper.classList.add('hidden');
+            }
+          }
+
+          const listContainer = document.getElementById('downloadDropdownList');
+          if (listContainer) {
+            listContainer.innerHTML = '';
+            otherVersions.forEach(version => {
+              const row = document.createElement('div');
+              row.className = 'bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800/50 hover:border-blue-300 dark:hover:border-blue-800/50 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 rounded-xl p-3 flex items-center justify-between transition cursor-pointer group shadow-sm text-left';
+              
+              row.addEventListener('click', function() {
+                selectVersion(version.id);
+              });
+
+              let badgeHtml = '';
+              if (version.mod) {
+                badgeHtml = `<span class="border border-purple-200 dark:border-purple-900/40 text-purple-600 dark:text-purple-400 text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-purple-50 dark:bg-purple-950/40">${version.mod}</span>`;
+              } else if (version.isPro) {
+                badgeHtml = `<span class="border border-purple-200 dark:border-purple-900/40 text-purple-600 dark:text-purple-400 text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-purple-50 dark:bg-purple-950/40">Pro</span>`;
+              }
+
+              row.innerHTML = `
+                <div class="flex items-center space-x-3">
+                  <span class="text-blue-600 dark:text-blue-400 font-bold text-xs select-none">${version.text}</span>
+                  <span class="text-slate-400 dark:text-slate-500 text-[10px] font-semibold">v${version.version}</span>
+                  <span class="text-slate-400 dark:text-slate-500 text-[10px] font-semibold">${version.size}</span>
+                  ${badgeHtml}
+                </div>
+                <button class="bg-blue-50 dark:bg-blue-950/50 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white text-blue-600 dark:text-blue-400 p-1.5 rounded-lg transition duration-150 flex items-center justify-center">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                </button>
+              `;
+              listContainer.appendChild(row);
+            });
+          }
+
+          // Handle Dropdown animation & icon rotation
+          const dropdownWrap = document.getElementById('downloadDropdownContainer');
+          const chevron = document.getElementById('downloadChevronIcon');
+          if (dropdownWrap && chevron) {
+            if (isDropdownOpen) {
+              dropdownWrap.style.gridTemplateRows = '1fr';
+              dropdownWrap.style.opacity = '1';
+              chevron.style.transform = 'rotate(180deg)';
+            } else {
+              dropdownWrap.style.gridTemplateRows = '0fr';
+              dropdownWrap.style.opacity = '0';
+              chevron.style.transform = 'rotate(0deg)';
+            }
+          }
+
+          // Re-trigger Lucide icon instantiation
+          if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+          }
+        }
+
+        window.toggleDownloadDropdown = function() {
+          isDropdownOpen = !isDropdownOpen;
+          renderComponent();
+        };
+
+        window.selectVersion = function(versionId) {
+          activeVersionId = versionId;
+          isDropdownOpen = true; // keep open
+          renderComponent();
+        };
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', function() {
+          renderComponent();
+        });
+      })();
+    </script>
   <?php else : ?>
     <div class="text-center p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
       <p class="text-sm text-slate-400 font-semibold">No hay enlaces de descarga disponibles en este momento.</p>
