@@ -23,9 +23,9 @@ if ($is_cacheable) {
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <?php
     get_template_part('components/home/hero');
-    home_top_ad();
     get_template_part('components/home/recommended');
     get_template_part('components/home/trending');
+    home_top_ad();
     get_template_part('components/home/term');
     get_template_part('components/home/premium');
     if (get_theme_mod('au_home_categories_swt', true)) {

@@ -83,7 +83,11 @@ if (empty($app_logo_url)) {
           <div class="flex flex-wrap gap-1.5 items-center">
             <span id="activeBadge" class="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/40 text-blue-600 dark:text-blue-400 font-bold text-[10px] px-2 py-0.5 rounded-full">v<?php echo esc_html($app_version); ?></span>
             <span id="activeSize" class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 text-slate-600 dark:text-slate-400 font-semibold text-[10px] px-2 py-0.5 rounded-full"><?php echo esc_html($app_size); ?></span>
-            <span id="activeModBadge" class="border border-purple-200 dark:border-purple-900/40 text-purple-600 dark:text-purple-400 font-bold text-[10px] px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/40 hidden">Pro</span>
+            <?php 
+            $first_mod = !empty($formatted_links[0]['mod']) ? $formatted_links[0]['mod'] : '';
+            $badge_class = empty($first_mod) ? 'hidden' : '';
+            ?>
+            <span id="activeModBadge" class="border border-purple-200 dark:border-purple-900/40 text-purple-600 dark:text-purple-400 font-bold text-[10px] px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/40 <?php echo esc_attr($badge_class); ?>"><?php echo esc_html($first_mod); ?></span>
           </div>
         </div>
       </div>
@@ -143,9 +147,6 @@ if (empty($app_logo_url)) {
             if (activeObj.mod) {
               activeModBadge.textContent = activeObj.mod;
               activeModBadge.classList.remove('hidden');
-            } else if (activeObj.isPro) {
-              activeModBadge.textContent = 'Pro';
-              activeModBadge.classList.remove('hidden');
             } else {
               activeModBadge.classList.add('hidden');
             }
@@ -181,8 +182,6 @@ if (empty($app_logo_url)) {
               let badgeHtml = '';
               if (version.mod) {
                 badgeHtml = `<span class="border border-purple-200 dark:border-purple-900/40 text-purple-600 dark:text-purple-400 text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-purple-50 dark:bg-purple-950/40">${version.mod}</span>`;
-              } else if (version.isPro) {
-                badgeHtml = `<span class="border border-purple-200 dark:border-purple-900/40 text-purple-600 dark:text-purple-400 text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-purple-50 dark:bg-purple-950/40">Pro</span>`;
               }
 
               row.innerHTML = `

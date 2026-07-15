@@ -31,7 +31,6 @@ if ($is_cacheable) {
 $current_cat = get_queried_object();
 ?>
 <main class="max-w-md md:max-w-3xl lg:max-w-7xl mx-auto pb-10 sm:px-6 lg:px-8 mt-6 px-4">
-    <?php archive_top_ad('div', 'my-4'); ?>
 
     <!-- Breadcrumbs Section -->
     <nav class="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-6 font-light" aria-label="Breadcrumb">
@@ -100,6 +99,8 @@ $current_cat = get_queried_object();
         }
     }
     ?>
+
+    <?php archive_top_ad('div', 'my-4'); ?>
 
     <!-- Main Content Layout Section: Grid/Sections + Sidebar -->
     <div class="flex flex-col lg:flex-row gap-8">
