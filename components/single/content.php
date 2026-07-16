@@ -109,7 +109,7 @@ if (!empty($toc_items)) {
 
   <!-- Contenido: Descripción -->
   <div id="tabContent-description" class="p-6 bg-white dark:bg-brand-darkCard rounded-3xl border border-slate-200/50 dark:border-white/5 space-y-6">
-    <div id="descTextContainer" class="prose prose-sm dark:prose-invert max-w-none text-slate-600 dark:text-slate-350 max-h-40 overflow-hidden relative transition-all duration-300 space-y-5 leading-relaxed">
+    <div id="descTextContainer" class="prose prose-sm dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 max-h-40 overflow-hidden relative transition-all duration-300 space-y-5 leading-relaxed">
       <?php echo $content_with_ids; ?>
       
       <!-- Gradiente de desvanecimiento -->
@@ -128,7 +128,7 @@ if (!empty($toc_items)) {
     <?php if (!empty($au_single_help_guide_title)) : ?>
       <h3 class="text-sm font-bold text-slate-800 dark:text-white"><?php echo esc_html($au_single_help_guide_title); ?></h3>
     <?php endif; ?>
-    <ol class="space-y-3 text-sm text-slate-600 dark:text-slate-350 list-decimal list-inside">
+    <ol class="space-y-3 text-sm text-slate-600 dark:text-slate-400 list-decimal list-inside">
       <?php foreach ($au_single_help_guide as $step) : ?>
         <li><?php echo esc_html($step['text']); ?></li>
       <?php endforeach; ?>
@@ -156,7 +156,7 @@ if (!empty($toc_items)) {
         <span class="text-xs text-slate-400 dark:text-slate-500 font-semibold"><?php printf(esc_html__('Novedades en la versión %s', 'apktemplates'), esc_html($app_version)); ?></span>
       </div>
     </div>
-    <div class="prose prose-sm dark:prose-invert max-w-none text-slate-600 dark:text-slate-350 leading-relaxed">
+    <div class="prose prose-sm dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 leading-relaxed">
       <?php echo $app_novedades; ?>
     </div>
   </section>

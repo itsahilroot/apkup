@@ -112,7 +112,7 @@ $current_cat = get_queried_object();
         <div class="flex flex-col gap-4">
           <!-- Category Chips -->
           <!-- <div class="flex gap-2.5 overflow-x-auto py-3 px-2 -mx-2 scrollbar-hide snap-x" aria-label="Filtrar por categoría">
-            <button id="chip-all" onclick="clearCategoryFilter()" class="category-chip my-1 mx-0.5 px-4 py-2 shrink-0 rounded-full font-semibold text-xs text-slate-700 dark:text-slate-350 border border-transparent hover:scale-102 transition-all flex items-center gap-1.5 ring-2 ring-primary bg-slate-200 dark:bg-slate-800">
+            <button id="chip-all" onclick="clearCategoryFilter()" class="category-chip my-1 mx-0.5 px-4 py-2 shrink-0 rounded-full font-semibold text-xs text-slate-700 dark:text-slate-400 border border-transparent hover:scale-102 transition-all flex items-center gap-1.5 ring-2 ring-primary bg-slate-200 dark:bg-slate-800">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></svg> Todas
             </button>
             
@@ -212,7 +212,7 @@ $current_cat = get_queried_object();
                             <p class="text-[10px] text-slate-400"><?php echo esc_html($h_primary_cat); ?> • <?php echo esc_html($h_size); ?></p>
                             <p class="text-[10px] text-slate-400"><span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html($h_rating); ?> ★</span> • v<?php echo esc_html($h_version); ?></p>
                           </div>
-                          <a class="px-3 py-1 bg-slate-100 hover:bg-primary hover:text-white dark:bg-slate-800 dark:hover:bg-primary text-slate-700 dark:text-slate-350 transition-all text-[10px] font-semibold rounded-full" href="<?php the_permalink(); ?>">Ver</a>
+                          <a class="px-3 py-1 bg-slate-100 hover:bg-primary hover:text-white dark:bg-slate-800 dark:hover:bg-primary  transition-all text-[10px] font-semibold rounded-full" href="<?php the_permalink(); ?>">Ver</a>
                         </div>
                       </article>
                       <?php
@@ -268,7 +268,7 @@ $current_cat = get_queried_object();
                             <?php the_title(); ?></h3>
                           <p class="text-[9px] text-slate-400 mt-0.5"><?php echo esc_html($r_primary_cat); ?> • <?php echo esc_html($r_size); ?></p>
                         </div>
-                        <a href="<?php the_permalink(); ?>" class="mt-3 w-full py-1 bg-slate-150/70 hover:bg-primary hover:text-white dark:bg-slate-800/80 dark:hover:bg-primary text-slate-600 dark:text-slate-350 transition-all text-[10px] font-semibold rounded-full block text-center">Instalar</a>
+                        <a href="<?php the_permalink(); ?>" class="mt-3 w-full py-1 bg-slate-150/70 hover:bg-primary hover:text-white dark:bg-slate-800/80 dark:hover:bg-primary transition-all text-[10px] font-semibold rounded-full block text-center">Instalar</a>
                       </article>
                       <?php
                   endwhile;
@@ -660,7 +660,7 @@ $current_cat = get_queried_object();
                     // App type tag (MOD, Gratis, Pro, etc.)
                     $is_app_mod = get_post_meta($post_id, 'app_type', true);
                     $app_tag = 'APK';
-                    $tag_bg = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-350';
+                    $tag_bg = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400';
                     if ($is_app_mod == 1) {
                         $app_tag = 'MOD';
                         $tag_bg = 'bg-emerald-100/80 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400';
@@ -703,7 +703,7 @@ $current_cat = get_queried_object();
                         </div>
                       </div>
                       <div class="mt-4">
-                        <a class="w-full py-1.5 bg-slate-100 hover:bg-primary hover:text-white dark:bg-slate-800 dark:hover:bg-primary text-slate-700 dark:text-slate-350 transition-all text-xs font-semibold rounded-full block text-center" href="<?php echo esc_url($app_url); ?>">Obtener</a>
+                        <a class="w-full py-1.5 bg-slate-100 hover:bg-primary hover:text-white dark:bg-slate-800 dark:hover:bg-primary text-slate-700 dark:text-slate-400 transition-all text-xs font-semibold rounded-full block text-center" href="<?php echo esc_url($app_url); ?>">Obtener</a>
                       </div>
                     </article>
                 <?php

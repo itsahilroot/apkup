@@ -48,7 +48,7 @@
                     // App type tag (MOD, Gratis, Pro, etc.)
                     $is_app_mod = get_post_meta($post_id, 'app_type', true);
                     $app_tag = 'APK';
-                    $tag_bg = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-350';
+                    $tag_bg = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400';
                     if ($is_app_mod == 1) {
                         $app_tag = 'MOD';
                         $tag_bg = 'bg-emerald-100/80 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400';
@@ -76,7 +76,7 @@
                       </div>
 
                       <div class="flex items-center justify-between border-t border-slate-100 dark:border-white/5 mt-4 pt-3 text-[10px]">
-                        <div class="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-350">
+                        <div class="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-400">
                           <span class="text-amber-500">★</span>
                           <span><?php echo esc_html($app_rating); ?></span>
                         </div>

@@ -380,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function() {
             step1.querySelector('.step-status').className = "step-status text-[10px] font-bold text-emerald-500";
             
             if (step2) {
-                step2.className = "flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-350";
+                step2.className = "flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400";
                 step2.querySelector('.step-icon').innerHTML = spinnerIcon;
                 step2.querySelector('.step-icon').className = "step-icon flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary";
                 step2.querySelector('.step-status').textContent = "En progreso";
@@ -395,7 +395,7 @@ document.addEventListener("DOMContentLoaded", function() {
             step2.querySelector('.step-status').className = "step-status text-[10px] font-bold text-emerald-500";
             
             if (step3) {
-                step3.className = "flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-350";
+                step3.className = "flex items-center justify-between text-xs font-semibold text-slate-600 dark:text-slate-400";
                 step3.querySelector('.step-icon').innerHTML = spinnerIcon;
                 step3.querySelector('.step-icon').className = "step-icon flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary";
                 step3.querySelector('.step-status').textContent = "En progreso";
