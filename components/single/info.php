@@ -216,12 +216,12 @@ $primary_cat = apkup_get_primary_post_category($post_id);
 
 <?php
 $custom_boxes = get_post_meta($post_id, 'custom_boxes', true);
-$mod_details = [];
+$mod_content = '';
 if (is_array($custom_boxes) && !empty($custom_boxes[0]['content'])) {
-    $mod_details[] = wp_strip_all_tags($custom_boxes[0]['content']);
+    $mod_content = apply_filters('the_content', $custom_boxes[0]['content']);
 }
 
-if (!empty($mod_details)) :
+if (!empty($mod_content)) :
     $mod_title = (is_array($custom_boxes) && !empty($custom_boxes[0]['title'])) ? $custom_boxes[0]['title'] : __('MOD INFO', 'apktemplates');
 ?>
 <!-- MOD Info Accordion -->
@@ -245,20 +245,10 @@ if (!empty($mod_details)) :
 
   <!-- Content Panel -->
   <div id="modAccordionBody" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-    <div class="p-5 border-t border-slate-100 dark:border-brand-darkBorder bg-purple-50/20 dark:bg-purple-950/5 space-y-3.5 text-sm">
-      <p class="font-semibold text-slate-700 dark:text-slate-300"><?php esc_html_e('Este APK cuenta con los siguientes agregados especiales:', 'apktemplates'); ?></p>
-      <ul class="space-y-2.5">
-        <?php foreach ($mod_details as $detail) : 
-            $lines = array_filter(explode("\n", str_replace("\r", "", $detail)));
-            if (empty($lines)) $lines = [$detail];
-            foreach ($lines as $line) :
-        ?>
-          <li class="flex items-start space-x-2">
-            <span class="text-emerald-500 font-bold shrink-0">✔</span>
-            <span class="text-slate-600 dark:text-slate-400"><?php echo esc_html($line); ?></span>
-          </li>
-        <?php endforeach; endforeach; ?>
-      </ul>
+    <div class="p-5 border-t border-slate-100 dark:border-brand-darkBorder bg-purple-50/20 dark:bg-purple-950/5 text-sm">
+      <div class="entry-content wp-block-styles prose prose-slate prose-sm dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 leading-relaxed">
+        <?php echo $mod_content; ?>
+      </div>
     </div>
   </div>
 </section>

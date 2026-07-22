@@ -1,4 +1,7 @@
 <?php
+$logo_light = get_theme_mod('au_header_logo');
+$logo_dark = get_theme_mod('au_header_logo_dark');
+$footer_copyright = get_theme_mod('footer_copyright', 'Copyright © 2025 APKTEMPLATES.');
 $menu_locations = get_nav_menu_locations();
 $footer_menus = !empty($menu_locations['footer_menu']) ? wp_get_nav_menu_items($menu_locations['footer_menu']) : [];
 
@@ -17,10 +20,8 @@ if (empty($footer_menus)) {
     <div
       class="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-200/40 dark:border-white/5">
       <div class="flex items-center gap-3">
-        <img src="https://apkgstore.co/wp-content/uploads/2026/03/apkgstore2.0-azul_Mesa-de-trabajo-1-scaled.png"
-          alt="APKGSTORE Logo" class="h-6 w-auto block dark:hidden">
-        <img src="https://apkgstore.co/wp-content/uploads/2026/03/apkgstore2.0-scaled.png" alt="APKGSTORE Dark Logo"
-          class="h-6 w-auto hidden dark:block">
+                    <img src="<?php echo esc_url($logo_light); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?> Logo" class="h-7 w-auto block dark:hidden">
+                    <img src="<?php echo esc_url($logo_dark); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?> Dark Logo" class="h-7 w-auto hidden dark:block">
       </div>
       <div class="flex flex-wrap justify-center gap-6 text-xs font-semibold text-slate-500 dark:text-slate-400">
         <?php foreach ($footer_menus as $menu) : ?>
@@ -32,7 +33,7 @@ if (empty($footer_menus)) {
       </div>
     </div>
     <div class="flex flex-col md:flex-row items-center justify-between text-[11px] text-slate-400 gap-4 font-light">
-      <p>© 2021–2026 APKGSTORE.CO. Todos los derechos reservados. Rediseño Glassmorphism.</p>
+      <p><?php echo esc_html($footer_copyright); ?></p>
       <a href="#top"
         class="w-8 h-8 rounded-full bg-slate-100 hover:bg-primary dark:bg-slate-800 text-slate-500 hover:text-white flex items-center justify-center transition-all"
         aria-label="Subir al inicio">

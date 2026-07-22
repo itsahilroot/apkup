@@ -219,3 +219,51 @@ body {
 .dark .beautiful-scrollbar {
   scrollbar-color: rgba(71, 85, 105, 0.7) rgba(30, 41, 59, 0.5);
 }
+
+/* Entry Content / Editor Typography Overrides */
+.entry-content ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+.entry-content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+.entry-content li {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+  display: list-item !important;
+}
+.entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4, .entry-content h5, .entry-content h6 {
+  font-weight: 700 !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+  color: inherit !important;
+}
+.entry-content h1 { font-size: 1.5rem !important; }
+.entry-content h2 { font-size: 1.25rem !important; }
+.entry-content h3 { font-size: 1.125rem !important; }
+.entry-content h4 { font-size: 1rem !important; }
+
+/* MOD Info custom list style (keep the old check/right icon) */
+#modAccordionBody .entry-content ul {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+}
+#modAccordionBody .entry-content li {
+  position: relative !important;
+  padding-left: 1.5rem !important;
+  display: block !important;
+}
+#modAccordionBody .entry-content li::before {
+  content: "✔" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  color: #10b981 !important; /* emerald-500 */
+  font-weight: bold !important;
+}
