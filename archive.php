@@ -732,54 +732,54 @@ $current_cat = get_queried_object();
 
       <!-- Right Column: Sidebar (Width: 1/4) -->
       <aside class="w-full lg:w-1/4 flex flex-col gap-6">
-        
-        <!-- Sidebar Widget: Top Populares -->
-  
 
-        <!-- Sidebar Widget: Categorías -->
+        <!-- Sidebar Widget: Top Populares -->
         <div class="glass-card p-6 rounded-[28px] border border-slate-200/50 dark:border-white/5 space-y-4">
           <h3 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">
-            <?php esc_html_e('Categorías', 'apktemplates'); ?>
+            <?php esc_html_e('Más Populares', 'apktemplates'); ?>
           </h3>
-          <ul class="flex flex-col gap-2.5 text-xs font-semibold text-slate-600 dark:text-slate-400 list-none pl-0">
+          
+          <div class="flex flex-col gap-4">
             <?php
-            $current_cat_id = get_queried_object_id();
-            $queried_obj = get_queried_object();
-            $taxonomy = ($queried_obj && isset($queried_obj->taxonomy)) ? $queried_obj->taxonomy : 'category';
-            
-            $sidebar_cats = get_categories([
-                'taxonomy'   => $taxonomy,
-                'parent'     => $current_cat_id,
-                'hide_empty' => true
-            ]);
-            
-            // Fallback: If the current term is a child with no subcategories of its own, show siblings
-            if (empty($sidebar_cats) && $queried_obj && isset($queried_obj->parent) && $queried_obj->parent != 0) {
-                $sidebar_cats = get_categories([
-                    'taxonomy'   => $taxonomy,
-                    'parent'     => $queried_obj->parent,
-                    'hide_empty' => true
-                ]);
-            }
-            
-            // Final fallback: show top-level categories
-            if (empty($sidebar_cats)) {
-                $sidebar_cats = get_categories([
-                    'taxonomy'   => $taxonomy,
-                    'parent'     => 0,
-                    'hide_empty' => true,
-                    'number'     => 8
-                ]);
-            }
-
-            foreach ($sidebar_cats as $scat) :
-                ?>
-                <li class="flex items-center justify-between">
-                  <a href="<?php echo esc_url(get_category_link($scat->term_id)); ?>" class="hover:text-primary transition-colors"><?php echo esc_html($scat->name); ?></a>
-                  <span class="text-[10px] text-slate-400 dark:text-slate-600 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-full"><?php echo intval($scat->count); ?></span>
-                </li>
-            <?php endforeach; ?>
-          </ul>
+            $sidebar_args = [
+                'post_type'      => 'post',
+                'posts_per_page' => 5,
+                'meta_key'       => 'px_views',
+                'orderby'        => 'meta_value_num',
+                'order'          => 'DESC',
+            ];
+            $sidebar_query = new WP_Query($sidebar_args);
+            $rank = 1;
+            if ($sidebar_query->have_posts()) :
+                while ($sidebar_query->have_posts()) : $sidebar_query->the_post();
+                    $s_id = get_the_ID();
+                    $s_logo = get_the_post_thumbnail_url($s_id, 'thumbnail');
+                    if (empty($s_logo)) {
+                        $s_logo = 'https://placehold.co/150x150/0052e0/ffffff?text=App';
+                    }
+                    $s_rating = get_post_meta($s_id, 'new_rating_average', true) ?: '4.2';
+                    $s_data = get_post_meta($s_id, 'datos_informacion', true);
+                    $s_size = !empty($s_data['tamano']) ? $s_data['tamano'] : '45 MB';
+                    ?>
+                    <article class="flex items-center gap-3 group relative">
+                      <div class="w-11 h-11 squircle-icon-medium bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-sm shrink-0">
+                        <img src="<?php echo esc_url($s_logo); ?>" alt="<?php the_title_attribute(); ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-200">
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <h4 class="text-xs font-bold text-slate-855 dark:text-slate-200 truncate group-hover:text-primary transition-colors">
+                          <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        </h4>
+                        <p class="text-[10px] text-slate-400 mt-0.5"><?php echo esc_html($s_size); ?> • <span class="text-amber-500 dark:text-amber-400 font-bold"><?php echo esc_html($s_rating); ?> ★</span></p>
+                      </div>
+                      <span class="text-xs font-bold text-slate-350 dark:text-slate-650">#<?php echo $rank; ?></span>
+                    </article>
+                    <?php
+                    $rank++;
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            ?>
+          </div>
         </div>
       </aside>
 
