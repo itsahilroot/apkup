@@ -909,3 +909,50 @@ add_action('clean_post_cache', 'apkup_clear_all_transients');
 
 // Hook into theme options updates to clear transients
 add_action('update_option_theme_mods_apkup', 'apkup_clear_all_transients');
+
+/**
+ * Compatibility function to retrieve the app developer.
+ * Adapted to fallback between wp_developers_GP (new meta) / desarrollador (old meta) 
+ * and developer (new taxonomy) / dev (old taxonomy).
+ */
+function app_developer() {
+    global $post;
+
+    if( function_exists('appyn_options') && appyn_options( 'post_developer', true ) ) return;
+    if( function_exists('at_options') && at_options( 'post_developer', true ) ) return;
+
+    if (function_exists('apkup_sync_developer_to_developer_taxonomy')) {
+        apkup_sync_developer_to_developer_taxonomy($post->ID);
+    }
+
+    // Get terms for developer taxonomy (new: developer, old: dev)
+    $dev_terms = get_the_terms( $post->ID, 'developer' );
+    if( empty($dev_terms) || is_wp_error($dev_terms) ) {
+        $dev_terms = get_the_terms( $post->ID, 'dev' );
+    }
+
+    $output = '';
+    if( !empty($dev_terms) && !is_wp_error($dev_terms) ) {
+        $output_links = array();
+        foreach( $dev_terms as $term ) {
+            $link = get_term_link( $term );
+            if ( ! is_wp_error( $link ) ) {
+                $output_links[] = '<a href="' . esc_url( $link ) . '" rel="tag">' . esc_html( $term->name ) . '</a>';
+            } else {
+                $output_links[] = esc_html( $term->name );
+            }
+        }
+        $output = '<span class="developer">' . implode( ', ', $output_links ) . '</span>';
+    } else {
+        // Fallback to metadata
+        $developer = get_post_meta( $post->ID, 'wp_developers_GP', true );
+        if( empty($developer) && function_exists('get_datos_info') ) {
+            $developer = get_datos_info( 'desarrollador', false, $post->ID );
+        }
+        if( !empty($developer) ) {
+            $search_url = esc_url( add_query_arg( 's', $developer, home_url( '/' ) ) );
+            $output = '<span class="developer"><a href="' . $search_url . '">' . esc_html( $developer ) . '</a></span>';
+        }
+    }
+    return $output;
+}

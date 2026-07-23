@@ -58,7 +58,7 @@ function archive_top_ad($elem = 'section', $class = '')
     $is_archive_top_ad = get_theme_mod('archive_top_ads_swt', false);
     $archive_top_ad_code = get_theme_mod('archive_top_ads');
     if ($is_archive_top_ad) {
-        echo '<' . $elem . ' class="relative mb-12 w-full h-auto overflow-hidden text-center ' . $class . '">';
+        echo '<' . $elem . ' class="relative w-full h-auto overflow-hidden text-center ' . $class . '">';
         echo $archive_top_ad_code;
         echo '</' . $elem . '>';
     }
@@ -81,7 +81,7 @@ function download_top_ad($elem = 'section', $class = '')
     $is_download_top_ad = get_theme_mod('download_top_ads_swt', false);
     $download_top_ad_code = get_theme_mod('download_top_ads');
     if ($is_download_top_ad) {
-        echo '<' . $elem . ' class="relative mb-12 w-full h-auto overflow-hidden text-center ' . $class . '">';
+        echo '<' . $elem . ' class="relative w-full h-auto overflow-hidden text-center ' . $class . '">';
         echo $download_top_ad_code;
         echo '</' . $elem . '>';
     }

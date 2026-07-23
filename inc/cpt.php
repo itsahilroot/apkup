@@ -117,7 +117,7 @@ function apkup_developer_taxonomy() {
     );
 
     $args = array(
-        'hierarchical'      => true,
+        'hierarchical'      => false,
         'labels'            => $labels,
         'public'            => true,
         'show_ui'           => true,
@@ -132,21 +132,76 @@ function apkup_developer_taxonomy() {
 }
 add_action( 'init', 'apkup_developer_taxonomy' );
 
-/* Auto-sync wp_developers_GP meta to developer taxonomy on save */
-function apkup_sync_developer_to_developer_taxonomy($post_id, $post) {
+/* Auto-sync wp_developers_GP / legacy data to developer taxonomy on save and edit */
+function apkup_sync_developer_to_developer_taxonomy($post_id) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return;
     }
-    if ($post->post_type !== 'post') {
+    if (get_post_type($post_id) !== 'post') {
         return;
     }
     
+    // Check if developer taxonomy is already set
+    $terms = wp_get_object_terms($post_id, 'developer');
+    if (!empty($terms) && !is_wp_error($terms)) {
+        return; // Already set
+    }
+
+    $developer = '';
+
+    // 1. Try wp_developers_GP meta
     $developer = get_post_meta($post_id, 'wp_developers_GP', true);
+
+    // 2. Try legacy 'dev' taxonomy
+    if (empty($developer)) {
+        global $wpdb;
+        $developer = $wpdb->get_var(
+            $wpdb->prepare("
+                SELECT t.name
+                FROM {$wpdb->terms} t
+                INNER JOIN {$wpdb->term_taxonomy} tt
+                    ON t.term_id = tt.term_id
+                INNER JOIN {$wpdb->term_relationships} tr
+                    ON tt.term_taxonomy_id = tr.term_taxonomy_id
+                WHERE tt.taxonomy = 'dev'
+                  AND tr.object_id = %d
+                LIMIT 1
+            ", $post_id)
+        );
+    }
+
+    // 3. Try old desarrollador meta
+    if (empty($developer) && function_exists('get_datos_info')) {
+        $developer = get_datos_info('desarrollador', false, $post_id);
+    }
+
+    // If we found a developer name, assign it to the new 'developer' taxonomy
     if (!empty($developer)) {
         wp_set_object_terms($post_id, $developer, 'developer', false);
+        // Also save to wp_developers_GP meta if missing
+        if (!get_post_meta($post_id, 'wp_developers_GP', true)) {
+            update_post_meta($post_id, 'wp_developers_GP', sanitize_text_field($developer));
+        }
     }
 }
-add_action('save_post', 'apkup_sync_developer_to_developer_taxonomy', 10, 2);
+add_action('save_post', 'apkup_sync_developer_to_developer_taxonomy', 10, 1);
+add_action('edit_post', 'apkup_sync_developer_to_developer_taxonomy', 10, 1);
+
+// Ensure it runs when loading the post editor (Classic Editor)
+add_action('admin_enqueue_scripts', function() {
+    global $post;
+    if (is_admin() && isset($post->ID)) {
+        apkup_sync_developer_to_developer_taxonomy($post->ID);
+    }
+});
+
+// Ensure it runs when Gutenberg block editor requests the post via REST API
+add_filter('rest_prepare_post', function($response, $post_obj, $request) {
+    if (isset($post_obj->ID)) {
+        apkup_sync_developer_to_developer_taxonomy($post_obj->ID);
+    }
+    return $response;
+}, 10, 3);
 
 /* One-time migration to automatically copy terms from old publisher taxonomy to new developer taxonomy */
 function apkup_migrate_publisher_to_developer_taxonomy() {

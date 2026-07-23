@@ -21,8 +21,11 @@ $app_consiguelo = !empty($data['consiguelo']) ? $data['consiguelo'] : '';
 $new_rating_average = get_post_meta($post_id, 'new_rating_average', true) ?: '4.2';
 $new_rating_users = get_post_meta($post_id, 'new_rating_users', true) ?: '2500000';
 $formatted_reviews = function_exists('apkup_format_views_count') ? apkup_format_views_count($new_rating_users) : $new_rating_users;
+if (function_exists('apkup_sync_developer_to_developer_taxonomy')) {
+    apkup_sync_developer_to_developer_taxonomy($post_id);
+}
 $developer_terms = get_the_terms($post_id, 'developer');
-$developer_name = 'Supercell';
+$developer_name = '';
 $developer_search_url = '';
 
 if (!empty($developer_terms) && !is_wp_error($developer_terms)) {
@@ -31,7 +34,44 @@ if (!empty($developer_terms) && !is_wp_error($developer_terms)) {
     $term_link = get_term_link($first_developer);
     $developer_search_url = !is_wp_error($term_link) ? $term_link : esc_url(add_query_arg('s', $developer_name, home_url('/')));
 } else {
-    $developer_name = get_post_meta($post_id, 'wp_developers_GP', true) ?: 'Supercell';
+    $developer_name = get_post_meta($post_id, 'wp_developers_GP', true);
+    if (!empty($developer_name)) {
+        $existing_term = get_term_by('name', $developer_name, 'developer');
+        if ($existing_term) {
+            $term_link = get_term_link($existing_term);
+            $developer_search_url = !is_wp_error($term_link) ? $term_link : esc_url(add_query_arg('s', $developer_name, home_url('/')));
+        } else {
+            $developer_search_url = esc_url(add_query_arg('s', $developer_name, home_url('/')));
+        }
+    } else {
+        global $wpdb;
+        $developer_name = $wpdb->get_var(
+            $wpdb->prepare("
+                SELECT t.name
+                FROM {$wpdb->terms} t
+                INNER JOIN {$wpdb->term_taxonomy} tt
+                    ON t.term_id = tt.term_id
+                INNER JOIN {$wpdb->term_relationships} tr
+                    ON tt.term_taxonomy_id = tr.term_taxonomy_id
+                WHERE tt.taxonomy = 'dev'
+                  AND tr.object_id = %d
+                LIMIT 1
+            ", $post_id)
+        );
+        if (!empty($developer_name)) {
+            $dev_term = get_term_by('name', $developer_name, 'dev');
+            if ($dev_term) {
+                $term_link = get_term_link($dev_term);
+                $developer_search_url = !is_wp_error($term_link) ? $term_link : esc_url(add_query_arg('s', $developer_name, home_url('/')));
+            } else {
+                $developer_search_url = esc_url(add_query_arg('s', $developer_name, home_url('/')));
+            }
+        }
+    }
+}
+
+if (empty($developer_name)) {
+    $developer_name = 'Supercell';
     $developer_search_url = esc_url(add_query_arg('s', $developer_name, home_url('/')));
 }
 
