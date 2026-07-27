@@ -17,6 +17,7 @@ $app_requires = !empty($data['requerimientos']) ? $data['requerimientos'] : '7.0
 $app_size = !empty($data['tamano']) ? $data['tamano'] : '100 MB';
 $app_downloads = !empty($data['descargas']) ? (function_exists('apkup_format_downloads') ? apkup_format_downloads($data['descargas']) : $data['descargas']) : '10M+';
 $app_consiguelo = !empty($data['consiguelo']) ? $data['consiguelo'] : '';
+$app_age_rating = !empty($data['content_rating']) ? $data['content_rating'] : 'Everyone';
 
 $new_rating_average = get_post_meta($post_id, 'new_rating_average', true) ?: '4.2';
 $new_rating_users = get_post_meta($post_id, 'new_rating_users', true) ?: '2500000';
@@ -71,8 +72,8 @@ if (!empty($developer_terms) && !is_wp_error($developer_terms)) {
 }
 
 if (empty($developer_name)) {
-    $developer_name = 'Supercell';
-    $developer_search_url = esc_url(add_query_arg('s', $developer_name, home_url('/')));
+    $developer_name = 'Unknown';
+    $developer_search_url = '';
 }
 
 $primary_cat = apkup_get_primary_post_category($post_id);
@@ -98,6 +99,7 @@ $primary_cat = apkup_get_primary_post_category($post_id);
         <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
           <?php echo esc_html($app_name); ?>
         </h1>
+        <?php if (!empty($developer_name) && $developer_name !== 'Unknown' && !empty($developer_search_url)) : ?>
         <a href="<?php echo $developer_search_url; ?>"
           aria-label="Ver más de <?php echo esc_attr($developer_name); ?>"
           class="inline-flex items-center mt-1 text-primary hover:underline font-semibold text-sm transition-colors">
@@ -106,44 +108,95 @@ $primary_cat = apkup_get_primary_post_category($post_id);
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
           </svg>
         </a>
+        <?php else : ?>
+        <span class="inline-flex items-center mt-1 text-slate-500 font-semibold text-sm">
+          <span><?php echo esc_html(!empty($developer_name) ? $developer_name : __('Unknown', 'apkup')); ?></span>
+        </span>
+        <?php endif; ?>
       </div>
 
-      <!-- Specifications Stats Row Table -->
-      <div class="grid grid-cols-3 gap-2 border-t border-slate-100 dark:border-brand-darkBorder/70 pt-3 text-xs sm:text-sm max-w-[320px]">
+      <!-- Specifications Stats Row Table (Desktop Only) -->
+      <div class="hidden lg:grid grid-cols-4 gap-1 sm:gap-2 border-t border-slate-100 dark:border-brand-darkBorder/70 pt-3 text-xs sm:text-sm w-full max-w-sm sm:max-w-md lg:max-w-lg">
         <!-- Stats Col 1 -->
-        <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder">
-          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white">
+        <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder min-w-0 w-full">
+          <div class="flex items-center space-x-0.5 font-bold text-slate-900 dark:text-white w-full justify-center">
             <span class="text-amber-500">★</span>
-            <span><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
+            <span class="truncate"><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
           </div>
-          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center"><?php echo esc_html($formatted_reviews); ?> reviews</span>
+          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center truncate w-full" title="<?php echo esc_attr($formatted_reviews); ?> reviews"><?php echo esc_html($formatted_reviews); ?></span>
         </div>
         <!-- Stats Col 2 -->
-        <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder">
-          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white">
-            <svg class="w-3.5 h-3.5 text-slate-500 mr-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-            </svg>
-            <span><?php echo esc_html($app_downloads); ?></span>
+        <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder min-w-0 w-full px-1">
+          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white w-full justify-center">
+            <span class="truncate" title="<?php echo esc_attr($app_age_rating); ?>"><?php echo esc_html($app_age_rating); ?></span>
           </div>
-          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center">Downloads</span>
+          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center truncate w-full">Age Rating</span>
         </div>
         <!-- Stats Col 3 -->
-        <div class="flex flex-col items-center justify-center">
-          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white">
-            <svg class="w-3.5 h-3.5 text-slate-500 mr-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder min-w-0 w-full">
+          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white w-full justify-center">
+            <svg class="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span class="truncate"><?php echo esc_html($app_downloads); ?></span>
+          </div>
+          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center truncate w-full">Downloads</span>
+        </div>
+        <!-- Stats Col 4 -->
+        <div class="flex flex-col items-center justify-center min-w-0 w-full">
+          <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white w-full justify-center">
+            <svg class="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
             </svg>
-            <span><?php echo esc_html($app_size); ?></span>
+            <span class="truncate"><?php echo esc_html($app_size); ?></span>
           </div>
-          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center">Size</span>
+          <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center truncate w-full">Size</span>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Specifications Stats Row Table (Mobile/Tablet Only) -->
+  <div class="flex lg:hidden overflow-x-auto no-scrollbar items-center border-t border-b border-slate-100 dark:border-brand-darkBorder/70 py-3.5 text-xs sm:text-sm w-full justify-between gap-2.5">
+    <!-- Stats Col 1 -->
+    <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder shrink-0 min-w-[75px] flex-grow">
+      <div class="flex items-center space-x-0.5 font-bold text-slate-900 dark:text-white w-full justify-center">
+        <span class="text-amber-500">★</span>
+        <span class="truncate"><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
+      </div>
+      <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center truncate w-full" title="<?php echo esc_attr($formatted_reviews); ?> reviews"><?php echo esc_html($formatted_reviews); ?></span>
+    </div>
+    <!-- Stats Col 2 -->
+    <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder shrink-0 min-w-[75px] flex-grow px-1">
+      <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white w-full justify-center">
+        <span class="truncate" title="<?php echo esc_attr($app_age_rating); ?>"><?php echo esc_html($app_age_rating); ?></span>
+      </div>
+      <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center truncate w-full">Age Rating</span>
+    </div>
+    <!-- Stats Col 3 -->
+    <div class="flex flex-col items-center justify-center border-r border-slate-150/60 dark:border-brand-darkBorder shrink-0 min-w-[75px] flex-grow">
+      <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white w-full justify-center">
+        <svg class="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+        </svg>
+        <span class="truncate"><?php echo esc_html($app_downloads); ?></span>
+      </div>
+      <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center truncate w-full">Downloads</span>
+    </div>
+    <!-- Stats Col 4 -->
+    <div class="flex flex-col items-center justify-center shrink-0 min-w-[75px] flex-grow">
+      <div class="flex items-center space-x-1 font-bold text-slate-900 dark:text-white w-full justify-center">
+        <svg class="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        </svg>
+        <span class="truncate"><?php echo esc_html($app_size); ?></span>
+      </div>
+      <span class="text-slate-400 dark:text-slate-500 text-[10px] mt-0.5 text-center truncate w-full">Size</span>
+    </div>
+  </div>
+
   <!-- Main Download Action button triggering inline progress indicator -->
-  <div class="pt-1 flex flex-col space-y-2.5">
+  <div class="pt-1 flex flex-col space-y-2.5 w-full">
     <button id="downloadBtn" aria-label="Descargar <?php echo esc_attr($app_name); ?> APK (<?php echo esc_attr($app_size); ?>)"
       class="relative overflow-hidden w-full bg-primary hover:opacity-95 active:scale-[0.99] text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-primary/15 flex items-center justify-center space-x-2.5 transition-all text-sm sm:text-base focus:ring-4 focus:ring-primary/20 cursor-pointer">
       <div id="btnProgressBar" class="absolute inset-y-0 left-0 bg-black/10 w-0 transition-all duration-200"></div>

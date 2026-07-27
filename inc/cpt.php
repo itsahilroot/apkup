@@ -154,25 +154,27 @@ function apkup_sync_developer_to_developer_taxonomy($post_id) {
 
     // 2. Try legacy 'dev' taxonomy
     if (empty($developer)) {
-        global $wpdb;
-        $developer = $wpdb->get_var(
-            $wpdb->prepare("
-                SELECT t.name
-                FROM {$wpdb->terms} t
-                INNER JOIN {$wpdb->term_taxonomy} tt
-                    ON t.term_id = tt.term_id
-                INNER JOIN {$wpdb->term_relationships} tr
-                    ON tt.term_taxonomy_id = tr.term_taxonomy_id
-                WHERE tt.taxonomy = 'dev'
-                  AND tr.object_id = %d
-                LIMIT 1
-            ", $post_id)
-        );
+        $dev_terms = get_the_terms($post_id, 'dev');
+        if (!empty($dev_terms) && !is_wp_error($dev_terms)) {
+            $first_dev = array_shift($dev_terms);
+            $developer = $first_dev->name;
+        }
     }
 
     // 3. Try old desarrollador meta
-    if (empty($developer) && function_exists('get_datos_info')) {
-        $developer = get_datos_info('desarrollador', false, $post_id);
+    if (empty($developer)) {
+        if (function_exists('get_datos_info')) {
+            $developer = get_datos_info('desarrollador', false, $post_id);
+        }
+        if (empty($developer)) {
+            $info = get_post_meta($post_id, 'datos_informacion', true);
+            if (is_array($info) && !empty($info['desarrollador'])) {
+                $developer = $info['desarrollador'];
+            }
+        }
+        if (empty($developer)) {
+            $developer = get_post_meta($post_id, 'desarrollador', true);
+        }
     }
 
     // If we found a developer name, assign it to the new 'developer' taxonomy

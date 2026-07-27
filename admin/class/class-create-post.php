@@ -19,6 +19,7 @@ class AT_Create_GP_Post
     private $apk_category;
     private $apk_sub_category;
     private $apk_content;
+    private $apk_content_rating;
     private $apt_id = "";
 
     private $post_id;
@@ -53,6 +54,7 @@ class AT_Create_GP_Post
             'apk_sub_category' => '',
             'apk_content' => '',
             'apk_installs' => '',
+            'apk_content_rating' => '',
             'apt_id' => '',
         ];
 
@@ -74,6 +76,7 @@ class AT_Create_GP_Post
         $this->apk_sub_category = $data['apk_sub_category'];
         $this->apk_content = $data['apk_content'];
         $this->apk_installs = $data['apk_installs'];
+        $this->apk_content_rating = $data['apk_content_rating'];
         $this->apt_id = $data['apt_id'];
 
         $this->is_advanced_options = at_options('is_advanced_options', false);
@@ -177,6 +180,7 @@ class AT_Create_GP_Post
         $datos_informacion['descargas'] = $this->apk_installs;
         $datos_informacion['os'] = 'ANDROID';
         $datos_informacion['categoria_app'] = $this->apk_category ?? '';
+        $datos_informacion['content_rating'] = $this->apk_content_rating ?? '';
         update_post_meta($this->post_id, "wp_GP_ID", $this->apk_id);
         update_post_meta($this->post_id, "app_type", "0");
 

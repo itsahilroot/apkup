@@ -136,6 +136,7 @@ function app_info_callback($post)
                 'requerimientos' => [__('Requirements', 'apktemplates'), 'E.g. 5.0'],
                 'descargas' => [__('Downloads', 'apktemplates'), 'E.g. 536454'],
                 'mod_info' => [__('MOD Info', 'apktemplates'), 'E.g. Unlocked All'],
+                'content_rating' => [__('Age Rating', 'apktemplates'), 'E.g. Teen'],
             ];
             foreach ($app_fields as $field_key => $field_data): ?>
                 <div class="apkt-info-field">

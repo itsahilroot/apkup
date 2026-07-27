@@ -24,8 +24,8 @@ if ($is_cacheable) {
     <?php
     get_template_part('components/home/hero');
     get_template_part('components/home/recommended');
-    get_template_part('components/home/trending');
     home_top_ad();
+    get_template_part('components/home/trending');
     get_template_part('components/home/term');
     get_template_part('components/home/premium');
     if (get_theme_mod('au_home_categories_swt', true)) {

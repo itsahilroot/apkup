@@ -949,10 +949,22 @@ function app_developer() {
         if( empty($developer) && function_exists('get_datos_info') ) {
             $developer = get_datos_info( 'desarrollador', false, $post->ID );
         }
+        if( empty($developer) ) {
+            $info = get_post_meta( $post->ID, 'datos_informacion', true );
+            if ( is_array($info) && !empty($info['desarrollador']) ) {
+                $developer = $info['desarrollador'];
+            }
+        }
+        if ( empty($developer) ) {
+            $developer = get_post_meta( $post->ID, 'desarrollador', true );
+        }
         if( !empty($developer) ) {
             $search_url = esc_url( add_query_arg( 's', $developer, home_url( '/' ) ) );
             $output = '<span class="developer"><a href="' . $search_url . '">' . esc_html( $developer ) . '</a></span>';
         }
+    }
+    if ( empty($output) ) {
+        $output = '<span class="developer">' . __('Unknown Developer', 'apkup') . '</span>';
     }
     return $output;
 }

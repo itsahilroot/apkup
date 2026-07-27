@@ -32,6 +32,7 @@ new APKUp_Theme_Updater('apkup');
 
 require $theme_dir . '/inc/apkupdates.php';
 require $theme_dir . '/inc/apkupdatestable.php';
+require $theme_dir . '/inc/admin-bulk-developer.php';
 
 if (!function_exists('apkup_setup')) {
     add_action('after_setup_theme', 'apkup_setup');

@@ -15,7 +15,7 @@ function home_bottom_ad($elem = 'section', $class = '')
     $is_home_btm_ad = get_theme_mod("home_botm_ads_swt", false);
     $home_btm_ad_code = get_theme_mod("home_botm_ads");
     if ($is_home_btm_ad) {
-        echo '<' . $elem . ' class="relative mb-12 w-full h-auto overflow-hidden text-center ' . $class . '">';
+        echo '<' . $elem . ' class="relative w-full h-auto overflow-hidden text-center ' . $class . '">';
         echo $home_btm_ad_code;
         echo '</' . $elem . '>';
     }

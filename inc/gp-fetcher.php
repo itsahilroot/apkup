@@ -158,6 +158,9 @@ function apkt_gp_fetcher_callback($post) {
                         if (app.downloads) {
                             $('#datos_informacion_descargas').val(app.downloads);
                         }
+                        if (app.content_rating) {
+                            $('#datos_informacion_content_rating').val(app.content_rating);
+                        }
                         if (app.developer) {
                             $('#wp_developers_GP').val(app.developer);
                             
@@ -368,6 +371,7 @@ function apkt_fetch_gplay_data_handler() {
         'description'       => $playstore['descriptionHTML'] ?? '',
         'developer'         => $developer,
         'publisher_term_id' => $term_id,
+        'content_rating'    => $playstore['contentRating'] ?? '',
     ];
     
     // Download and sideload icon if requested
