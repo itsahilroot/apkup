@@ -1,9 +1,16 @@
 jQuery(document).ready(function ($) {
-    $('#at_advanced_options').change(function () {
+    $('#at_advanced_options').on('change', function () {
         if (this.checked) {
-            $('.at-import-table').fadeIn(150);
+            $('#advanced-options-container').slideDown(200).addClass('active');
         } else {
-            $('.at-import-table').fadeOut(150);
+            $('#advanced-options-container').slideUp(200).removeClass('active');
+        }
+    });
+
+    $('#at-advanced-toggle-btn').on('click', function (e) {
+        if ($(e.target).closest('.at-switch').length === 0) {
+            var $chk = $('#at_advanced_options');
+            $chk.prop('checked', !$chk.prop('checked')).trigger('change');
         }
     });
 
@@ -38,6 +45,7 @@ jQuery(document).ready(function ($) {
         let post_thumbnail_format;
         let post_thumbnail_quality;
         let import_screenshots;
+        let post_screenshots_limit;
         let post_screenshots_format;
         let post_language;
         let post_title_start;
@@ -73,6 +81,9 @@ jQuery(document).ready(function ($) {
                 case "at_import_screenshots":
                     import_screenshots = element.value;
                     break;
+                case "at_post_screenshots_limit":
+                    post_screenshots_limit = element.value;
+                    break;
                 case "at_post_screenshots_format":
                     post_screenshots_format = element.value;
                     break;
@@ -99,28 +110,35 @@ jQuery(document).ready(function ($) {
                 post_thumbnail_format: post_thumbnail_format,
                 post_thumbnail_quality: post_thumbnail_quality,
                 import_screenshots: import_screenshots,
+                post_screenshots_limit: post_screenshots_limit,
                 post_screenshots_format: post_screenshots_format,
                 post_language: post_language
             };
 
             let apk_file_info = await at_ajax_request(apktemplates_ajax_vars.ajax_url, 'POST', create_post_data);
 
-            apk_file_info = JSON.parse(apk_file_info);
+            if (typeof apk_file_info === 'string') {
+                try {
+                    apk_file_info = JSON.parse(apk_file_info);
+                } catch (e) {
+                    // Ignored if it's already an object or error
+                }
+            }
             const status = apk_file_info?.status;
 
             if (status === 'error') {
-                handle_ajax_error(apk_file_info?.data?.message);
+                handle_ajax_error(apk_file_info?.data?.message || "An error occurred while importing.");
                 inputs.prop("disabled", true);
                 return;
             }
 
-            append_success_info(apk_file_info?.data?.message);
+            append_success_info(apk_file_info?.data?.message || "Post created successfully.");
 
         } catch (error) {
             if (error instanceof SyntaxError) {
                 handle_ajax_error("Error parsing JSON response.");
             } else {
-                handle_ajax_error("An unexpected error occurred.");
+                handle_ajax_error(error?.message || "An unexpected error occurred.");
             }
         } finally {
             $('#at-gp-url').prop('disabled', null);

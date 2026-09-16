@@ -69,9 +69,10 @@ $hero_title = get_theme_mod('au_home_hero_title', 'Últimas actualizaciones');
 <section class="mt-6 md:px-0">
   <h2 class="text-lg font-bold mb-4 dark:text-white"><?php echo esc_html($hero_title); ?></h2>
   <div
-    class="flex overflow-x-auto md:overflow-x-hidden no-scrollbar pb-4 w-full" id="heroFlickityGallery">
+    class="flex overflow-x-auto md:overflow-x-hidden no-scrollbar pb-4 w-full min-h-[240px]" id="heroFlickityGallery">
     
     <?php
+    $hero_index = 0;
     while ($recently_updated_query->have_posts()) :
         $recently_updated_query->the_post();
         $post_id = get_the_ID();
@@ -93,19 +94,25 @@ $hero_title = get_theme_mod('au_home_hero_title', 'Últimas actualizaciones');
         if (empty($app_banner)) {
             $app_banner = $app_logo;
         }
+        $hero_index++;
     ?>
         <!-- Card: <?php echo esc_html($app_name); ?> -->
-        <div class="flex-shrink-0 w-72 mr-6 group/card">
+        <div class="flex-shrink-0 w-72 mr-6 group/card min-h-[220px]">
           <!-- Outer Shadow Wrapper: holds the strong shadow by default without hover translate/zoom -->
           <div class="rounded-[18px] mb-3.5 shadow-[0_12px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_38px_rgba(0,0,0,0.55)]">
             <!-- Inner Clip Container (overflow-hidden) -->
-            <div class="relative aspect-video rounded-[18px] overflow-hidden border border-slate-200/50 dark:border-white/5">
-              <a href="<?php echo esc_url($app_url); ?>" class="block w-full h-full">
+            <div class="relative aspect-video rounded-[18px] overflow-hidden border border-slate-200/50 dark:border-white/5 bg-slate-100 dark:bg-slate-800">
+              <a href="<?php echo esc_url($app_url); ?>" class="block w-full h-full" aria-label="<?php echo esc_attr($app_name); ?>">
                 
                 <img
                   src="<?php echo esc_url($app_banner); ?>"
-                  alt="<?php echo esc_attr($app_name); ?>" 
-                  class="w-full h-full object-cover">
+                  alt="<?php echo esc_attr($app_name); ?> Banner" 
+                  width="288"
+                  height="162"
+                  loading="<?php echo $hero_index <= 2 ? 'eager' : 'lazy'; ?>"
+                  <?php if ($hero_index === 1) : ?>fetchpriority="high"<?php endif; ?>
+                  decoding="async"
+                  class="w-full h-full object-cover aspect-video bg-slate-100 dark:bg-slate-800">
                 <!-- Soft gradient vignette overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent pointer-events-none"></div>
               </a>
@@ -119,9 +126,13 @@ $hero_title = get_theme_mod('au_home_hero_title', 'Últimas actualizaciones');
               <img
                 src="<?php echo esc_url($app_logo); ?>"
                 alt="<?php echo esc_attr($app_name); ?> Icon" 
-                class="w-12 h-12 rounded-[14px] shadow-[0_6px_16px_rgba(0,0,0,0.1)] dark:shadow-[0_6px_18px_rgba(0,0,0,0.4)] border border-slate-100 dark:border-white/5 shrink-0">
+                width="48"
+                height="48"
+                loading="<?php echo $hero_index <= 2 ? 'eager' : 'lazy'; ?>"
+                decoding="async"
+                class="w-12 h-12 rounded-[14px] shadow-[0_6px_16px_rgba(0,0,0,0.1)] dark:shadow-[0_6px_18px_rgba(0,0,0,0.4)] border border-slate-100 dark:border-white/5 shrink-0 bg-slate-100 dark:bg-slate-800 aspect-square">
               <div class="min-w-0">
-                <a href="<?php echo esc_url($app_url); ?>">
+                <a href="<?php echo esc_url($app_url); ?>" aria-label="<?php echo esc_attr($app_name); ?>">
                   <h4 class="font-semibold text-sm truncate dark:text-white hover:text-primary dark:hover:text-primary transition-colors"><?php echo esc_html($app_name); ?></h4>
                 </a>
                 <div class="flex items-center gap-1.5 mt-0.5">
@@ -149,6 +160,7 @@ $hero_title = get_theme_mod('au_home_hero_title', 'Últimas actualizaciones');
             </div>
             <!-- Premium button with hover background color transition only -->
             <a href="<?php echo esc_url($app_url); ?>"
+              aria-label="Instalar <?php echo esc_attr($app_name); ?>"
               class="bg-primary text-white px-4.5 py-1.5 rounded-full text-xs font-semibold hover:bg-blue-600 transition-colors shrink-0 shadow-[0_4px_12px_rgba(26,115,232,0.18)] dark:shadow-[0_4px_12px_rgba(26,115,232,0.3)]">Instalar</a>
           </div>
         </div>

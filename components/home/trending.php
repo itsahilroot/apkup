@@ -131,8 +131,14 @@ if (!function_exists('apkup_get_relative_time_spanish')) {
     ?>
         <!-- Item: <?php echo esc_html($app_name); ?> -->
         <div class="flex items-start gap-3 py-2 rounded-2xl post-card">
-          <img alt="<?php echo esc_attr($app_name); ?>" class="w-14 h-14 rounded-xl shrink-0 object-cover"
-            src="<?php echo esc_url($app_logo); ?>">
+          <img
+            src="<?php echo esc_url($app_logo); ?>"
+            alt="<?php echo esc_attr($app_name); ?> Icon"
+            width="52"
+            height="52"
+            loading="lazy"
+            decoding="async"
+            class="w-13 h-13 rounded-2xl shadow-sm border border-slate-100 dark:border-white/5 shrink-0 bg-slate-100 dark:bg-slate-800 object-cover aspect-square">
           <div class="flex-1 min-w-0">
             <a href="<?php echo esc_url($app_url); ?>">
               <h3 class="font-bold text-sm truncate dark:text-white hover:text-primary dark:hover:text-primary transition-colors"><?php echo esc_html($app_name); ?></h3>

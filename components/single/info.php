@@ -1,6 +1,8 @@
 <?php
 $post_id = get_the_ID();
 
+$au_single_developer_swt = get_theme_mod('au_single_developer_swt', '1');
+
 $app_name = get_the_title();
 $post_updated_date = get_the_modified_date('d M Y', $post_id);
 $app_logo_full = get_the_post_thumbnail_url($post_id, 'full');
@@ -99,19 +101,21 @@ $primary_cat = apkup_get_primary_post_category($post_id);
         <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
           <?php echo esc_html($app_name); ?>
         </h1>
-        <?php if (!empty($developer_name) && $developer_name !== 'Unknown' && !empty($developer_search_url)) : ?>
-        <a href="<?php echo $developer_search_url; ?>"
-          aria-label="Ver más de <?php echo esc_attr($developer_name); ?>"
-          class="inline-flex items-center mt-1 text-primary hover:underline font-semibold text-sm transition-colors">
-          <span><?php echo esc_html($developer_name); ?></span>
-          <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </a>
-        <?php else : ?>
-        <span class="inline-flex items-center mt-1 text-slate-500 font-semibold text-sm">
-          <span><?php echo esc_html(!empty($developer_name) ? $developer_name : __('Unknown', 'apkup')); ?></span>
-        </span>
+        <?php if ($au_single_developer_swt === '1') : ?>
+          <?php if (!empty($developer_name) && $developer_name !== 'Unknown' && !empty($developer_search_url)) : ?>
+          <a href="<?php echo $developer_search_url; ?>"
+            aria-label="Ver más de <?php echo esc_attr($developer_name); ?>"
+            class="inline-flex items-center mt-1 text-primary hover:underline font-semibold text-sm transition-colors">
+            <span><?php echo esc_html($developer_name); ?></span>
+            <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+          <?php else : ?>
+          <span class="inline-flex items-center mt-1 text-slate-500 font-semibold text-sm">
+            <span><?php echo esc_html(!empty($developer_name) ? $developer_name : __('Unknown', 'apkup')); ?></span>
+          </span>
+          <?php endif; ?>
         <?php endif; ?>
       </div>
 

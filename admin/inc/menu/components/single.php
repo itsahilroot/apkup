@@ -6,6 +6,7 @@ $au_single_ss_swt = get_theme_mod('au_single_ss_swt', false);
 $au_single_ss_limit = get_theme_mod('au_single_ss_limit', '5');
 $au_single_related_swt = get_theme_mod('au_single_related_swt', false);
 $au_single_related_limit = get_theme_mod('au_single_related_limit', 6);
+$au_single_developer_swt = get_theme_mod('au_single_developer_swt', '1');
 ?>
 <div class="at-field-section" data-section="single">
     <div class="at-form-header">
@@ -105,6 +106,22 @@ $au_single_related_limit = get_theme_mod('au_single_related_limit', 6);
                             <?php esc_html_e('Related Posts Limit', 'apktemplates'); ?>
                         </p>
                         <input type="number" name="au_single_related_limit" class="at-number-ipt" min="1" max="50" value="<?php echo esc_html($au_single_related_limit); ?>" />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('Developer Name', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Show/Hide developer name link on the single post page.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <label class="at-switch-btn">
+                            <input type="checkbox" name="au_single_developer_swt" value="1" <?php checked($au_single_developer_swt, 1); ?>>
+                            <span class="at-switch"></span>
+                        </label>
                     </div>
                 </td>
             </tr>

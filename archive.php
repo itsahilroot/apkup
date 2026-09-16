@@ -11,6 +11,7 @@ $archive_recommended_swt = get_theme_mod('archive_recommended_swt', '1');
 $archive_recommended_limit = intval(get_theme_mod('archive_recommended_limit', '2'));
 $archive_premium_swt = get_theme_mod('archive_premium_swt', '1');
 $archive_premium_limit = intval(get_theme_mod('archive_premium_limit', '6'));
+$archive_sidebar_swt = get_theme_mod('archive_sidebar_swt', '1');
 $term_id = get_queried_object_id();
 $current_page = get_query_var('paged') ? get_query_var('paged') : 1;
 $transient_key = 'apkup_arc_' . $term_id . '_p_' . $current_page;
@@ -58,7 +59,7 @@ $current_cat = get_queried_object();
       <!-- Decorative Gradient Glow background -->
       <div class="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
 
-      <div class="relative z-10 max-w-2xl">
+      <div class="relative z-10">
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">
           <?php echo single_term_title('', false); ?>
         </h1>
@@ -105,8 +106,8 @@ $current_cat = get_queried_object();
     <!-- Main Content Layout Section: Grid/Sections + Sidebar -->
     <div class="flex flex-col lg:flex-row gap-8">
 
-      <!-- Left Column: Filter Controls, Multi-Layout, and Results Grid (Width: 3/4) -->
-      <section class="w-full lg:w-3/4 flex flex-col gap-6">
+      <!-- Left Column: Filter Controls, Multi-Layout, and Results Grid (Width: 3/4 or full-width) -->
+      <section class="<?php echo ($archive_sidebar_swt === '1') ? 'w-full lg:w-3/4' : 'w-full'; ?> flex flex-col gap-6">
 
         <!-- Filter Controls Block -->
         <div class="flex flex-col gap-4">
@@ -288,7 +289,7 @@ $current_cat = get_queried_object();
               </h2>
             </div>
 
-            <div class="flex overflow-x-auto md:grid md:grid-cols-2 gap-4 no-scrollbar pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
+            <div class="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 no-scrollbar pb-3 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 snap-x snap-mandatory">
               <?php
               $recommended_args = [
                   'post_type'      => 'post',
@@ -640,7 +641,7 @@ $current_cat = get_queried_object();
 
         <!-- ==================== VIEW 2: RESULTS CATALOG GRID ==================== -->
         <div id="single-grid-section" class="flex-col gap-6 <?php echo $is_parent_category ? 'hidden' : 'flex'; ?>">
-          <div id="catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+          <div id="catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 <?php echo ($archive_sidebar_swt === '1') ? '' : 'lg:grid-cols-5 xl:grid-cols-6'; ?> gap-4 sm:gap-6">
             <?php
             if (have_posts()) :
                 while (have_posts()) : the_post();
@@ -730,6 +731,7 @@ $current_cat = get_queried_object();
         </div>
       </section>
 
+      <?php if ($archive_sidebar_swt === '1') : ?>
       <!-- Right Column: Sidebar (Width: 1/4) -->
       <aside class="w-full lg:w-1/4 flex flex-col gap-6">
 
@@ -782,6 +784,7 @@ $current_cat = get_queried_object();
           </div>
         </div>
       </aside>
+      <?php endif; ?>
 
     </div>
     <?php archive_bottom_ad('div', 'my-4'); ?>

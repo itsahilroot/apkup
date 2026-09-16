@@ -119,8 +119,9 @@ function apkup_bulk_sync_post_developer_handler() {
         }
     }
 
-    $api_url = 'https://peekanapp.vercel.app/api/all?androidAppId=' . urlencode($package);
-    $response = wp_remote_get($api_url, ['timeout' => 15, 'sslverify' => false]);
+    $post_language = function_exists('at_options') ? at_options('post_language', 'es-ES') : 'es-ES';
+    $api_url = 'https://peekanapp.vercel.app/api/all?androidAppId=' . urlencode($package) . '&lang=' . urlencode($post_language) . '&hl=' . urlencode($post_language);
+    $response = wp_remote_get($api_url, ['timeout' => 15, 'sslverify' => true]);
 
     if (is_wp_error($response)) {
         wp_send_json_error($response->get_error_message());

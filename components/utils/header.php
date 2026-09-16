@@ -103,21 +103,43 @@ $au_ajax_search_swt = get_theme_mod('au_ajax_search_swt', false);
 #header-flex-container.search-active #darkModeToggle {
     opacity: 0;
     visibility: hidden;
-    pointer-events: none;
+}
+/* Prevent CLS for icons and logos */
+header [data-lucide], header i[class*="lucide"] {
+    display: inline-flex;
+    width: 1rem;
+    height: 1rem;
+    min-width: 1rem;
+    min-height: 1rem;
+}
+#header-logo-wrapper img {
+    height: 28px;
+    width: auto;
+    max-height: 28px;
+    object-fit: contain;
+    aspect-ratio: 140 / 28;
 }
 </style>
 
-<header class="sticky top-0 z-50 glass-header shadow-sm transition-all duration-300">
+<header class="sticky top-0 z-50 glass-header shadow-sm transition-all duration-300 min-h-[64px]">
     <!-- Main Header Container -->
-    <div id="header-main-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300">
+    <div id="header-main-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 min-h-[64px]">
         <div class="flex items-center justify-between h-16 relative" id="header-flex-container">
             <!-- Logotipo Oficial APKGSTORE -->
-            <div class="flex items-center gap-3 shrink-0 mr-4 sm:mr-6" id="header-logo-wrapper">
-                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center gap-2">
+            <div class="flex items-center gap-3 shrink-0 mr-4 sm:mr-6 min-w-[130px] min-h-[28px]" id="header-logo-wrapper">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center gap-2" aria-label="<?php echo esc_attr(get_bloginfo('name')); ?> Home">
                     <img src="<?php echo esc_url($logo_light); ?>"
-                        alt="<?php echo esc_attr(get_bloginfo('name')); ?> Logo" class="h-7 w-auto block dark:hidden">
+                        alt="<?php echo esc_attr(get_bloginfo('name')); ?> Logo" 
+                        width="140" height="28" 
+                        loading="eager"
+                        decoding="async"
+                        class="h-7 w-auto block dark:hidden">
                     <img src="<?php echo esc_url($logo_dark); ?>"
-                        alt="<?php echo esc_attr(get_bloginfo('name')); ?> Dark Logo" class="h-7 w-auto hidden dark:block">
+                        alt="<?php echo esc_attr(get_bloginfo('name')); ?> Dark Logo" 
+                        width="140" height="28" 
+                        loading="eager"
+                        decoding="async"
+                        class="h-7 w-auto hidden dark:block">
                 </a>
             </div>
 

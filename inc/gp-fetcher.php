@@ -48,6 +48,24 @@ function apkt_gp_fetcher_callback($post) {
                 style="width: 100%; height: 36px; padding: 0 10px; border-radius: 4px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 13px; box-sizing: border-box;"
             />
         </div>
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px;">
+                <?php _e('Screenshots Limit', 'apktemplates'); ?>
+            </label>
+            <?php $default_limit = at_options('post_screenshots_limit', '5'); ?>
+            <input
+                type="number"
+                id="gp-screenshots-limit"
+                value="<?php echo esc_attr($default_limit); ?>"
+                min="0"
+                max="50"
+                placeholder="5 (0 for all)"
+                style="width: 100%; height: 36px; padding: 0 10px; border-radius: 4px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 13px; box-sizing: border-box;"
+            />
+            <small style="display: block; color: #94a3b8; font-size: 11px; margin-top: 3px;">
+                <?php _e('Type a number (0 to fetch all screenshots).', 'apktemplates'); ?>
+            </small>
+        </div>
         <button
             type="button"
             id="gp-fetch-btn"
@@ -93,6 +111,7 @@ function apkt_gp_fetcher_callback($post) {
                     action: 'apkt_fetch_gplay_data',
                     package: packageVal,
                     post_id: post_id,
+                    screenshots_limit: $('#gp-screenshots-limit').val(),
                     nonce: $('#gp_fetcher_nonce').val()
                 },
                 success: function(res) {
@@ -236,21 +255,27 @@ function apkt_gp_fetcher_callback($post) {
                             }
                         }
 
-                        // Populate Screenshots table (old design compatible)
+                        // Populate Screenshots grid
                         if (app.screenshots && app.screenshots.length > 0) {
-                            $('#screenshots-table tbody tr').not('.empty-screenshot-row').remove();
+                            $('#screenshots-grid').empty();
                             
                             var counter = 1;
                             app.screenshots.forEach(function(url) {
-                                var row = $('.empty-screenshot-row').clone(true);
-                                row.removeClass('empty-screenshot-row').show();
+                                var card = $('#screenshot-template .apkt-screenshot-card').clone(true);
+                                var inputId = 'screenshot-url-' + counter;
                                 
-                                row.find('input').val(url).attr('id', 'screenshot-url-' + counter).attr('name', 'datos_imagenes[]');
-                                row.find('.upload-screenshot-btn').attr('id', 'screenshot-btn-' + counter).attr('data-target', 'screenshot-url-' + counter);
+                                card.find('.screenshot-url-input').val(url).attr('id', inputId).attr('name', 'datos_imagenes[]');
+                                card.find('.upload-screenshot-btn').attr('data-target', inputId);
+                                card.find('.apkt-screenshot-preview img').attr('src', url).show();
+                                card.find('.apkt-screenshot-placeholder').hide();
+                                card.find('.preview-screenshot-btn').show();
                                 
-                                $('#screenshots-table tbody').prepend(row);
+                                $('#screenshots-grid').append(card);
                                 counter++;
                             });
+                            if (typeof window.updateScreenshotIndexes === 'function') {
+                                window.updateScreenshotIndexes();
+                            }
                         }
 
                         // Populate Banner
@@ -313,8 +338,9 @@ function apkt_fetch_gplay_data_handler() {
     
     $post_id = intval($_POST['post_id'] ?? 0);
     
-    $api_url = 'https://peekanapp.vercel.app/api/all?androidAppId=' . urlencode($package_id);
-    $response = wp_remote_get($api_url, ['timeout' => 15, 'sslverify' => false]);
+    $post_language = at_options('post_language', 'es-ES');
+    $api_url = 'https://peekanapp.vercel.app/api/all?androidAppId=' . urlencode($package_id) . '&lang=' . urlencode($post_language) . '&hl=' . urlencode($post_language);
+    $response = wp_remote_get($api_url, ['timeout' => 15, 'sslverify' => true]);
     
     if (is_wp_error($response)) {
         wp_send_json_error('Failed to fetch data from API: ' . $response->get_error_message());
@@ -354,7 +380,25 @@ function apkt_fetch_gplay_data_handler() {
             wp_set_object_terms($post_id, intval($term_id), 'developer', false);
         }
     }
+
+    // Save tags (genres) to post
+    $tags = [];
+    if (!empty($playstore['genres']) && is_array($playstore['genres'])) {
+        $tags = $playstore['genres'];
+    } elseif (!empty($playstore['genre'])) {
+        $tags[] = $playstore['genre'];
+    }
     
+    if ($post_id && !empty($tags)) {
+        wp_set_post_tags($post_id, $tags, false);
+    }
+    
+    $screenshots_raw = $playstore['screenshots'] ?? [];
+    $screenshots_limit = isset($_POST['screenshots_limit']) ? intval($_POST['screenshots_limit']) : intval(at_options('post_screenshots_limit', 5));
+    if ($screenshots_limit > 0 && !empty($screenshots_raw)) {
+        $screenshots_raw = array_slice($screenshots_raw, 0, $screenshots_limit);
+    }
+
     // Map new API data format to the format expected by the frontend JavaScript
     $data = [
         'name'              => $playstore['title'] ?? '',
@@ -364,7 +408,7 @@ function apkt_fetch_gplay_data_handler() {
         'rating'            => $playstore['scoreText'] ?? (isset($playstore['score']) ? round($playstore['score'], 1) : ''),
         'noOfUsersRated'    => $playstore['ratings'] ?? '',
         'category'          => $playstore['genreId'] ?? $playstore['genre'] ?? '',
-        'screenshots'       => $playstore['screenshots'] ?? [],
+        'screenshots'       => $screenshots_raw,
         'banner'            => $playstore['headerImage'] ?? '',
         'logo'              => $playstore['icon'] ?? '',
         'whats_new'         => $playstore['recentChanges'] ?? '',
@@ -385,9 +429,66 @@ function apkt_fetch_gplay_data_handler() {
             wp_delete_attachment($old_thumbnail_id, true);
         }
 
-        $attachment_id = apkt_sideload_image_to_media($icon_url, $post_id, $app_title);
+        $attachment_id = apkt_sideload_image_to_media($icon_url, $post_id, $app_title, 'icon');
         if ($attachment_id) {
             set_post_thumbnail($post_id, $attachment_id);
+        }
+    }
+
+    // Download and sideload banner
+    $banner_url = $data['banner'] ?? '';
+    if ($post_id && !empty($banner_url)) {
+        // Delete old banner image from media library
+        $old_banner_url = get_post_meta($post_id, 'wp_poster_GP', true);
+        if ($old_banner_url) {
+            $old_banner_id = attachment_url_to_postid($old_banner_url);
+            if ($old_banner_id) {
+                wp_delete_attachment($old_banner_id, true);
+            }
+        }
+
+        $banner_attachment_id = apkt_sideload_image_to_media($banner_url, $post_id, $app_title, 'banner');
+        if ($banner_attachment_id) {
+            $banner_attachment_url = wp_get_attachment_url($banner_attachment_id);
+            update_post_meta($post_id, 'wp_poster_GP', $banner_attachment_url);
+            $data['banner'] = $banner_attachment_url;
+        }
+    }
+
+    // Download and sideload screenshots
+    $screenshots = $data['screenshots'] ?? [];
+    if ($post_id && !empty($screenshots)) {
+        // Delete old screenshots from media library
+        $old_screenshots = get_post_meta($post_id, 'datos_imagenes', true);
+        if (is_array($old_screenshots)) {
+            foreach ($old_screenshots as $url) {
+                $old_ss_id = attachment_url_to_postid($url);
+                if ($old_ss_id) {
+                    wp_delete_attachment($old_ss_id, true);
+                }
+            }
+        }
+
+        $new_screenshot_urls = [];
+        $import_screenshots = at_options('import_screenshots', false);
+        $counter = 1;
+        foreach ($screenshots as $ss_url) {
+            if ($import_screenshots) {
+                $ss_id = apkt_sideload_image_to_media($ss_url, $post_id, $app_title, 'screenshot-' . $counter);
+                if ($ss_id) {
+                    $new_screenshot_urls[] = wp_get_attachment_url($ss_id);
+                } else {
+                    $new_screenshot_urls[] = $ss_url;
+                }
+            } else {
+                $new_screenshot_urls[] = $ss_url;
+            }
+            $counter++;
+        }
+
+        if (!empty($new_screenshot_urls)) {
+            update_post_meta($post_id, 'datos_imagenes', $new_screenshot_urls);
+            $data['screenshots'] = $new_screenshot_urls;
         }
     }
     
@@ -400,7 +501,7 @@ function apkt_fetch_gplay_data_handler() {
 }
 
 // Sideload Image to Media Library Helper
-function apkt_sideload_image_to_media($url, $post_id, $app_title = '') {
+function apkt_sideload_image_to_media($url, $post_id, $app_title = '', $type = 'icon') {
     if (empty($url)) return false;
     
     if (!class_exists('Scraper')) {
@@ -448,7 +549,7 @@ function apkt_sideload_image_to_media($url, $post_id, $app_title = '') {
     $clean_title = function_exists('apktemplates_clean') ? apktemplates_clean($title_to_use) : $title_to_use;
     $image_name  = sanitize_title_with_dashes($clean_title);
     $unique_suffix   = substr(time() . mt_rand(1000, 9999), -8);
-    $image_full_name = "{$image_name}-icon-{$unique_suffix}.{$final_format}";
+    $image_full_name = "{$image_name}-{$type}-{$unique_suffix}.{$final_format}";
     $image_path      = trailingslashit($upload_dir['path']) . $image_full_name;
 
     if (file_put_contents($image_path, $image_content) === false) {

@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
 
     $('#add-download-item').on('click', function () {
         var row = $('#download-item-template .apkt-repeater-item').clone(true);
-        $('#download-items').append(row);
+        $('#download-items').prepend(row);
         return false;
     });
 

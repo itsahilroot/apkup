@@ -3,8 +3,8 @@ function home_top_ad($elem = 'section', $class = '')
 {
     $is_home_top_ad = get_theme_mod("home_top_ads_swt", false);
     $home_top_ad_code = get_theme_mod("home_top_ads");
-    if ($is_home_top_ad) {
-        echo '<' . $elem . ' class="relative mb-12 w-full h-auto overflow-hidden text-center ' . $class . '">';
+    if ($is_home_top_ad && !empty($home_top_ad_code)) {
+        echo '<' . $elem . ' class="relative my-6 w-full min-h-[90px] md:min-h-[250px] flex items-center justify-center overflow-hidden text-center ' . $class . '">';
         echo $home_top_ad_code;
         echo '</' . $elem . '>';
     }
@@ -14,8 +14,8 @@ function home_bottom_ad($elem = 'section', $class = '')
 {
     $is_home_btm_ad = get_theme_mod("home_botm_ads_swt", false);
     $home_btm_ad_code = get_theme_mod("home_botm_ads");
-    if ($is_home_btm_ad) {
-        echo '<' . $elem . ' class="relative w-full h-auto overflow-hidden text-center ' . $class . '">';
+    if ($is_home_btm_ad && !empty($home_btm_ad_code)) {
+        echo '<' . $elem . ' class="relative my-6 w-full min-h-[90px] md:min-h-[250px] flex items-center justify-center overflow-hidden text-center ' . $class . '">';
         echo $home_btm_ad_code;
         echo '</' . $elem . '>';
     }
@@ -92,7 +92,7 @@ function download_bottom_ad($elem = 'section', $class = '')
     $is_download_bottom_ad = get_theme_mod('download_botm_ads_swt', false);
     $download_bottom_ad_code = get_theme_mod('download_botm_ads');
     if ($is_download_bottom_ad) {
-        echo '<' . $elem . ' class="relative mb-12 w-full h-auto overflow-hidden text-center ' . $class . '">';
+        echo '<' . $elem . ' class="relative w-full h-auto overflow-hidden text-center ' . $class . '">';
         echo $download_bottom_ad_code;
         echo '</' . $elem . '>';
     }

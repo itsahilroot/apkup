@@ -11,8 +11,26 @@ add_filter( 'rank_math/frontend/robots', function( $robots ) {
 	// Match /download/0/ OR /download/any-number/
 	if ( strpos( $request_uri, '/download/' ) !== false ) {
 		$robots['index']  = 'noindex';
-		$robots['follow'] = 'nofollow';
+		$robots['follow'] = 'follow';
 	}
 
+	return $robots;
+});
+
+// Support Yoast SEO robots tag
+add_filter( 'wpseo_robots', function( $robots ) {
+	if ( strpos( $_SERVER['REQUEST_URI'], '/download/' ) !== false ) {
+		return 'noindex, follow';
+	}
+	return $robots;
+});
+
+// Support WordPress Core robots tag
+add_filter( 'wp_robots', function( $robots ) {
+	if ( strpos( $_SERVER['REQUEST_URI'], '/download/' ) !== false ) {
+		$robots['noindex'] = true;
+		$robots['follow']  = true;
+		unset($robots['nofollow']);
+	}
 	return $robots;
 });

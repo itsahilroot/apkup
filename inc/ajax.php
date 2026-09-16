@@ -112,19 +112,27 @@ add_action('wp_ajax_apkt_mediafire_direct_link', 'apkt_mediafire_direct_link_han
 add_action('wp_ajax_nopriv_apkt_mediafire_direct_link', 'apkt_mediafire_direct_link_handler');
 
 function apkt_mediafire_direct_link_handler() {
+    check_ajax_referer('apkup_nonce', 'nonce');
+
     $url = esc_url_raw($_POST['url'] ?? '');
 
     if (!$url) {
         wp_send_json_error('No URL provided.');
     }
 
-    if (!preg_match('/mediafire\.com/', $url)) {
+    $parsed_url = wp_parse_url($url);
+    if (!isset($parsed_url['host'])) {
+        wp_send_json_error('Invalid URL.');
+    }
+
+    $host = strtolower($parsed_url['host']);
+    if ($host !== 'mediafire.com' && $host !== 'www.mediafire.com') {
         wp_send_json_error('Not a MediaFire URL.');
     }
 
     $response = wp_remote_get($url, [
         'timeout'   => 15,
-        'sslverify' => false,
+        'sslverify' => true,
         'headers'   => [
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         ]

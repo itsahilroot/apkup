@@ -381,6 +381,34 @@ function download_links_callback($post)
             <?php _e('Add Link', 'apktemplates'); ?>
         </button>
     </div>
+
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // Ensure Add Link always prepends to the top
+        $(document).off('click', '#add-download-item').on('click', '#add-download-item', function(e) {
+            e.preventDefault();
+            var row = $('#download-item-template .apkt-repeater-item').clone(true);
+            $('#download-items').prepend(row);
+            row.find('input').first().focus();
+            return false;
+        });
+
+        // Ensure Remove works cleanly
+        $(document).off('click', '.remove-download-item').on('click', '.remove-download-item', function(e) {
+            e.preventDefault();
+            $(this).closest('.apkt-repeater-item').remove();
+            return false;
+        });
+
+        if ($.fn.sortable) {
+            $('#download-items').sortable({
+                items: '.apkt-repeater-item',
+                cursor: 'move',
+                handle: '.apkt-drag-handle',
+            });
+        }
+    });
+    </script>
     <?php
 }
 
@@ -450,6 +478,9 @@ function screenshots_callback($post)
     wp_nonce_field('screenshots_nonce', 'screenshots_nonce');
     ?>
     <div class="apkt-screenshots-container">
+        <div class="apkt-screenshots-header" style="margin-bottom: 15px; font-weight: bold; font-size: 14px; color: #475569;">
+            Total Screenshots: <span id="screenshots-total-count"><?php echo is_array($datos_imagenes) ? count($datos_imagenes) : 0; ?></span>
+        </div>
         <div id="screenshots-grid" class="apkt-screenshots-grid">
             <?php 
             $counter = 1;
@@ -458,16 +489,20 @@ function screenshots_callback($post)
                     if (empty($url)) continue;
                     ?>
                     <div class="apkt-screenshot-card">
+                        <div class="apkt-screenshot-index" style="font-weight: bold; font-size: 14px; color: #64748b; min-width: 25px; text-align: center;">
+                            <?php echo $counter; ?>
+                        </div>
                         <div class="apkt-screenshot-preview">
                             <img src="<?php echo esc_url($url); ?>" alt="Screenshot" />
                             <div class="apkt-screenshot-placeholder" style="display: none;">
                                 <span class="dashicons dashicons-format-image"></span>
                             </div>
                         </div>
-                        <div class="apkt-screenshot-inputs">
+                        <div class="apkt-screenshot-inputs-row">
                             <input type="text" id="screenshot-url-<?php echo $counter; ?>" name="datos_imagenes[]" value="<?php echo esc_url($url); ?>" class="screenshot-url-input apkt-field-input" placeholder="Image URL" />
-                            <div class="apkt-screenshot-actions">
+                            <div class="apkt-screenshot-actions-row">
                                 <button type="button" class="upload-screenshot-btn button button-secondary" data-target="screenshot-url-<?php echo $counter; ?>"><?php _e('Upload', 'apktemplates'); ?></button>
+                                <button type="button" class="preview-screenshot-btn button button-secondary"><?php _e('Preview', 'apktemplates'); ?></button>
                                 <button type="button" class="remove-screenshot-btn button button-link-destructive"><?php _e('Remove', 'apktemplates'); ?></button>
                             </div>
                         </div>
@@ -480,16 +515,20 @@ function screenshots_callback($post)
             if ($counter === 1) :
                 ?>
                 <div class="apkt-screenshot-card">
+                    <div class="apkt-screenshot-index" style="font-weight: bold; font-size: 14px; color: #64748b; min-width: 25px; text-align: center;">
+                        1
+                    </div>
                     <div class="apkt-screenshot-preview">
                         <img src="" alt="Screenshot" style="display: none;" />
                         <div class="apkt-screenshot-placeholder">
                             <span class="dashicons dashicons-format-image"></span>
                         </div>
                     </div>
-                    <div class="apkt-screenshot-inputs">
+                    <div class="apkt-screenshot-inputs-row">
                         <input type="text" id="screenshot-url-1" name="datos_imagenes[]" value="" class="screenshot-url-input apkt-field-input" placeholder="Image URL" />
-                        <div class="apkt-screenshot-actions">
+                        <div class="apkt-screenshot-actions-row">
                             <button type="button" class="upload-screenshot-btn button button-secondary" data-target="screenshot-url-1"><?php _e('Upload', 'apktemplates'); ?></button>
+                            <button type="button" class="preview-screenshot-btn button button-secondary" style="display: none;"><?php _e('Preview', 'apktemplates'); ?></button>
                             <button type="button" class="remove-screenshot-btn button button-link-destructive"><?php _e('Remove', 'apktemplates'); ?></button>
                         </div>
                     </div>
@@ -503,16 +542,20 @@ function screenshots_callback($post)
         <!-- Template for clone -->
         <div id="screenshot-template" style="display: none;">
             <div class="apkt-screenshot-card">
+                <div class="apkt-screenshot-index" style="font-weight: bold; font-size: 14px; color: #64748b; min-width: 25px; text-align: center;">
+                    0
+                </div>
                 <div class="apkt-screenshot-preview">
                     <img src="" alt="Screenshot" style="display: none;" />
                     <div class="apkt-screenshot-placeholder">
                         <span class="dashicons dashicons-format-image"></span>
                     </div>
                 </div>
-                <div class="apkt-screenshot-inputs">
+                <div class="apkt-screenshot-inputs-row">
                     <input type="text" class="screenshot-url-input apkt-field-input" placeholder="Image URL" />
-                    <div class="apkt-screenshot-actions">
+                    <div class="apkt-screenshot-actions-row">
                         <button type="button" class="upload-screenshot-btn button button-secondary"><?php _e('Upload', 'apktemplates'); ?></button>
+                        <button type="button" class="preview-screenshot-btn button button-secondary" style="display: none;"><?php _e('Preview', 'apktemplates'); ?></button>
                         <button type="button" class="remove-screenshot-btn button button-link-destructive"><?php _e('Remove', 'apktemplates'); ?></button>
                     </div>
                 </div>
@@ -523,6 +566,232 @@ function screenshots_callback($post)
             <?php _e('Add Screenshot', 'apktemplates'); ?>
         </button>
     </div>
+
+    <style>
+        .apkt-screenshots-grid {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+        }
+        .apkt-screenshot-card {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 16px !important;
+            background: #fff !important;
+            border: 1px solid #e5e5e5 !important;
+            border-radius: 10px !important;
+            padding: 12px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+        }
+        .apkt-screenshot-preview {
+            width: 60px !important;
+            height: 60px !important;
+            flex-shrink: 0 !important;
+            border-radius: 6px !important;
+            background: #f3f3f3 !important;
+            overflow: hidden !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 1px dashed #dcdcdc !important;
+            box-sizing: border-box !important;
+            position: relative !important;
+            cursor: pointer !important;
+        }
+        .apkt-screenshot-preview img {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: cover !important;
+        }
+        .apkt-screenshot-inputs-row {
+            display: flex !important;
+            flex: 1 !important;
+            gap: 12px !important;
+            align-items: center !important;
+            flex-wrap: wrap !important;
+        }
+        .apkt-screenshot-inputs-row input.screenshot-url-input {
+            flex: 1 !important;
+            min-width: 200px !important;
+            height: 36px !important;
+        }
+        .apkt-screenshot-actions-row {
+            display: flex !important;
+            gap: 8px !important;
+            align-items: center !important;
+        }
+        .apkt-screenshot-actions-row .button {
+            height: 32px !important;
+            line-height: 30px !important;
+            padding: 0 12px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+        }
+        .apkt-screenshot-actions-row .remove-screenshot-btn {
+            color: #b32d2e !important;
+            cursor: pointer !important;
+            background: none !important;
+            border: none !important;
+            padding: 0 8px !important;
+            font-size: 12px !important;
+            text-decoration: underline !important;
+        }
+        .apkt-screenshot-actions-row .remove-screenshot-btn:hover {
+            color: #d63638 !important;
+        }
+
+        /* Modal styles */
+        .apkt-modal {
+            position: fixed;
+            z-index: 1000000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .apkt-modal-backdrop {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .apkt-modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 80%;
+            max-height: 90%;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000001;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .apkt-modal-close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .apkt-modal-close:hover {
+            color: #333;
+        }
+    </style>
+
+    <div id="apkt-screenshot-modal" class="apkt-modal" style="display: none;">
+        <div class="apkt-modal-backdrop"></div>
+        <div class="apkt-modal-content">
+            <span class="apkt-modal-close">&times;</span>
+            <img id="apkt-modal-img" src="" alt="Screenshot Preview" style="max-width: 100%; max-height: 80vh; display: block; margin: 0 auto; border-radius: 4px;" />
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        // Unbind standard grid event handlers to prevent conflict
+        $('#add-screenshot-btn').off('click');
+        $('#screenshots-grid').off('click', '.upload-screenshot-btn');
+        $('#screenshots-grid').off('click', '.remove-screenshot-btn');
+        $('#screenshots-grid').off('change keyup', '.screenshot-url-input');
+
+        function updateScreenshotIndexes() {
+            var total = 0;
+            $('#screenshots-grid .apkt-screenshot-card').each(function(index) {
+                $(this).find('.apkt-screenshot-index').text(index + 1);
+                total++;
+            });
+            $('#screenshots-total-count').text(total);
+        }
+        window.updateScreenshotIndexes = updateScreenshotIndexes;
+
+        // Run on load to set initial count/indexes
+        updateScreenshotIndexes();
+
+        // Bind new row-based handlers
+        $('#add-screenshot-btn').on('click', function() {
+            var counter = $('#screenshots-grid .apkt-screenshot-card').length + 1;
+            var card = $('#screenshot-template .apkt-screenshot-card').clone(true);
+            var inputId = 'screenshot-url-' + counter;
+            card.find('.screenshot-url-input').attr('id', inputId).attr('name', 'datos_imagenes[]');
+            card.find('.upload-screenshot-btn').attr('data-target', inputId);
+            $('#screenshots-grid').append(card);
+            updateScreenshotIndexes();
+            return false;
+        });
+
+        $('#screenshots-grid').on('click', '.remove-screenshot-btn', function() {
+            $(this).closest('.apkt-screenshot-card').remove();
+            updateScreenshotIndexes();
+            return false;
+        });
+
+        // Handle text input updates
+        $('#screenshots-grid').on('change keyup', '.screenshot-url-input', function() {
+            var val = $(this).val();
+            var card = $(this).closest('.apkt-screenshot-card');
+            if (val) {
+                card.find('.apkt-screenshot-preview img').attr('src', val).show();
+                card.find('.apkt-screenshot-placeholder').hide();
+                card.find('.preview-screenshot-btn').show();
+            } else {
+                card.find('.apkt-screenshot-preview img').hide();
+                card.find('.apkt-screenshot-placeholder').show();
+                card.find('.preview-screenshot-btn').hide();
+            }
+        });
+
+        // Handle media library upload selection
+        $('#screenshots-grid').on('click', '.upload-screenshot-btn', function() {
+            var button = $(this);
+            var target_field_id = button.data('target');
+            var custom_uploader = wp.media({
+                title: 'Choose Image',
+                button: {
+                    text: 'Choose Image'
+                },
+                multiple: false
+            });
+            custom_uploader.on('select', function() {
+                var attachment = custom_uploader.state().get('selection').first().toJSON();
+                var input = $('#' + target_field_id);
+                input.val(attachment.url);
+                var card = input.closest('.apkt-screenshot-card');
+                card.find('.apkt-screenshot-preview img').attr('src', attachment.url).show();
+                card.find('.apkt-screenshot-placeholder').hide();
+                card.find('.preview-screenshot-btn').show();
+            });
+            custom_uploader.open();
+        });
+
+        // Modal Preview handlers
+        $(document).on('click', '.preview-screenshot-btn, .apkt-screenshot-preview', function(e) {
+            var card = $(this).closest('.apkt-screenshot-card');
+            var imgUrl = card.find('.screenshot-url-input').val();
+            if (imgUrl) {
+                $('#apkt-modal-img').attr('src', imgUrl);
+                $('#apkt-screenshot-modal').fadeIn(200);
+            }
+        });
+
+        $(document).on('click', '.apkt-modal-close, .apkt-modal-backdrop', function() {
+            $('#apkt-screenshot-modal').fadeOut(200);
+        });
+    });
+    </script>
     <?php
 }
 

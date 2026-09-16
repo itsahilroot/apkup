@@ -36,7 +36,7 @@ $app_banner = get_post_meta($post_id, 'wp_poster_GP', true);
 <?php endif; ?>
 
     <!-- Main Premium Card Box -->
-    <div class="relative w-full max-w-2xl bg-white/80 dark:bg-[#0b0f19]/85 backdrop-blur-2xl rounded-[32px] p-8 sm:p-10 border border-slate-200/50 dark:border-white/5 shadow-[0_30px_100px_rgba(0,0,0,0.06)] overflow-hidden mb-10">
+    <div class="relative w-full max-w-2xl bg-white/80 dark:bg-[#0b0f19]/85 backdrop-blur-2xl rounded-[32px] p-8 sm:p-10 border border-slate-200/50 dark:border-white/5 shadow-[0_30px_100px_rgba(0,0,0,0.06)] overflow-hidden">
         
         <!-- Glowing Ambient Backdrops -->
         <div class="absolute -top-32 -left-32 w-64 h-64 rounded-full bg-primary/20 blur-[90px] pointer-events-none animate-pulse"></div>
@@ -191,7 +191,7 @@ $app_banner = get_post_meta($post_id, 'wp_poster_GP', true);
     </div>
 
     <!-- Ad Slot bottom -->
-    <div class="mb-10 w-full text-center">
+    <div class="mb-2 w-full text-center">
         <?php download_bottom_ad('div'); ?>
     </div>
 
@@ -346,7 +346,7 @@ $app_banner = get_post_meta($post_id, 'wp_poster_GP', true);
     ?>
 
     <!-- Elegant Thank You Section -->
-    <div class="mt-14 mb-4 text-center animate-fade-in-up">
+    <div class="text-center animate-fade-in-up">
         <div class="inline-flex items-center gap-2 px-4.5 py-2 rounded-full bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-white/5 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">

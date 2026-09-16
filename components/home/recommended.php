@@ -141,6 +141,7 @@ $rec_title = get_theme_mod('au_home_recommended_title', 'Top Charts: Los Más De
     ?>
         <!-- Game Card <?php echo esc_html($serial); ?> -->
         <a href="<?php echo esc_url($app_url); ?>"
+          aria-label="<?php echo esc_attr($app_name); ?>"
           class="relative flex items-center gap-3.5 p-3.5 pt-4.5 rounded-[24px] bg-gradient-to-br from-white/95 to-slate-50/90 dark:from-slate-900/65 dark:to-slate-950/80 border border-blue-200/80 dark:border-blue-800/60 shadow-[0_8px_30px_rgba(0,0,0,0.02)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.15)] hover:shadow-[0_20px_40px_rgba(26,115,232,0.06)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)] hover:border-blue-400 dark:hover:border-blue-600/70 transition-all duration-300 ease-out flex-shrink-0 w-[310px] snap-center md:w-full md:shrink group overflow-visible post-card premium-shimmer-card">
           
           <!-- Top Floating Highlight Ribbon/Badge -->
@@ -158,8 +159,8 @@ $rec_title = get_theme_mod('au_home_recommended_title', 'Top Charts: Los Más De
           <!-- App Icon wrapper with verified tick -->
           <div class="relative shrink-0 rounded-[18px]">
             <!-- App Icon with border -->
-            <div class="w-13 h-13 rounded-[18px] overflow-hidden border border-emerald-500/30 dark:border-emerald-500/20 ring-4 ring-emerald-500/5 dark:ring-emerald-500/10">
-              <img class="w-full h-full object-cover" src="<?php echo esc_url($app_logo); ?>" alt="<?php echo esc_attr($app_name); ?>">
+            <div class="w-13 h-13 rounded-[18px] overflow-hidden border border-emerald-500/30 dark:border-emerald-500/20 ring-4 ring-emerald-500/5 dark:ring-emerald-500/10 bg-slate-100 dark:bg-slate-800">
+              <img class="w-full h-full object-cover aspect-square bg-slate-100 dark:bg-slate-800" src="<?php echo esc_url($app_logo); ?>" alt="<?php echo esc_attr($app_name); ?> Icon" width="52" height="52" loading="lazy" decoding="async">
             </div>
             <!-- Verified Tick Badge -->
             <span class="absolute bottom-[-2px] right-[-2px] bg-blue-500 text-white rounded-full p-0.5 border border-white dark:border-slate-900 shadow-sm flex items-center justify-center w-4.5 h-4.5 z-10">

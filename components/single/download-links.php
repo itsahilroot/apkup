@@ -66,7 +66,7 @@ if (empty($app_logo_url)) {
           <i data-lucide="download-cloud" class="w-6 h-6"></i>
         </div>
         <div class="space-y-1">
-          <span class="font-bold text-slate-900 dark:text-white text-base">Enlaces de Descarga Seguros</span>
+          <h2 class="font-bold text-slate-900 dark:text-white text-base">Enlaces de Descarga Seguros</h2>
           <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
             Seleccione el servidor de su preferencia para descargar <strong class="text-slate-700 dark:text-slate-200"><?php echo esc_html($app_name); ?></strong>. Todos nuestros archivos han sido validados con VirusTotal.
           </p>

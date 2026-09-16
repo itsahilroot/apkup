@@ -3,20 +3,76 @@
 
 function at_gp_create_post()
 {
-    $nonce = sanitize_text_field($_POST['nonce']);
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
 
     if (!wp_verify_nonce($nonce, 'gplay_nonce')) {
-        return json_encode([
+        wp_send_json([
             'status' => 'error',
             'data' => [
                 'message' => 'Khatam! Tata! Good Bye!',
             ],
         ]);
+        exit;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json([
+            'status' => 'error',
+            'data' => [
+                'message' => 'Permission denied.',
+            ],
+        ]);
+        exit;
     }
 
     $apk_url = filter_input(INPUT_POST, 'gplay_url', FILTER_SANITIZE_URL);
+
+    // Parse package ID and check for duplicate before starting extraction/import
+    $package_id = '';
+    $url_parts = parse_url($apk_url);
+    if (isset($url_parts['query'])) {
+        parse_str($url_parts['query'], $query_params);
+        if (!empty($query_params['id'])) {
+            $package_id = sanitize_text_field($query_params['id']);
+        }
+    }
+    if (empty($package_id) && preg_match('/id=([a-zA-Z0-9._\-]+)/', $apk_url, $matches)) {
+        $package_id = sanitize_text_field($matches[1]);
+    }
+
+    if (!empty($package_id)) {
+        $existing_posts = get_posts([
+            'post_type' => 'post',
+            'post_status' => 'any',
+            'meta_query' => [
+                [
+                    'key' => 'wp_GP_ID',
+                    'value' => $package_id,
+                    'compare' => '=',
+                ]
+            ],
+            'posts_per_page' => 1,
+        ]);
+        if (!empty($existing_posts)) {
+            $existing_post = $existing_posts[0];
+            wp_send_json([
+                'status' => 'error',
+                'data' => [
+                    'message' => sprintf(
+                        __('This app already exists. <a href="%s" target="_blank">Edit Post</a> | <a href="%s" target="_blank">View Post</a>', 'apktemplates'),
+                        esc_url(get_edit_post_link($existing_post->ID)),
+                        esc_url(get_permalink($existing_post->ID))
+                    ),
+                ],
+            ]);
+            exit;
+        }
+    }
+
     $is_advanced_options = filter_input(INPUT_POST, 'is_advanced_options', FILTER_VALIDATE_BOOLEAN);
     update_option('at_is_advanced_options', $is_advanced_options) || add_option('at_is_advanced_options', $is_advanced_options);
+
+    $post_language = sanitize_text_field($_POST['post_language'] ?? at_options('post_language', 'es-ES'));
 
     if ($is_advanced_options) {
         $post_status            = sanitize_text_field($_POST['post_status'] ?? 'publish');
@@ -26,8 +82,8 @@ function at_gp_create_post()
         $post_thumbnail_format  = sanitize_text_field($_POST['post_thumbnail_format'] ?? 'jpg');
         $post_thumbnail_quality = sanitize_text_field($_POST['post_thumbnail_quality'] ?? '80');
         $import_screenshots     = filter_var($_POST['import_screenshots'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $post_screenshots_limit = sanitize_text_field($_POST['post_screenshots_limit'] ?? '5');
         $post_screenshots_format = sanitize_text_field($_POST['post_screenshots_format'] ?? 'jpg');
-        $post_language          = sanitize_text_field($_POST['post_language'] ?? 'en');
 
         update_option('at_post_status', $post_status);
         update_option('at_post_title_start', $post_title_start);
@@ -36,15 +92,15 @@ function at_gp_create_post()
         update_option('at_post_thumbnail_format', $post_thumbnail_format);
         update_option('at_post_thumbnail_quality', $post_thumbnail_quality);
         update_option('at_import_screenshots', $import_screenshots);
+        update_option('at_post_screenshots_limit', $post_screenshots_limit);
         update_option('at_post_screenshots_format', $post_screenshots_format);
         update_option('at_post_language', $post_language);
     }
 
-    $apk_data = new AT_Google_Play();
+    $apk_data = new AT_Google_Play($post_language);
     $response = $apk_data->extract($apk_url);
-    $response = json_encode($response);
 
-    echo $response;
+    wp_send_json($response);
     exit;
 }
 add_action('wp_ajax_at_gp_create_post', 'at_gp_create_post');
@@ -56,6 +112,11 @@ function at_gp_search_posts()
 
     if (!wp_verify_nonce($nonce, 'gplay_nonce')) {
         wp_send_json_error(['message' => 'Invalid request.']);
+        exit;
+    }
+
+    if (!current_user_can('edit_posts')) {
+        wp_send_json_error(['message' => 'Permission denied.']);
         exit;
     }
 
@@ -82,15 +143,26 @@ add_action('wp_ajax_at_gp_search_posts', 'at_gp_search_posts');
 
 function save_apktemplates_settings()
 {
-    $nonce = sanitize_text_field($_POST['nonce']);
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
 
     if (!wp_verify_nonce($nonce, 'panel_nonce')) {
-        return json_encode([
+        wp_send_json([
             'status' => 'error',
             'data' => [
                 'message' => 'Khatam! Tata! Good Bye!',
             ],
         ]);
+        exit;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json([
+            'status' => 'error',
+            'data' => [
+                'message' => 'Permission denied.',
+            ],
+        ]);
+        exit;
     }
 
     $is_mod_title = $_POST['is_mod_title'];
@@ -127,20 +199,30 @@ function save_apktemplates_settings()
 }
 
 add_action('wp_ajax_save_apktemplates_settings', 'save_apktemplates_settings');
-add_action('wp_ajax_nopriv_save_apktemplates_settings', 'save_apktemplates_settings');
 
 /* Panel Ajax */
 function at_search_term()
 {
-    $nonce = sanitize_text_field($_POST['nonce']);
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
 
     if (!wp_verify_nonce($nonce, 'panel_nonce')) {
-        return json_encode([
+        wp_send_json([
             'status' => 'error',
             'data' => [
                 'message' => 'Khatam! Tata! Good Bye!',
             ],
         ]);
+        exit;
+    }
+
+    if (!current_user_can('edit_posts')) {
+        wp_send_json([
+            'status' => 'error',
+            'data' => [
+                'message' => 'Permission denied.',
+            ],
+        ]);
+        exit;
     }
 
     $query = $_POST['query'];
@@ -170,15 +252,26 @@ add_action('wp_ajax_at_search_term', 'at_search_term');
 
 function at_search_post()
 {
-    $nonce = sanitize_text_field($_POST['nonce']);
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
 
     if (!wp_verify_nonce($nonce, 'panel_nonce')) {
-        return json_encode([
+        wp_send_json([
             'status' => 'error',
             'data' => [
                 'message' => 'Khatam! Tata! Good Bye!',
             ],
         ]);
+        exit;
+    }
+
+    if (!current_user_can('edit_posts')) {
+        wp_send_json([
+            'status' => 'error',
+            'data' => [
+                'message' => 'Permission denied.',
+            ],
+        ]);
+        exit;
     }
 
     $query = $_POST['query'];
@@ -207,22 +300,56 @@ function at_search_post()
 }
 add_action('wp_ajax_at_search_post', 'at_search_post');
 
+function apkt_delete_files($target) {
+    if (empty($target)) {
+        return;
+    }
+    $upload_dir = wp_upload_dir();
+    $base_upload_dir = realpath($upload_dir['basedir']);
+    $real_target = realpath($target);
+    if (!$real_target || strpos($real_target, $base_upload_dir) !== 0) {
+        return;
+    }
+    if (is_dir($real_target)) {
+        $files = glob($real_target . '/*', GLOB_MARK);
+        foreach ($files as $file) {
+            apkt_delete_files($file);
+        }
+        @rmdir($real_target);
+    } elseif (is_file($real_target)) {
+        @unlink($real_target);
+    }
+}
+
 function apkt_delete_folder_action()
 {
-    $nonce = sanitize_text_field($_POST['nonce']);
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
 
     if (!wp_verify_nonce($nonce, 'panel_nonce')) {
-        return json_encode([
+        wp_send_json([
             'status' => 'error',
             'data' => [
                 'message' => 'Khatam! Tata! Good Bye!',
             ],
         ]);
+        exit;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json([
+            'status' => 'error',
+            'data' => [
+                'message' => 'Permission denied.',
+            ],
+        ]);
+        exit;
     }
 
     $upload_dir = wp_upload_dir();
-    $cache_dir = $upload_dir['apkt_cache_dir'];
-    apkt_delete_files($cache_dir);
+    $cache_dir = trailingslashit($upload_dir['basedir']) . 'apkt_cache';
+    if (file_exists($cache_dir)) {
+        apkt_delete_files($cache_dir);
+    }
     wp_send_json_success('Cache cleared :)');
     exit;
 }
@@ -232,15 +359,26 @@ add_action('wp_ajax_apkt_delete_folder_action', 'apkt_delete_folder_action');
 
 function save_at_customization()
 {
-    $nonce = sanitize_text_field($_POST['nonce']);
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
 
     if (!wp_verify_nonce($nonce, 'panel_nonce')) {
-        return json_encode([
+        wp_send_json([
             'status' => 'error',
             'data' => [
                 'message' => 'Khatam! Tata! Good Bye!',
             ],
         ]);
+        exit;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json([
+            'status' => 'error',
+            'data' => [
+                'message' => 'Permission denied.',
+            ],
+        ]);
+        exit;
     }
 
     $data = $_POST['data'];
@@ -353,7 +491,31 @@ function save_at_customization()
         $new_data[$main_name] = $values;
     }
 
+    $sensitive_code_fields = [
+        'au_head_code',
+        'au_footer_code',
+        'home_top_ads',
+        'home_botm_ads',
+        'single_top_ads',
+        'single_botm_ads',
+        'archive_top_ads',
+        'archive_botm_ads',
+        'download_top_ads',
+        'download_botm_ads'
+    ];
+
     foreach ($new_data as $main_name => $values) {
+        if (in_array($main_name, $sensitive_code_fields)) {
+            if (!current_user_can('unfiltered_html')) {
+                wp_send_json([
+                    'status' => 'error',
+                    'data' => [
+                        'message' => 'Permission denied: unfiltered_html capability is required to modify header, footer, or advertisement code fields.',
+                    ],
+                ]);
+                exit;
+            }
+        }
         set_theme_mod($main_name, $values);
     }
 
@@ -373,6 +535,18 @@ add_action('wp_ajax_save_at_customization', 'save_at_customization');
 
 function apkt_import_demo()
 {
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
+
+    if (!wp_verify_nonce($nonce, 'panel_nonce')) {
+        wp_send_json_error('Invalid nonce.');
+        exit;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Permission denied.');
+        exit;
+    }
+
     if (isset($_FILES['import_file']) && $_FILES['import_file']['error'] === UPLOAD_ERR_OK) {
         $import_file = $_FILES['import_file']['tmp_name'];
         $import_json = file_get_contents($import_file);
@@ -506,6 +680,18 @@ add_action('wp_ajax_apkt_import_demo', 'apkt_import_demo');
 
 function apkt_import_settings()
 {
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
+
+    if (!wp_verify_nonce($nonce, 'panel_nonce')) {
+        wp_send_json_error('Invalid nonce.');
+        exit;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Permission denied.');
+        exit;
+    }
+
     if (isset($_FILES['import_file']) && $_FILES['import_file']['error'] === UPLOAD_ERR_OK) {
         $import_file = $_FILES['import_file']['tmp_name'];
 
@@ -516,8 +702,24 @@ function apkt_import_settings()
 
             if (is_array($backup_data)) {
                 if (isset($backup_data['info']) && $backup_data['info']['theme_name'] === strtolower(APKT_THEME_NAME)) {
+                    $sensitive_code_fields = [
+                        'au_head_code',
+                        'au_footer_code',
+                        'home_top_ads',
+                        'home_botm_ads',
+                        'single_top_ads',
+                        'single_botm_ads',
+                        'archive_top_ads',
+                        'archive_botm_ads',
+                        'download_top_ads',
+                        'download_botm_ads'
+                    ];
+
                     foreach ($backup_data as $option_name => $option_value) {
                         if ($option_name !== 'info') {
+                            if (in_array($option_name, $sensitive_code_fields) && !current_user_can('unfiltered_html')) {
+                                continue; // skip code fields if user lacks unfiltered_html capability
+                            }
                             if ($option_value['is_option']) {
                                 update_option($option_name, $option_value['value']);
                             } else {
@@ -545,15 +747,26 @@ add_action('wp_ajax_apkt_import_settings', 'apkt_import_settings');
 
 function apkt_export_settings()
 {
-    $nonce = sanitize_text_field($_POST['nonce']);
+    $nonce = sanitize_text_field($_POST['nonce'] ?? '');
 
     if (!wp_verify_nonce($nonce, 'panel_nonce')) {
-        return json_encode([
+        wp_send_json([
             'status' => 'error',
             'data' => [
                 'message' => 'Khatam! Tata! Good Bye!',
             ],
         ]);
+        exit;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json([
+            'status' => 'error',
+            'data' => [
+                'message' => 'Permission denied.',
+            ],
+        ]);
+        exit;
     }
 
     $date = date('Y-m-d_H-i-s');
@@ -683,11 +896,16 @@ function apkt_export_settings()
 
     $backup_json = json_encode($backup_data);
     $upload_dir = wp_upload_dir();
-    $export_json_path = $upload_dir['apkt_cache_dir'] . '/' . strtolower(APKT_THEME_NAME) . '_' . $date . '.json';
+    $cache_dir = trailingslashit($upload_dir['basedir']) . 'apkt_cache';
+    if (!file_exists($cache_dir)) {
+        wp_mkdir_p($cache_dir);
+    }
+    $export_json_path = $cache_dir . '/' . strtolower(APKT_THEME_NAME) . '_' . $date . '.json';
 
     file_put_contents($export_json_path, $backup_json);
 
-    $export_json_url = $upload_dir['apkt_cache_url'] . '/' . strtolower(APKT_THEME_NAME) . '_' . $date . '.json';
+    $cache_url = trailingslashit($upload_dir['baseurl']) . 'apkt_cache';
+    $export_json_url = $cache_url . '/' . strtolower(APKT_THEME_NAME) . '_' . $date . '.json';
     wp_send_json_success($export_json_url);
     exit;
 }
@@ -697,6 +915,11 @@ function apkup_ajax_clear_archive_cache() {
     $nonce = sanitize_text_field($_POST['nonce'] ?? '');
     if (!wp_verify_nonce($nonce, 'panel_nonce')) {
         wp_send_json_error(['message' => 'Invalid nonce.']);
+        exit;
+    }
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(['message' => 'Permission denied.']);
         exit;
     }
 

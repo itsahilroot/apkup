@@ -4,7 +4,7 @@ Theme URI: https://apktemplates.com/
 Author: APKTEMPLATES
 Author URI: https://apktemplates.com/
 Description: A custom wordpress theme for MOD apk site that helps you to create a MOD apk site. inbuilt lot of features such as apk updates checker, auto google play extractor etc
-Version: 1.6.9
+Version: 1.8.5
 Tags: apkup, apktemplates, blog-theme, customization, news-website, light-weight-theme
 Requires at least: 6.0
 Tested up to: 6.8.2
@@ -14,5 +14,3 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: apkup
 Domain Path: /languages
 */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');

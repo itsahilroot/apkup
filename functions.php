@@ -12,7 +12,6 @@ ini_set('display_errors', 'on'); */
 define('APKT_THEME_NAME', $theme_name);
 define('APKT_THEME_VERSION', $theme_version);
 define('APKT_TRANSLATE', $text_domain);
-define('API_URL', 'https://api.themespixel.net');
 require $theme_dir . '/admin/inc/admin-functions.php';
 require $theme_dir . '/inc/advertisements.php';
 require $theme_dir . '/inc/ajax.php';
@@ -25,14 +24,10 @@ require $theme_dir . '/inc/inits.php';
 require $theme_dir . '/inc/pagination.php';
 require $theme_dir . '/inc/snippet.php';
 require $theme_dir . '/inc/metaboxes.php';
-require $theme_dir . '/inc/theme-updater.php';
-
-// Initialize the private GitHub Theme Updater
-new APKUp_Theme_Updater('apkup');
-
 require $theme_dir . '/inc/apkupdates.php';
 require $theme_dir . '/inc/apkupdatestable.php';
 require $theme_dir . '/inc/admin-bulk-developer.php';
+require $theme_dir . '/rank-math.php';
 
 if (!function_exists('apkup_setup')) {
     add_action('after_setup_theme', 'apkup_setup');
@@ -88,12 +83,11 @@ function apkup_enqueue_scripts()
         wp_enqueue_script('apkup-flickity', $theme_dir . '/assets/js/flickity.js', [], APKT_THEME_VERSION, true);
     }
 
-    /// custom js
-    wp_enqueue_script('apkup-app', $theme_dir . '/assets/js/app.js', [], APKT_THEME_VERSION, true);
-    // wp_enqueue_script('apkup-lightgallery', $theme_dir . '/assets/js/include/lightgallery.min.js', [], APKT_THEME_VERSION, true);
-    // wp_enqueue_script('rateyo', $theme_dir . '/assets/js/include/rateYo.min.js', ['jquery'], '2.3.0', true);
+    // Lucide Icons (loaded in footer and deferred)
+    wp_enqueue_script('apkup-lucide', $theme_dir . '/assets/js/include/lucide.min.js', [], '1.33.0', true);
 
-    // wp_enqueue_script('apkup-script',  $theme_dir . '/assets/js/script.js', [], APKT_THEME_VERSION, true);
+    /// custom js
+    wp_enqueue_script('apkup-app', $theme_dir . '/assets/js/app.js', ['apkup-lucide'], APKT_THEME_VERSION, true);
 
     wp_localize_script('apkup-app', 'apkup_ajax_vars', [
         'ajax_url'      => admin_url('admin-ajax.php'),
@@ -104,10 +98,11 @@ function apkup_enqueue_scripts()
 }
 add_action('wp_enqueue_scripts', 'apkup_enqueue_scripts', 20);
 
-// Defer Flickity JS to prevent blocking rendering
+// Defer non-critical scripts to eliminate render-blocking resources
 add_filter('script_loader_tag', 'apkup_defer_scripts', 10, 2);
 function apkup_defer_scripts($tag, $handle) {
-    if ('apkup-flickity' === $handle) {
+    $defer_handles = ['apkup-flickity', 'apkup-lucide', 'apkup-app'];
+    if (in_array($handle, $defer_handles, true) && strpos($tag, ' defer') === false) {
         return str_replace(' src', ' defer src', $tag);
     }
     return $tag;

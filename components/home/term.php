@@ -82,7 +82,7 @@ foreach ($au_home_posts as $index => $posts) :
             }
         }
         ?>
-        <a class="right-arrow-btn" href="<?php echo esc_url($category_link); ?>">
+        <a class="right-arrow-btn" href="<?php echo esc_url($category_link); ?>" aria-label="Ver más de <?php echo esc_attr($section_title ?: 'Categoría'); ?>">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
           </svg>
@@ -91,7 +91,7 @@ foreach ($au_home_posts as $index => $posts) :
       <?php if ($posts_query->have_posts()) :
           if ($posts_style === 'rectangle') :
       ?>
-              <div class="flex overflow-x-auto md:overflow-x-hidden no-scrollbar pb-4 w-full home-posts-carousel" id="posts-carousel-rect-<?php echo esc_attr($index); ?>">
+              <div class="flex overflow-x-auto md:overflow-x-hidden no-scrollbar pb-4 w-full home-posts-carousel min-h-[220px]" id="posts-carousel-rect-<?php echo esc_attr($index); ?>">
                   <?php
                   while ($posts_query->have_posts()) : $posts_query->the_post();
                       $post_id = get_the_ID();
@@ -121,21 +121,23 @@ foreach ($au_home_posts as $index => $posts) :
                       }
                   ?>
                       <!-- Game Card -->
-                      <div class="flex-shrink-0 w-44 md:w-72 mr-6 post-card group">
-                        <div class="relative rounded-xl overflow-hidden aspect-[16/9] mb-2 shadow-md hover:shadow-lg transition-shadow duration-300 border border-slate-100 dark:border-white/5">
-                          <a href="<?php echo esc_url($app_url); ?>">
-                            <img alt="<?php echo esc_attr($app_name); ?>" class="w-full h-full object-cover"
+                      <div class="flex-shrink-0 w-44 md:w-72 mr-6 post-card group min-h-[200px]">
+                        <div class="relative rounded-xl overflow-hidden aspect-[16/9] mb-2 shadow-md hover:shadow-lg transition-shadow duration-300 border border-slate-100 dark:border-white/5 bg-slate-100 dark:bg-slate-800">
+                          <a href="<?php echo esc_url($app_url); ?>" aria-label="<?php echo esc_attr($app_name); ?>">
+                            <img alt="<?php echo esc_attr($app_name); ?> Banner" class="w-full h-full object-cover aspect-video bg-slate-100 dark:bg-slate-800"
+                              width="288" height="162" loading="lazy" decoding="async"
                               src="<?php echo esc_url($app_banner); ?>">
                           </a>
                         </div>
                         <div class="flex items-start gap-3">
-                          <a href="<?php echo esc_url($app_url); ?>" class="shrink-0">
-                            <img class="w-12 h-12 rounded-xl object-cover border border-slate-100 dark:border-white/5"
+                          <a href="<?php echo esc_url($app_url); ?>" class="shrink-0" aria-label="<?php echo esc_attr($app_name); ?> Icon">
+                            <img class="w-12 h-12 rounded-xl object-cover aspect-square border border-slate-100 dark:border-white/5 bg-slate-100 dark:bg-slate-800"
+                              width="48" height="48" loading="lazy" decoding="async"
                               src="<?php echo esc_url($app_logo); ?>"
                               alt="<?php echo esc_attr($app_name); ?> Icon">
                           </a>
                           <div class="min-w-0 flex-1">
-                            <a href="<?php echo esc_url($app_url); ?>">
+                            <a href="<?php echo esc_url($app_url); ?>" aria-label="<?php echo esc_attr($app_name); ?>">
                               <h3 class="text-sm font-bold truncate dark:text-white hover:text-primary dark:hover:text-primary transition-colors"><?php echo esc_html($app_name); ?></h3>
                             </a>
                             <p class="text-[10px] text-gray-400 dark:text-gray-500 truncate"><?php echo esc_html($meta_desc); ?></p>
@@ -154,7 +156,7 @@ foreach ($au_home_posts as $index => $posts) :
                   ?>
               </div>
           <?php elseif ($posts_style === 'landscape') : ?>
-              <div class="flex overflow-x-auto md:overflow-x-hidden no-scrollbar pb-4 w-full home-posts-carousel" id="posts-carousel-land-<?php echo esc_attr($index); ?>">
+              <div class="flex overflow-x-auto md:overflow-x-hidden no-scrollbar pb-4 w-full home-posts-carousel min-h-[220px]" id="posts-carousel-land-<?php echo esc_attr($index); ?>">
                   <?php
                   while ($posts_query->have_posts()) : $posts_query->the_post();
                       $post_id = get_the_ID();
@@ -182,13 +184,14 @@ foreach ($au_home_posts as $index => $posts) :
                       }
                   ?>
                       <!-- Landscape Post Card -->
-                      <div class="flex flex-col w-72 mr-6 shrink-0 post-card group">
-                        <a href="<?php echo esc_url($app_url); ?>" class="overflow-hidden rounded-xl mb-2 block shadow-md hover:shadow-lg transition-shadow duration-300 border border-slate-100 dark:border-white/5">
-                          <img class="w-full aspect-video object-cover"
+                      <div class="flex flex-col w-72 mr-6 shrink-0 post-card group min-h-[200px]">
+                        <a href="<?php echo esc_url($app_url); ?>" aria-label="<?php echo esc_attr($app_name); ?>" class="overflow-hidden rounded-xl mb-2 block shadow-md hover:shadow-lg transition-shadow duration-300 border border-slate-100 dark:border-white/5 aspect-video bg-slate-100 dark:bg-slate-800">
+                          <img class="w-full aspect-video object-cover bg-slate-100 dark:bg-slate-800"
+                            width="288" height="162" loading="lazy" decoding="async"
                             src="<?php echo esc_url($app_banner); ?>"
-                            alt="<?php echo esc_attr($app_name); ?>">
+                            alt="<?php echo esc_attr($app_name); ?> Banner">
                         </a>
-                        <a href="<?php echo esc_url($app_url); ?>" class="hover:text-primary dark:hover:text-primary transition-colors">
+                        <a href="<?php echo esc_url($app_url); ?>" aria-label="<?php echo esc_attr($app_name); ?>" class="hover:text-primary dark:hover:text-primary transition-colors">
                           <h3 class="text-sm font-bold leading-tight dark:text-white"><?php echo esc_html($app_name); ?></h3>
                         </a>
                         <div class="flex items-center gap-1.5 mt-0.5 text-[9px]">
@@ -203,7 +206,7 @@ foreach ($au_home_posts as $index => $posts) :
                   ?>
               </div>
           <?php else : ?>
-              <div class="flex overflow-x-auto md:overflow-x-hidden no-scrollbar pb-4 w-full home-posts-carousel" id="posts-carousel-box-<?php echo esc_attr($index); ?>">
+              <div class="flex overflow-x-auto md:overflow-x-hidden no-scrollbar pb-4 w-full home-posts-carousel min-h-[120px]" id="posts-carousel-box-<?php echo esc_attr($index); ?>">
                   <?php
                   while ($posts_query->have_posts()) : $posts_query->the_post();
                       $post_id = get_the_ID();
@@ -220,16 +223,18 @@ foreach ($au_home_posts as $index => $posts) :
                       $badge_text = ($is_app_mod == '1') ? 'MOD' : get_the_modified_date('Y');
                   ?>
                       <!-- App Card Style 2 (Icon Layout) -->
-                      <div class="flex-shrink-0 w-16 md:w-20 mr-6 text-center flex flex-col gap-1 items-center post-card group">
+                      <div class="flex-shrink-0 w-16 md:w-20 mr-6 text-center flex flex-col gap-1 items-center post-card group min-h-[100px]">
                         <div class="relative shrink-0 pt-1.5 pr-1.5">
-                          <a href="<?php echo esc_url($app_url); ?>">
-                            <img alt="<?php echo esc_attr($app_name); ?>" class="w-16 h-16 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 mb-1 object-cover border border-slate-100 dark:border-white/5" src="<?php echo esc_url($app_logo); ?>">
+                          <a href="<?php echo esc_url($app_url); ?>" aria-label="<?php echo esc_attr($app_name); ?>">
+                            <img alt="<?php echo esc_attr($app_name); ?> Icon" 
+                              width="64" height="64" loading="lazy" decoding="async"
+                              class="w-16 h-16 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 mb-1 object-cover aspect-square border border-slate-100 dark:border-white/5 bg-slate-100 dark:bg-slate-800" src="<?php echo esc_url($app_logo); ?>">
                           </a>
                           <?php if (!empty($badge_text)) : ?>
                             <span class="absolute top-0.5 right-0.5 bg-orange-500 text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold select-none pointer-events-none"><?php echo esc_html($badge_text); ?></span>
                           <?php endif; ?>
                         </div>
-                        <a href="<?php echo esc_url($app_url); ?>" class="hover:text-primary dark:hover:text-primary transition-colors">
+                        <a href="<?php echo esc_url($app_url); ?>" aria-label="<?php echo esc_attr($app_name); ?>" class="hover:text-primary dark:hover:text-primary transition-colors">
                           <h3 class="text-[10px] font-medium leading-tight mb-1 min-h-[24px] line-clamp-2 dark:text-white"><?php echo esc_html($app_name); ?></h3>
                         </a>
                         <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-none">

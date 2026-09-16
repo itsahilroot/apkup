@@ -51,7 +51,9 @@ if ($au_home_blogs_swt) : ?>
                     <!-- Blog Card -->
                     <article class="<?php echo esc_attr($item_class); ?>">
                         <div class="relative overflow-hidden rounded-2xl aspect-video bg-slate-100 dark:bg-slate-850">
-                            <img class="w-full h-full object-cover transition-all duration-300 group-hover:scale-103" src="<?php echo esc_url($thumb_url); ?>" alt="<?php the_title_attribute(); ?>">
+                            <img class="w-full h-full object-cover transition-all duration-300 group-hover:scale-103 aspect-video" 
+                                width="384" height="216" loading="lazy"
+                                src="<?php echo esc_url($thumb_url); ?>" alt="<?php the_title_attribute(); ?>">
                         </div>
                         <div class="space-y-1 min-w-0">
                             <span class="text-[10px] text-slate-400 dark:text-slate-500 font-light">

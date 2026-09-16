@@ -7,7 +7,6 @@ function at_admin_menus()
     add_menu_page('APKTEMPLATES', 'APKTEMPLATES', 'manage_options', 'at-google-play', 'apkt_gp_importer', $menu_icon_url, 82);
     add_submenu_page('at-google-play', 'Google Play Importer', 'Google Play', 'manage_options', 'at-google-play');
     add_submenu_page('at-google-play', 'APKTEMPLATES Theme Panel', 'Panel', 'manage_options', 'at-panel', 'apkt_panel');
-    add_submenu_page('at-google-play', __( 'App Updates', 'apktemplates' ), __( 'App Updates', 'apktemplates' ).' <span class="awaiting-mod" style="position:absolute;margin-left:5px"><span class="pending-count">'.px_count_update_apps(true).'</span></span>', 'manage_options', 'appyn_updated_apps', 'appyn_updated_apps' );
 }
 add_action('admin_menu', 'at_admin_menus');
 
@@ -33,8 +32,8 @@ add_action('admin_enqueue_scripts', 'at_admin_styles');
 function at_admin_scripts()
 {
     if (is_admin() && get_current_screen()->id === 'post') {
-        wp_enqueue_style('apkup-post-editor', get_template_directory_uri() . '/assets/css/admin/admin.min.css', array(), APKT_THEME_VERSION, 'all');
-        wp_enqueue_script('apkup-post-editor', get_template_directory_uri() . '/assets/js/admin/admin.min.js', array('jquery'), APKT_THEME_VERSION, true);
+        wp_enqueue_style('apkup-post-editor', get_template_directory_uri() . '/assets/css/admin/admin.min.css', array(), time(), 'all');
+        wp_enqueue_script('apkup-post-editor', get_template_directory_uri() . '/assets/js/admin/admin.min.js', array('jquery', 'jquery-ui-sortable'), time(), true);
     }
 
     if (isset($_GET['page']) && in_array($_GET['page'], array('at-google-play'))) {

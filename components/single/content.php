@@ -152,7 +152,7 @@ if (!empty($toc_items)) {
         </svg>
       </div>
       <div>
-        <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-outfit"><?php esc_html_e('¿Qué hay de nuevo?', 'apktemplates'); ?></h3>
+        <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-outfit"><?php esc_html_e('¿Qué hay de nuevo?', 'apktemplates'); ?></h2>
         <span class="text-xs text-slate-400 dark:text-slate-500 font-semibold"><?php printf(esc_html__('Novedades en la versión %s', 'apktemplates'), esc_html($app_version)); ?></span>
       </div>
     </div>
@@ -232,29 +232,32 @@ for ($i = 1; $i <= 5; $i++) {
 ?>
 
 <!-- Valoración / Ratings Summary Section (Google Play Style) -->
-<section class="grid grid-cols-1 md:grid-cols-12 gap-8 bg-white dark:bg-gray-850/40 p-6 sm:p-8 rounded-[32px] border border-gray-200/50 dark:border-white/5 my-6">
-  
-  <!-- Resumen de valoración -->
-  <div class="md:col-span-4 flex flex-col items-center justify-center text-center space-y-2">
-    <span class="text-5xl sm:text-6xl font-outfit font-black text-gray-800 dark:text-white"><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
-    <!-- Estrellas -->
-    <div class="flex text-yellow-500 gap-1 text-sm">
-      <?php echo $stars_html; ?>
-    </div>
-    <span class="text-xs font-semibold text-gray-400 dark:text-gray-500"><?php printf(esc_html__('%s calificaciones', 'apktemplates'), esc_html($rating_users_formatted)); ?></span>
-  </div>
-
-  <!-- Gráfico de barras de calificación (Google Play Style) -->
-  <div class="md:col-span-8 space-y-2">
-    <?php for ($i = 5; $i >= 1; $i--) : ?>
-      <!-- <?php echo $i; ?> estrellas -->
-      <div class="flex items-center gap-4 text-xs font-bold text-gray-500 dark:text-gray-400">
-        <span class="w-3 text-right"><?php echo $i; ?></span>
-        <div class="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-          <div class="h-full bg-playGreen rounded-full" style="width: <?php echo (int)$rating_distribution[$i]; ?>%;"></div>
-        </div>
+<section class="my-6 space-y-4">
+  <h2 class="text-lg font-bold text-slate-900 dark:text-white"><?php esc_html_e('Valoraciones y reseñas', 'apktemplates'); ?></h2>
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-8 bg-white dark:bg-gray-850/40 p-6 sm:p-8 rounded-[32px] border border-gray-200/50 dark:border-white/5">
+    
+    <!-- Resumen de valoración -->
+    <div class="md:col-span-4 flex flex-col items-center justify-center text-center space-y-2">
+      <span class="text-5xl sm:text-6xl font-outfit font-black text-gray-800 dark:text-white"><?php echo esc_html(number_format((float)$new_rating_average, 1)); ?></span>
+      <!-- Estrellas -->
+      <div class="flex text-yellow-500 gap-1 text-sm">
+        <?php echo $stars_html; ?>
       </div>
-    <?php endfor; ?>
+      <span class="text-xs font-semibold text-gray-400 dark:text-gray-500"><?php printf(esc_html__('%s calificaciones', 'apktemplates'), esc_html($rating_users_formatted)); ?></span>
+    </div>
+
+    <!-- Gráfico de barras de calificación (Google Play Style) -->
+    <div class="md:col-span-8 space-y-2">
+      <?php for ($i = 5; $i >= 1; $i--) : ?>
+        <!-- <?php echo $i; ?> estrellas -->
+        <div class="flex items-center gap-4 text-xs font-bold text-gray-500 dark:text-gray-400">
+          <span class="w-3 text-right"><?php echo $i; ?></span>
+          <div class="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div class="h-full bg-playGreen rounded-full" style="width: <?php echo (int)$rating_distribution[$i]; ?>%;"></div>
+          </div>
+        </div>
+      <?php endfor; ?>
+    </div>
   </div>
 </section>
 

@@ -252,7 +252,8 @@ function initializeApp() {
                         },
                         body: new URLSearchParams({
                             action: 'apkt_mediafire_direct_link',
-                            url: mfUrl
+                            url: mfUrl,
+                            nonce: apkup_ajax_vars.nonce
                         })
                     })
                         .then(response => response.json())
@@ -276,40 +277,53 @@ function initializeApp() {
             }
 
             const heroGallery = document.getElementById('heroFlickityGallery');
-            if (heroGallery) {
+            if (heroGallery && !heroGallery.classList.contains('flickity-enabled')) {
                 heroGallery.classList.remove('flex', 'overflow-x-auto', 'no-scrollbar', 'md:overflow-x-hidden');
-                new Flickity(heroGallery, {
+                const flktyHero = new Flickity(heroGallery, {
                     cellAlign: 'left',
                     contain: true,
                     prevNextButtons: false,
                     pageDots: false,
                     dragThreshold: 10,
                     percentPosition: false,
-                    freeScroll: true
+                    freeScroll: true,
+                    accessibility: false
+                });
+
+                // Ensure aria-hidden is removed or kept safe
+                heroGallery.querySelectorAll('[aria-hidden="true"]').forEach(el => {
+                    el.removeAttribute('aria-hidden');
                 });
             }
 
             const homeCarousels = document.querySelectorAll('.home-posts-carousel');
             homeCarousels.forEach(carousel => {
-                carousel.classList.remove('flex', 'overflow-x-auto', 'no-scrollbar', 'md:overflow-x-hidden');
-                new Flickity(carousel, {
-                    cellAlign: 'left',
-                    contain: true,
-                    prevNextButtons: false,
-                    pageDots: false,
-                    dragThreshold: 10,
-                    percentPosition: false,
-                    freeScroll: true
-                });
+                if (!carousel.classList.contains('flickity-enabled')) {
+                    carousel.classList.remove('flex', 'overflow-x-auto', 'no-scrollbar', 'md:overflow-x-hidden');
+                    const flktyCarousel = new Flickity(carousel, {
+                        cellAlign: 'left',
+                        contain: true,
+                        prevNextButtons: false,
+                        pageDots: false,
+                        dragThreshold: 10,
+                        percentPosition: false,
+                        freeScroll: true,
+                        accessibility: false
+                    });
+
+                    carousel.querySelectorAll('[aria-hidden="true"]').forEach(el => {
+                        el.removeAttribute('aria-hidden');
+                    });
+                }
             });
         };
 
         if (window.requestIdleCallback) {
             window.requestIdleCallback(() => {
-                setTimeout(init, 100);
+                setTimeout(init, 80);
             });
         } else {
-            setTimeout(init, 200);
+            setTimeout(init, 150);
         }
     }
 

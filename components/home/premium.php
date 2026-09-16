@@ -81,7 +81,7 @@ $premium_query = new WP_Query($args);
                 }
             } 
         ?>
-        <a class="right-arrow-btn" href="<?php echo esc_url($view_all_link); ?>">
+        <a class="right-arrow-btn" href="<?php echo esc_url($view_all_link); ?>" aria-label="Ver más de <?php echo esc_attr($title); ?>">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
           </svg>
@@ -89,7 +89,7 @@ $premium_query = new WP_Query($args);
       </div>
 
       <!-- Grilla horizontal de squircles supercurvados con precio S/ tachados -->
-      <div class="flex overflow-x-auto md:overflow-x-hidden pb-4 no-scrollbar home-posts-carousel" id="premiumFlickityGallery">
+      <div class="flex overflow-x-auto md:overflow-x-hidden pb-4 no-scrollbar home-posts-carousel min-h-[160px]" id="premiumFlickityGallery">
           <?php
           while ($premium_query->have_posts()) : $premium_query->the_post();
               $post_id = get_the_ID();
@@ -121,11 +121,13 @@ $premium_query = new WP_Query($args);
           ?>
               <!-- App Card Premium -->
               <a href="<?php echo esc_url($app_url); ?>"
-                class="w-36 mr-6 shrink-0 text-center group block post-card">
+                aria-label="<?php echo esc_attr($app_name); ?>"
+                class="w-36 mr-6 shrink-0 text-center group block post-card min-h-[150px]">
                 <div
-                  class="w-28 h-28 squircle-icon-extreme bg-white/40 dark:bg-slate-900/20 mx-auto overflow-hidden shadow-lg border-2 border-white/50 dark:border-white/10 group-hover:scale-102 transition-all duration-300 relative">
-                  <img class="w-full h-full object-cover"
-                    src="<?php echo esc_url($app_logo); ?>" alt="<?php echo esc_attr($app_name); ?>">
+                  class="w-28 h-28 squircle-icon-extreme bg-slate-100 dark:bg-slate-900/20 mx-auto overflow-hidden shadow-lg border-2 border-white/50 dark:border-white/10 group-hover:scale-102 transition-all duration-300 relative aspect-square">
+                  <img class="w-full h-full object-cover aspect-square bg-slate-100 dark:bg-slate-800"
+                    width="112" height="112" loading="lazy" decoding="async"
+                    src="<?php echo esc_url($app_logo); ?>" alt="<?php echo esc_attr($app_name); ?> Icon">
                   <div class="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors"></div>
                 </div>
                 <h3

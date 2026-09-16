@@ -21,6 +21,7 @@ class AT_Create_GP_Post
     private $apk_content;
     private $apk_content_rating;
     private $apt_id = "";
+    private $apk_tags = [];
 
     private $post_id;
     private $parent_cat;
@@ -33,6 +34,7 @@ class AT_Create_GP_Post
     private $post_thumbnail_format = 'png';
     private $post_thumbnail_quality = 'raw';
     private $import_screenshots = false;
+    private $post_screenshots_limit = 5;
     private $post_screenshots_format = 'jpg';
 
     public function __construct($post_meta)
@@ -56,10 +58,11 @@ class AT_Create_GP_Post
             'apk_installs' => '',
             'apk_content_rating' => '',
             'apt_id' => '',
+            'apk_tags' => [],
         ];
-
+ 
         $data = array_merge($default_meta, $post_meta['data']);
-
+ 
         $this->apk_description = $data['apk_description'];
         $this->apk_whats_new = $data['apk_whats_new'];
         $this->apk_name = $data['apk_name'];
@@ -78,6 +81,7 @@ class AT_Create_GP_Post
         $this->apk_installs = $data['apk_installs'];
         $this->apk_content_rating = $data['apk_content_rating'];
         $this->apt_id = $data['apt_id'];
+        $this->apk_tags = $data['apk_tags'] ?? [];
 
         $this->is_advanced_options = at_options('is_advanced_options', false);
 
@@ -89,6 +93,7 @@ class AT_Create_GP_Post
             $post_thumbnail_format = at_options('post_thumbnail_format');
             $post_thumbnail_quality = at_options('post_thumbnail_quality');
             $import_screenshots = at_options('import_screenshots', false);
+            $post_screenshots_limit = at_options('post_screenshots_limit', 5);
             $post_screenshots_format = at_options('post_screenshots_format');
 
             $this->post_status = !empty($post_status) ? $post_status : '';
@@ -98,6 +103,7 @@ class AT_Create_GP_Post
             $this->post_thumbnail_format = !empty($post_thumbnail_format) ? $post_thumbnail_format : '';
             $this->post_thumbnail_quality = !empty($post_thumbnail_quality) ? $post_thumbnail_quality : '';
             $this->import_screenshots = $import_screenshots ? $import_screenshots : false;
+            $this->post_screenshots_limit = intval($post_screenshots_limit);
             $this->post_screenshots_format = $post_screenshots_format ? $post_screenshots_format : 'jpg';
         }
     }
@@ -181,10 +187,32 @@ class AT_Create_GP_Post
         $datos_informacion['os'] = 'ANDROID';
         $datos_informacion['categoria_app'] = $this->apk_category ?? '';
         $datos_informacion['content_rating'] = $this->apk_content_rating ?? '';
+        $datos_informacion['desarrollador'] = $this->apk_developer ?? '';
         update_post_meta($this->post_id, "wp_GP_ID", $this->apk_id);
         update_post_meta($this->post_id, "app_type", "0");
 
         update_post_meta($this->post_id, "datos_informacion", $datos_informacion);
+
+        if (!empty($this->apk_developer)) {
+            update_post_meta($this->post_id, 'wp_developers_GP', sanitize_text_field($this->apk_developer));
+            $term = get_term_by('name', $this->apk_developer, 'developer');
+            $term_id = 0;
+            if ($term) {
+                $term_id = $term->term_id;
+            } else {
+                $inserted = wp_insert_term($this->apk_developer, 'developer');
+                if (!is_wp_error($inserted)) {
+                    $term_id = $inserted['term_id'];
+                }
+            }
+            if ($term_id) {
+                wp_set_object_terms($this->post_id, intval($term_id), 'developer', false);
+            }
+        }
+
+        if (!empty($this->apk_tags)) {
+            wp_set_post_tags($this->post_id, $this->apk_tags, false);
+        }
 
         if ($this->is_advanced_options && !empty($this->post_mod_feature)) {
             update_post_meta($this->post_id, "wp_mods", $this->post_mod_feature);
@@ -319,89 +347,114 @@ private function upload_banner_image()
         return;
     }
 
-    // --- Fetch Original Image ---
+    $image_content = null;
+
+    // --- 1. Fetch Image Content using Scraper ---
     $scraper = new Scraper();
     $fetch = $scraper->scrape($this->apk_banner_url);
 
-    if (!is_array($fetch) || $fetch['status'] !== 'success' || empty($fetch['data']['content'])) {
+    if (is_array($fetch) && $fetch['status'] === 'success' && !empty($fetch['data']['content'])) {
+        $image_content = $fetch['data']['content'];
+    } else {
+        // Fallback: wp_remote_get
+        $response = wp_remote_get($this->apk_banner_url, ['timeout' => 15, 'sslverify' => false]);
+        if (!is_wp_error($response)) {
+            $image_content = wp_remote_retrieve_body($response);
+        }
+    }
+
+    if (empty($image_content)) {
+        // Fallback: save direct URL if cannot download
+        update_post_meta($this->post_id, "wp_poster_GP", esc_url($this->apk_banner_url));
         return;
     }
 
-    $image_data = $fetch['data']['content'];
-
-    // --- Create image resource ---
-    $src_img = @imagecreatefromstring($image_data);
-    if (!$src_img) return;
-
-    // Desired final size
-    $final_w = 624;
-    $final_h = 384;
-
-    // --- Resize / Crop ---
-    $dst_img = imagecreatetruecolor($final_w, $final_h);
-
-    // Better quality
-    imagealphablending($dst_img, true);
-    imagesavealpha($dst_img, true);
-
-    $src_w = imagesx($src_img);
-    $src_h = imagesy($src_img);
-
-    // Maintain center crop
-    $ratio_src = $src_w / $src_h;
-    $ratio_dst = $final_w / $final_h;
-
-    if ($ratio_src > $ratio_dst) {
-        // crop width
-        $new_height = $src_h;
-        $new_width = intval($src_h * $ratio_dst);
-        $crop_x = intval(($src_w - $new_width) / 2);
-        $crop_y = 0;
-    } else {
-        // crop height
-        $new_width = $src_w;
-        $new_height = intval($src_w / $ratio_dst);
-        $crop_x = 0;
-        $crop_y = intval(($src_h - $new_height) / 2);
+    $upload = wp_upload_dir();
+    if (!isset($upload['path'], $upload['url'])) {
+        update_post_meta($this->post_id, "wp_poster_GP", esc_url($this->apk_banner_url));
+        return;
     }
 
-    imagecopyresampled(
-        $dst_img,
-        $src_img,
-        0, 0,
-        $crop_x, $crop_y,
-        $final_w, $final_h,
-        $new_width, $new_height
-    );
+    // --- 2. Try resizing and saving as WebP ---
+    $src_img = @imagecreatefromstring($image_content);
+    if ($src_img && function_exists('imagewebp')) {
+        $final_w = 624;
+        $final_h = 384;
 
-    // --- Save as WebP ---
-    $upload = wp_upload_dir();
-    $file_name = sanitize_title_with_dashes($this->apk_name) . "-banner.webp";
-    $file_path = $upload['path'] . '/' . $file_name;
+        $dst_img = imagecreatetruecolor($final_w, $final_h);
+        imagealphablending($dst_img, true);
+        imagesavealpha($dst_img, true);
 
-    // WebP compression: 70–80 is ideal (small + good quality)
-    imagewebp($dst_img, $file_path, 80);
+        $src_w = imagesx($src_img);
+        $src_h = imagesy($src_img);
 
-    imagedestroy($src_img);
-    imagedestroy($dst_img);
+        $ratio_src = $src_w / $src_h;
+        $ratio_dst = $final_w / $final_h;
 
-    // --- Register as Attachment ---
-    $attachment = [
-        'post_mime_type' => 'image/webp',
-        'post_title' => sanitize_title_with_dashes($this->apk_name),
-        'post_content' => '',
-        'post_status' => 'inherit'
-    ];
+        if ($ratio_src > $ratio_dst) {
+            $new_height = $src_h;
+            $new_width = intval($src_h * $ratio_dst);
+            $crop_x = intval(($src_w - $new_width) / 2);
+            $crop_y = 0;
+        } else {
+            $new_width = $src_w;
+            $new_height = intval($src_w / $ratio_dst);
+            $crop_x = 0;
+            $crop_y = intval(($src_h - $new_height) / 2);
+        }
 
-    $attach_id = wp_insert_attachment($attachment, $file_path);
+        imagecopyresampled(
+            $dst_img,
+            $src_img,
+            0, 0,
+            $crop_x, $crop_y,
+            $final_w, $final_h,
+            $new_width, $new_height
+        );
 
-    require_once ABSPATH . 'wp-admin/includes/image.php';
-    $attach_data = wp_generate_attachment_metadata($attach_id, $file_path);
-    wp_update_attachment_metadata($attach_id, $attach_data);
+        $unique_suffix = substr(time() . mt_rand(1000, 9999), -8);
+        $file_name = sanitize_title_with_dashes($this->apk_name) . "-banner-{$unique_suffix}.webp";
+        $file_path = trailingslashit($upload['path']) . $file_name;
 
-    // Save meta URL
-    $banner_url = wp_get_attachment_url($attach_id);
-    update_post_meta($this->post_id, "wp_poster_GP", $banner_url);
+        if (imagewebp($dst_img, $file_path, 80)) {
+            imagedestroy($src_img);
+            imagedestroy($dst_img);
+
+            $attachment = [
+                'post_mime_type' => 'image/webp',
+                'post_title'     => sanitize_title_with_dashes($this->apk_name),
+                'post_content'   => '',
+                'post_status'    => 'inherit'
+            ];
+
+            $attach_id = wp_insert_attachment($attachment, $file_path, $this->post_id);
+            if (!is_wp_error($attach_id) && $attach_id) {
+                require_once ABSPATH . 'wp-admin/includes/image.php';
+                $attach_data = wp_generate_attachment_metadata($attach_id, $file_path);
+                if (!is_wp_error($attach_data) && !empty($attach_data)) {
+                    wp_update_attachment_metadata($attach_id, $attach_data);
+                }
+
+                $banner_url = wp_get_attachment_url($attach_id);
+                if ($banner_url) {
+                    update_post_meta($this->post_id, "wp_poster_GP", $banner_url);
+                    return;
+                }
+            }
+        } else {
+            imagedestroy($src_img);
+            imagedestroy($dst_img);
+        }
+    }
+
+    // --- 3. Fallback: Save standard image format ---
+    $banner_id = $this->upload_image_to_wp($this->apk_banner_url, 'jpg', 'banner');
+    if ($banner_id) {
+        $banner_url = wp_get_attachment_url($banner_id);
+        update_post_meta($this->post_id, "wp_poster_GP", $banner_url);
+    } else {
+        update_post_meta($this->post_id, "wp_poster_GP", esc_url($this->apk_banner_url));
+    }
 }
 
 
@@ -410,6 +463,14 @@ private function upload_banner_image()
         $urls = [];
         $get_screenshots = $this->apk_screenshots;
         $image_quality = '';
+
+        if (!empty($get_screenshots) && is_array($get_screenshots)) {
+            if ($this->post_screenshots_limit > 0) {
+                $get_screenshots = array_slice($get_screenshots, 0, $this->post_screenshots_limit);
+            }
+        } else {
+            $get_screenshots = [];
+        }
 
         if ($this->post_screenshots_format === 'webp') {
             $image_quality = '=rw';
@@ -510,41 +571,16 @@ private function upload_banner_image()
 
         if ($is_update) {
             $post_id = $existing_posts[0];
-            $new_post = [
-                "ID" => $post_id,
-                "post_title" => $this->generate_post_title(),
-                "post_content" => $post_content,
-                "post_status" => $this->post_status,
-                "post_category" => [$category['parent_id'], $category['child_id']],
+            return [
+                'status' => 'error',
+                'data' => [
+                    'message' => sprintf(
+                        __('This app already exists. <a href="%s" target="_blank">Edit Post</a> | <a href="%s" target="_blank">View Post</a>', 'apktemplates'),
+                        esc_url(get_edit_post_link($post_id)),
+                        esc_url(get_permalink($post_id))
+                    ),
+                ],
             ];
-            wp_update_post($new_post);
-
-            // Clean up old media attachments to prevent orphans in media library
-            // Old thumbnail
-            $old_thumbnail_id = get_post_thumbnail_id($post_id);
-            if ($old_thumbnail_id) {
-                wp_delete_attachment($old_thumbnail_id, true);
-            }
-
-            // Old banner
-            $old_banner_url = get_post_meta($post_id, 'wp_poster_GP', true);
-            if ($old_banner_url) {
-                $old_banner_id = attachment_url_to_postid($old_banner_url);
-                if ($old_banner_id) {
-                    wp_delete_attachment($old_banner_id, true);
-                }
-            }
-
-            // Old screenshots
-            $old_screenshots = get_post_meta($post_id, 'datos_imagenes', true);
-            if (is_array($old_screenshots)) {
-                foreach ($old_screenshots as $url) {
-                    $attachment_id = attachment_url_to_postid($url);
-                    if ($attachment_id) {
-                        wp_delete_attachment($attachment_id, true);
-                    }
-                }
-            }
         } else {
             $new_post = [
                 "post_title" => $this->generate_post_title(),

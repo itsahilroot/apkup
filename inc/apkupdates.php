@@ -1,21 +1,4 @@
 <?php
-add_action('init', function () {
-    $dnau = appyn_options('disabled_notif_apps_update');
-
-    if ($dnau)    wp_clear_scheduled_hook('appyn_send_apps');
-});
-
-if (! wp_next_scheduled('appyn_send_apps')) {
-
-    wp_schedule_event(time(), 'hourly', 'appyn_send_apps');
-}
-
-add_action('appyn_send_apps', 'px_appyn_hook_send_apps');
-
-function px_appyn_hook_send_apps()
-{
-   px_check_for_updates();
-}
 
 function px_check_for_updates() {
     global $post;
@@ -183,268 +166,9 @@ function px_count_update_apps($a = false)
     return ($a) ? (($count > 99) ? '99+' : $count) : $count;
 }
 
-function appyn_updated_apps()
-{
-?>
-    <style>
-        .table_list_apps form {
-            display: flex;
-            flex-direction: column;
-            margin-top: 10px;
-        }
+// Removed appyn_updated_apps function as requested by the user
 
-        .table_list_apps .post_title.column-post_title>div {
-            display: flex !important;
-        }
-
-        .modapp {
-            background: #20a400;
-            color: #FFF;
-            border-radius: 3px;
-            font-weight: 500;
-            font-size: 10px;
-            display: inline-block;
-            padding: 0px 5px;
-            margin-left: 5px;
-        }
-
-        .table_list_apps .column-post_title>div>img {
-            margin-right: 10px;
-        }
-
-        .table_list_apps a:focus {
-            box-shadow: none !important;
-        }
-
-        .table_list_apps .column-post_title a:nth-last-of-type(1) {
-            margin-left: 5px;
-        }
-
-        .table_list_apps .column-post_title span img {
-            margin-right: 10px;
-        }
-
-        .table_list_apps .column-post_title {
-            width: 600px;
-        }
-
-        .table_list_apps .column-version {
-            width: 100px;
-        }
-
-        .table_list_apps .search-box {
-            order: 1;
-        }
-
-        .table_list_apps .subsubsub {
-            order: 2;
-            float: none;
-            text-align: left;
-        }
-    </style>
-    <div id="apps_to_update" class="table_list_apps wrap">
-        <h1><?php echo __('Apps to update', 'appyn'); ?> 
-            <button type="button" id="manual_update_check" class="button button-secondary" style="vertical-align: middle; margin-left: 10px;"><?php _e('Check for Updates', 'appyn'); ?></button>
-            <button type="button" id="manual_api_check" class="button button-secondary" style="vertical-align: middle; margin-left: 5px;"><?php _e('Check API Status', 'appyn'); ?></button>
-        </h1>
-        <div id="manual_update_status" style="margin: 10px 0;"></div>
-        <script>
-        jQuery(document).ready(function($) {
-            // Update Check
-            $('#manual_update_check').on('click', function() {
-                var btn = $(this);
-                var status = $('#manual_update_status');
-                btn.prop('disabled', true).text('Checking...');
-                status.html('<span class="spinner is-active" style="float:none; margin:0 5px 0 0;"></span> Checking for updates...');
-                
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'px_check_updates_manual'
-                    },
-                    success: function(response) {
-                        if(response.success) {
-                            var msg = 'Check completed.';
-                            if(response.data && response.data.count !== undefined) {
-                                msg += ' Found ' + response.data.count + ' updates.';
-                            } else if (response.data && response.data.message) {
-                                msg += ' ' + response.data.message;
-                            }
-                            status.html('<div class="notice notice-success inline"><p>' + msg + ' Reloading...</p></div>');
-                            setTimeout(function(){ location.reload(); }, 2000);
-                        } else {
-                             status.html('<div class="notice notice-error inline"><p>Error: ' + (response.data || 'Unknown error') + '</p></div>');
-                        }
-                    },
-                    error: function() {
-                         status.html('<div class="notice notice-error inline"><p>Request failed.</p></div>');
-                    },
-                    complete: function() {
-                        btn.prop('disabled', false).text('<?php _e('Check for Updates', 'appyn'); ?>');
-                    }
-                });
-            });
-
-            // API Check
-            $('#manual_api_check').on('click', function() {
-                var btn = $(this);
-                var status = $('#manual_update_status');
-                btn.prop('disabled', true).text('Checking API...');
-                status.html('<span class="spinner is-active" style="float:none; margin:0 5px 0 0;"></span> Connecting to API...');
-                
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'px_check_api_status'
-                    },
-                    success: function(response) {
-                        if(response.success) {
-                            var debugData = response.data;
-                            var debugHtml = '<strong>Status Code:</strong> ' + debugData.status + '<br>';
-                            if (debugData.sent_website) debugHtml += '<strong>Sent Website:</strong> ' + debugData.sent_website + '<br>';
-                            if (debugData.sent_apikey) debugHtml += '<strong>Sent API Key:</strong> ' + debugData.sent_apikey + '<br>';
-                            debugHtml += '<strong>Body:</strong> <pre style="background:#f0f0f1; padding:10px; overflow:auto; max-height:200px;">' + 
-                                         (typeof debugData.body === 'string' ? debugData.body.replace(/</g, '&lt;') : JSON.stringify(debugData.body, null, 2)) + 
-                                         '</pre>';
-                            status.html('<div class="notice notice-info inline" style="display:block;"><p>' + debugHtml + '</p></div>');
-                        } else {
-                             status.html('<div class="notice notice-error inline"><p>API Check Failed: ' + (response.data || 'Unknown error') + '</p></div>');
-                        }
-                    },
-                    error: function() {
-                         status.html('<div class="notice notice-error inline"><p>Request failed (Network Error).</p></div>');
-                    },
-                    complete: function() {
-                        btn.prop('disabled', false).text('<?php _e('Check API Status', 'appyn'); ?>');
-                    }
-                });
-            });
-        });
-        </script>
-        <?php
-        $apps_to_update = new List_Table_ATUL();
-        $apps_to_update->prepare_items();
-        ?>
-        <form id="nds-user-list-form" method="get">
-            <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>">
-            <?php
-            $apps_to_update->search_box(__('Search', 'appyn'), 'nds-user-find');
-            ?>
-        </form>
-        <?php $apps_to_update->display(); ?>
-        <?php
-        $time = wp_next_scheduled('appyn_send_apps');
-        echo '<p>' . sprintf(__('This list is updated every hour. Next update: %s', 'appyn'), '<strong>' . get_date_from_gmt(date('Y-m-d H:i', $time), 'Y-m-d H:i') . '</strong>') . '</p>';
-        ?>
-
-    </div>
-<?php
-}
-
-if (! wp_next_scheduled('appyn_check_apikey')) {
-    wp_schedule_event(time(), 'daily', 'appyn_check_apikey');
-}
-
-add_action('appyn_check_apikey', 'px_appyn_hook_check_apikey');
-
-function px_appyn_hook_check_apikey()
-{
-    px_check_apikey_debug();
-}
-
-function px_check_apikey_debug() {
-    $url = API_URL . "/check/apikey";
-
-    $response = wp_remote_post($url, array(
-        'method'      => 'POST',
-        'timeout'     => 30,
-        'blocking'    => true,
-        'headers'     => array(
-            'Content-Type' => 'application/x-www-form-urlencoded',
-            'Referer' => get_site_url(),
-            'Cache-Control' => 'max-age=0',
-            'Expect' => '',
-        ),
-        'body' => array(
-            'apikey' => get_option('appyn_apikey', true),
-            'website'    => get_site_url(),
-        ),
-    ));
-
-    if (! is_wp_error($response)) {
-        update_option('px_status_apikey', json_decode($response['body'], true));
-    }
-    
-    return $response;
-}
-
-add_action('wp_ajax_px_check_api_status', 'px_ajax_check_api_status');
-function px_ajax_check_api_status() {
-    if(!current_user_can('manage_options')) wp_send_json_error('Permission denied');
-    
-    $response = px_check_apikey_debug();
-    $apikey = get_option('appyn_apikey', '');
-    $website = get_site_url();
-    
-    if (is_wp_error($response)) {
-        wp_send_json_error('WP Error: ' . $response->get_error_message());
-    } else {
-        $body = wp_remote_retrieve_body($response);
-        $code = wp_remote_retrieve_response_code($response);
-        wp_send_json_success([
-            'status' => $code,
-            'body' => $body,
-            'sent_website' => $website,
-            'sent_apikey' => !empty($apikey) ? substr($apikey, 0, 5) . '...' . substr($apikey, -5) : '(empty)',
-            'raw' => $response
-        ]);
-    }
-}
-
-add_action('init', 'px_cron_init');
-
-function px_cron_init()
-{
-    if (! get_option('run_first_time_cron_apikey')) {
-        px_appyn_hook_check_apikey();
-        update_option('run_first_time_cron_apikey', 1);
-    }
-    if (! get_option('run_first_time_cron')) {
-        px_appyn_hook_send_apps();
-        update_option('run_first_time_cron', 1);
-    }
-}
-
-add_filter('remote_post_check_apps', 'func_remote_post_check_apps', 10, 1);
-
-function func_remote_post_check_apps($list_ids)
-{
-
-    $url = API_URL . "/check/";
-
-    $response = wp_remote_post($url, array(
-        'method'      => 'POST',
-        'timeout'     => 30,
-        'blocking'    => true,
-        'headers'     => array(
-            'Content-Type' => 'application/x-www-form-urlencoded',
-            'Referer' => get_site_url(),
-            'Cache-Control' => 'max-age=0',
-            'Expect' => '',
-        ),
-        'body' => array(
-            'apikey' => get_option('appyn_apikey', true),
-            'website'    => get_site_url(),
-            'apps' => $list_ids
-        ),
-    ));
-
-    if (! is_wp_error($response)) {
-        return $response['body'];
-    }
-}
+// Removed ThemesPixel API license and check endpoints
 
 function get_datos_info($key, $key_ = false, $post_id = false)
 {
@@ -518,38 +242,29 @@ function handle_bulk_update_version()
                     $meta = [];
                 }
 
-                // Use the gplay_url sent by JS
-                $body = array(
-                    'apikey'  => appyn_options('apikey', true),
-                    'website' => get_site_url(),
-                    'app'     => trim($gplay_url),
-                );
+                $package_id = '';
+                if (preg_match('/id=([a-zA-Z0-9._\-]+)/', $gplay_url, $matches)) {
+                    $package_id = $matches[1];
+                } else {
+                    $package_id = trim($gplay_url);
+                }
 
-                $url = API_URL . '/v2/gplay';
+                $post_language = at_options('post_language', 'es-ES');
+                $url = 'https://peekanapp.vercel.app/api/all?androidAppId=' . urlencode($package_id) . '&lang=' . urlencode($post_language) . '&hl=' . urlencode($post_language);
 
-                $response = wp_remote_post($url, array(
-                    'method'    => 'POST',
-                    'timeout'   => 60,
-                    'blocking'  => true,
-                    'sslverify' => false,
-                    'headers'   => array(
-                        'Referer'       => get_site_url(),
-                        'Cache-Control' => 'max-age=0',
-                        'Expect'        => '',
-                    ),
-                    'body' => $body,
+                $response = wp_remote_get($url, array(
+                    'timeout'   => 30,
+                    'sslverify' => true,
                 ));
 
                 if (!is_wp_error($response)) {
-                    $bot = json_decode($response['body'], true);
-                    $status = (isset($bot['status'])) ? $bot['status'] : false;
-
-                    if ($status != 'error' && $status) {
-                        $bot_info = $bot['app'];
+                    $api_data = json_decode($response['body'], true);
+                    if (!empty($api_data) && !empty($api_data['playstore'])) {
+                        $playstore = $api_data['playstore'];
                         $app_info = array();
 
-                        $app_info['app_title'] = $bot_info['title'];
-                        $app_info['app_icon'] = $bot_info['icon'];
+                        $app_info['app_title'] = $playstore['title'] ?? '';
+                        $app_info['app_icon'] = $playstore['icon'] ?? '';
 
                         $old_thumbnail_id = get_post_thumbnail_id($post_id);
                         if ($old_thumbnail_id) {
@@ -570,14 +285,16 @@ function handle_bulk_update_version()
                         }
                         // Save screenshots
                         $n = 0;
-                        foreach ($bot_info['screenshots'] as $screenshot) {
-                            if ($n < 5) {
-                                $app_info['screenshots'][$n] = $screenshot;
+                        if (!empty($playstore['screenshots']) && is_array($playstore['screenshots'])) {
+                            foreach ($playstore['screenshots'] as $screenshot) {
+                                if ($n < 5) {
+                                    $app_info['screenshots'][$n] = $screenshot;
+                                }
+                                $n++;
                             }
-                            $n++;
-                        }
-                        if (isset($app_info['screenshots'])) {
-                            update_post_meta($post_id, 'datos_imagenes', $app_info['screenshots']);
+                            if (isset($app_info['screenshots'])) {
+                                update_post_meta($post_id, 'datos_imagenes', $app_info['screenshots']);
+                            }
                         }
                     }
                 }

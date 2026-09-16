@@ -10,7 +10,7 @@ function apkt_gp_importer()
     $post_thumbnail_quality = at_options('post_thumbnail_quality', 'large');
     $import_screenshots = at_options('import_screenshots', false);
     $post_screenshots_format = at_options('post_screenshots_format', 'jpg');
-    $post_language = at_options('post_language', 'en-US');
+    $post_language = at_options('post_language', 'es-ES');
     ?>
     <div id="at-importer">
         <div class="at-container">
@@ -161,6 +161,15 @@ function apkt_gp_importer()
                                             <span class="at-switch-bg"></span>
                                             <span class="at-switch-dot"></span>
                                         </label>
+                                    </div>
+
+                                    <!-- Screenshots Limit -->
+                                    <div>
+                                        <label class="at-label"><?php esc_html_e('Screenshots limit', 'apktemplates');?></label>
+                                        <?php $post_screenshots_limit = at_options('post_screenshots_limit', '5'); ?>
+                                        <input type="number" name="at_post_screenshots_limit" class="at-select"
+                                            value="<?php echo esc_attr($post_screenshots_limit); ?>"
+                                            min="0" max="50" placeholder="Eg. 5 (0 for all)" />
                                     </div>
 
                                     <!-- Screenshots Format -->

@@ -2,6 +2,7 @@
 // Featured Section
 $archive_featured_swt = get_theme_mod('archive_featured_swt', '1');
 $archive_featured_count = get_theme_mod('archive_featured_count', '5');
+$archive_sidebar_swt = get_theme_mod('archive_sidebar_swt', '1');
 
 // Recent Section
 $archive_recent_swt = get_theme_mod('archive_recent_swt', '1');
@@ -414,6 +415,26 @@ $repeater_posts_sortby = [
                     <button id="add-new-dynamic-subcat" type="button" class="add-button">
                         <?php esc_html_e('Add Dynamic Subcategory', 'apktemplates'); ?>
                     </button>
+                </td>
+            </tr>
+
+            <!-- Archive Sidebar Option -->
+            <tr>
+                <td>
+                    <h3><?php esc_html_e('Archive Sidebar', 'apktemplates'); ?></h3>
+                    <div class="at-field-descr">
+                        <?php esc_html_e('Toggle the visibility of the sidebar on archive/category pages.', 'apktemplates'); ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="at-mb-2">
+                        <p class="at-mini-title"><?php esc_html_e('Show Sidebar', 'apktemplates'); ?></p>
+                        <p class="at-field-hint"><?php esc_html_e('Enable to show the sidebar (e.g. "Más Populares") on the archive page. Disable to hide it and show main content in full width.', 'apktemplates'); ?></p>
+                        <label class="at-switch-btn">
+                            <input type="checkbox" name="archive_sidebar_swt" value="1" <?php checked($archive_sidebar_swt, 1); ?> />
+                            <span class="at-switch"></span>
+                        </label>
+                    </div>
                 </td>
             </tr>
 

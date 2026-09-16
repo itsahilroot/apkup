@@ -15,7 +15,7 @@ if (empty($footer_menus)) {
 }
 ?>
 <footer
-  class="bg-white/40 dark:bg-slate-950 border-t border-slate-200/40 dark:border-white/5 mt-16 py-10 mb-0">
+  class="bg-white/40 dark:bg-slate-950 border-t border-slate-200/40 dark:border-white/5 py-10 mb-0">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
     <div
       class="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-slate-200/40 dark:border-white/5">

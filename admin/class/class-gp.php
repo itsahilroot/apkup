@@ -4,14 +4,16 @@ class AT_Google_Play
 {
     public $base_url = 'https://play.google.com/';
     private $is_advanced_options;
-    private $post_language = 'en-US';
+    private $post_language = 'es-ES';
 
-    function __construct()
+    function __construct($post_language = '')
     {
         $this->is_advanced_options = at_options('is_advanced_options', false);
 
-        if ($this->is_advanced_options) {
-            $this->post_language = at_options('post_language', 'en-US');
+        if (!empty($post_language)) {
+            $this->post_language = $post_language;
+        } else {
+            $this->post_language = at_options('post_language', 'es-ES');
         }
     }
 
@@ -505,78 +507,223 @@ class AT_Google_Play
     private function get_apk_data($gp_url)
     {
         $response = [
-            'status' => '',
+            'status' => 'error',
             'data' => '',
         ];
 
+        // Extract package ID
+        $package_id = '';
+        $url_parts = parse_url($gp_url);
+        if (isset($url_parts['query'])) {
+            parse_str($url_parts['query'], $query_params);
+            if (!empty($query_params['id'])) {
+                $package_id = sanitize_text_field($query_params['id']);
+            }
+        }
+        if (empty($package_id) && preg_match('/id=([a-zA-Z0-9._\-]+)/', $gp_url, $matches)) {
+            $package_id = sanitize_text_field($matches[1]);
+        }
+
+        $post_language = $this->post_language ?: 'es-ES';
+        $is_english = in_array(strtolower($post_language), ['en', 'en-us', 'en-gb']);
+
+        // 1. For non-English languages (e.g. Spanish), scrape Google Play directly first for native localized content
+        if (!$is_english) {
+            $scraper = new Scraper();
+            $gp_html_response = $scraper->scrape($gp_url, $post_language);
+            if ($gp_html_response['status'] === 'success') {
+                $gp_html = $gp_html_response['data']['content'];
+                $html = new simple_html_dom();
+                $html->load($gp_html);
+
+                $script_data = $html->find('script[type="application/ld+json"]', 0);
+                $get_scripts = $html->find('script');
+                $keywords = [];
+
+                if ($script_data) {
+                    $script_data_text = $script_data->innertext;
+                    $script_data_decoded = json_decode($script_data_text, true);
+                    if (isset($script_data_decoded['keywords'])) {
+                        if (is_array($script_data_decoded['keywords'])) {
+                            $keywords = $script_data_decoded['keywords'];
+                        } else if (is_string($script_data_decoded['keywords'])) {
+                            $keywords = array_map('trim', explode(',', $script_data_decoded['keywords']));
+                        }
+                    }
+                }
+
+                if ($get_scripts) {
+                    foreach ($get_scripts as $script) {
+                        if (strpos($script->innertext, '[[[[]]],[null,null,[[')) {
+                            $data_pattern = "/'ds:([\d]+)'\s*,\s*hash:\s*'(\d+)'\s*,\s*data:\[([^\[\]]*(?:\[(?:[^\[\]]*|(?3))*\][^\[\]]*)*)\]/";
+                            if (preg_match($data_pattern, $script->innertext, $matches)) {
+                                $data = '[' . $matches[3] . ']';
+                                $data = substr($data, 1, -1);
+                                $data = json_decode("[$data]", true);
+
+                                $response['status'] = 'success';
+                                $response['data'] = $this->single_map_data($data, $this->apk_mappings());
+
+                                $tags = [];
+                                if (!empty($keywords)) {
+                                    $tags = $keywords;
+                                }
+                                if (!empty($response['data']['categories'])) {
+                                    foreach ($response['data']['categories'] as $cat) {
+                                        if (!empty($cat['name'])) {
+                                            $tags[] = $cat['name'];
+                                        }
+                                    }
+                                }
+                                $response['data']['apk_tags'] = array_unique($tags);
+
+                                // If banner is empty from direct scrape, fetch banner from API without overwriting Spanish text
+                                if (empty($response['data']['apk_banner']) && !empty($package_id)) {
+                                    $api_url = 'https://peekanapp.vercel.app/api/all?androidAppId=' . urlencode($package_id);
+                                    $api_res = wp_remote_get($api_url, ['timeout' => 5, 'sslverify' => true]);
+                                    if (!is_wp_error($api_res)) {
+                                        $api_json = json_decode(wp_remote_retrieve_body($api_res), true);
+                                        if (!empty($api_json['playstore']['headerImage'])) {
+                                            $response['data']['apk_banner'] = $api_json['playstore']['headerImage'];
+                                        }
+                                    }
+                                }
+
+                                return $response;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 2. Try Peekanapp Play Store API
+        if (!empty($package_id)) {
+            $country_gl = (stripos($post_language, '419') !== false) ? 'MX' : 'ES';
+            $api_url = 'https://peekanapp.vercel.app/api/all?androidAppId=' . urlencode($package_id) . '&lang=' . urlencode($post_language) . '&hl=' . urlencode($post_language) . '&gl=' . urlencode($country_gl);
+            $api_response = wp_remote_get($api_url, ['timeout' => 15, 'sslverify' => true]);
+
+            if (!is_wp_error($api_response)) {
+                $body = wp_remote_retrieve_body($api_response);
+                $api_data = json_decode($body, true);
+
+                if (!empty($api_data) && !empty($api_data['playstore'])) {
+                    $playstore = $api_data['playstore'];
+                    $developer = $playstore['developer'] ?? $playstore['developerName'] ?? '';
+
+                    $tags = [];
+                    if (!empty($playstore['genres']) && is_array($playstore['genres'])) {
+                        $tags = $playstore['genres'];
+                    } elseif (!empty($playstore['genre'])) {
+                        $tags[] = $playstore['genre'];
+                    }
+
+                    // Fallback to first screenshot or icon if headerImage is empty
+                    $banner_image = $playstore['headerImage'] ?? '';
+                    if (empty($banner_image) && !empty($playstore['screenshots']) && is_array($playstore['screenshots'])) {
+                        $banner_image = $playstore['screenshots'][0];
+                    }
+                    if (empty($banner_image)) {
+                        $banner_image = $playstore['icon'] ?? '';
+                    }
+
+                    $mapped = [
+                        'apk_name'                  => $playstore['title'] ?? '',
+                        'apk_id'                    => $playstore['appId'] ?? $package_id,
+                        'apk_content'               => !empty($playstore['description']) ? $playstore['description'] : strip_tags($playstore['descriptionHTML'] ?? ''),
+                        'apk_content_html'          => $playstore['descriptionHTML'] ?? '',
+                        'apk_description'           => $playstore['summary'] ?? '',
+                        'apk_installs'              => $playstore['installs'] ?? '',
+                        'apk_min_installs'          => $playstore['minInstalls'] ?? '',
+                        'apk_max_installs'          => $playstore['maxInstalls'] ?? '',
+                        'apk_rating'                => isset($playstore['score']) ? round($playstore['score'], 1) : '',
+                        'apk_rating_text'           => $playstore['scoreText'] ?? (isset($playstore['score']) ? round($playstore['score'], 1) : ''),
+                        'apk_total_rating'          => $playstore['ratings'] ?? '',
+                        'apk_total_votes'           => $playstore['ratings'] ?? '',
+                        'apk_price'                 => $playstore['price'] ?? 0,
+                        'apk_is_free'               => $playstore['free'] ?? true,
+                        'apk_currency'              => $playstore['currency'] ?? 'USD',
+                        'apk_developer'             => $developer,
+                        'apk_category'              => $playstore['genreId'] ?? $playstore['genre'] ?? '',
+                        'apk_sub_category'          => $playstore['genre'] ?? '',
+                        'apk_thumbnail'             => $playstore['icon'] ?? '',
+                        'apk_banner'                => $banner_image,
+                        'apk_screenshots'           => $playstore['screenshots'] ?? [],
+                        'apk_content_rating'        => $playstore['contentRating'] ?? '',
+                        'apk_version'               => $playstore['version'] ?? '',
+                        'apk_whats_new'             => $playstore['recentChanges'] ?? '',
+                        'apk_tags'                  => array_unique($tags),
+                    ];
+
+                    $response['status'] = 'success';
+                    $response['data'] = $mapped;
+                    return $response;
+                }
+            }
+        }
+
+        // 3. Fallback to direct HTML scrape if API is unavailable
         $scraper = new Scraper();
-        $gp_html_response = $scraper->scrape($gp_url);
-        if ($gp_html_response['status'] === 'success') {
-            $gp_html = $gp_html_response['data']['content'];
-        } else {
+        $gp_html_response = $scraper->scrape($gp_url, $post_language);
+        if ($gp_html_response['status'] !== 'success') {
             return $gp_html_response;
         }
+        $gp_html = $gp_html_response['data']['content'];
         $html = new simple_html_dom();
         $html->load($gp_html);
 
         $script_data = $html->find('script[type="application/ld+json"]', 0);
-
         $get_scripts = $html->find('script');
-
-        $apk_icon_url = null;
+        $keywords = [];
 
         if ($script_data) {
-
-            $script_data = $script_data->innertext;
-            $script_data = json_decode($script_data);
-            $apk_icon_url = isset($script_data->image) ? $script_data->image : null;
-        } else {
-            $response['status'] = 'error';
-            $response['data'] = [
-                'message' => 'Main script not found!',
-            ];
-
-            return $response;
+            $script_data_text = $script_data->innertext;
+            $script_data_decoded = json_decode($script_data_text, true);
+            if (isset($script_data_decoded['keywords'])) {
+                if (is_array($script_data_decoded['keywords'])) {
+                    $keywords = $script_data_decoded['keywords'];
+                } else if (is_string($script_data_decoded['keywords'])) {
+                    $keywords = array_map('trim', explode(',', $script_data_decoded['keywords']));
+                }
+            }
         }
 
-        $scripts_count = 0;
-
         if ($get_scripts) {
-
             foreach ($get_scripts as $script) {
-
                 if (strpos($script, '[[[[]]],[null,null,[[')) {
-                    $scripts_count++;
-
                     $data_pattern = "/'ds:([\d]+)'\s*,\s*hash:\s*'(\d+)'\s*,\s*data:\[([^\[\]]*(?:\[(?:[^\[\]]*|(?3))*\][^\[\]]*)*)\]/";
-
                     if (preg_match($data_pattern, $script, $matches)) {
-                        //$ds = $matches[1];
-                        ////$hash = $matches[2];
                         $data = '[' . $matches[3] . ']';
                         $data = substr($data, 1, -1);
                         $data = json_decode("[$data]", true);
 
                         $response['status'] = 'success';
                         $response['data'] = $this->single_map_data($data, $this->apk_mappings());
-                    } else {
-                        $response['status'] = 'error';
-                        $response['data'] = [
-                            'message' => 'Pattern not matched to script data!',
-                        ];
+
+                        $tags = [];
+                        if (!empty($keywords)) {
+                            $tags = $keywords;
+                        }
+                        if (!empty($response['data']['categories'])) {
+                            foreach ($response['data']['categories'] as $cat) {
+                                if (!empty($cat['name'])) {
+                                    $tags[] = $cat['name'];
+                                }
+                            }
+                        }
+                        $response['data']['apk_tags'] = array_unique($tags);
+                        return $response;
                     }
                 }
             }
-        } else {
-
-            $response['status'] = 'error';
-            $response['data'] = [
-                'message' => 'No one script files not available in play store!',
-            ];
         }
 
+        $response['status'] = 'error';
+        $response['data'] = [
+            'message' => 'Unable to fetch app data from Google Play Store. Please check the URL/ID or try again.',
+        ];
+
         return $response;
-        
     }
 
     private function get_search_data($url)
@@ -696,12 +843,30 @@ class AT_Google_Play
 
         $language = !empty($this->post_language) && $this->post_language != '0'
             ? $this->post_language
-            : null;
+            : 'es-ES';
+
+        // Derive country/region gl from requested language
+        $country_gl = 'US';
+        if (stripos($language, 'es') !== false) {
+            $country_gl = 'ES';
+        } elseif (stripos($language, 'fr') !== false) {
+            $country_gl = 'FR';
+        } elseif (stripos($language, 'de') !== false) {
+            $country_gl = 'DE';
+        } elseif (stripos($language, 'it') !== false) {
+            $country_gl = 'IT';
+        } elseif (stripos($language, 'pt') !== false) {
+            $country_gl = (stripos($language, 'BR') !== false) ? 'BR' : 'PT';
+        } elseif (stripos($language, 'ru') !== false) {
+            $country_gl = 'RU';
+        } elseif (stripos($language, 'GB') !== false) {
+            $country_gl = 'GB';
+        }
 
         if (preg_match('/([?&])gl=[^&]*/', $gp_url)) {
-            $gp_url = preg_replace('/([?&])gl=[^&]*/', '$1gl=US', $gp_url);
+            $gp_url = preg_replace('/([?&])gl=[^&]*/', '$1gl=' . $country_gl, $gp_url);
         } else {
-            $gp_url .= (strpos($gp_url, '?') === false ? '?' : '&') . 'gl=US';
+            $gp_url .= (strpos($gp_url, '?') === false ? '?' : '&') . 'gl=' . $country_gl;
         }
 
         if ($language) {

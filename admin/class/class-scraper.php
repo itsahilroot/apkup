@@ -9,7 +9,7 @@ class Scraper
         'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1'
     ];
 
-    public function scrape($url)
+    public function scrape($url, $language = '')
     {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             return [
@@ -26,6 +26,13 @@ class Scraper
         $ref_domain = parse_url($url, PHP_URL_SCHEME) ? $url : 'http://' . $url;
         $user_agent = $this->user_agents[array_rand($this->user_agents)];
 
+        // Build localized Accept-Language header
+        $accept_lang = 'en-US,en;q=0.5';
+        if (!empty($language)) {
+            $lang_short = substr($language, 0, 2);
+            $accept_lang = "{$language},{$lang_short};q=0.9,en;q=0.8";
+        }
+
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
@@ -33,7 +40,7 @@ class Scraper
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_HTTPHEADER => [
                 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                'Accept-Language: en-US,en;q=0.5',
+                'Accept-Language: ' . $accept_lang,
                 'Connection: keep-alive',
                 'Upgrade-Insecure-Requests: 1',
                 'Cache-Control: no-cache',
